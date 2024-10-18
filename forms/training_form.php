@@ -829,11 +829,11 @@ class training_form extends \moodleform {
             if($oldlastupdate && !is_numeric($oldlastupdate)){
                 $oldlastupdate = strtotime($oldlastupdate);
             }
-            $creationdate = date('d-m-Y', $creationdate);
-            $lastupdatedate = date('d-m-Y', $lastupdatedate);
-            $oldlastupdate = date('d-m-Y', $oldlastupdate);
-            if($lastupdatedate < $creationdate || ($this->training?->lastupdate && $oldlastupdate > $lastupdatedate)){
-
+            $formatedlastupdatedate = date('Ymd', $lastupdatedate);
+            $formatedcreationdate = date('Ymd', $creationdate);
+            $formatedoldlastupdate = date('Ymd', $oldlastupdate);
+            if($formatedlastupdatedate < $formatedcreationdate || ($this->training?->lastupdate && $formatedlastupdatedate < $formatedoldlastupdate)){
+                $oldlastupdate = date('d-m-Y', $oldlastupdate);
                 $errors['lastupdate'] = get_string('lastupdateerror', 'local_trainings', $oldlastupdate);
             }
         }

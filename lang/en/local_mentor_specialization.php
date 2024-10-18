@@ -112,6 +112,16 @@ $string['mainentity'] = 'Espace dédié principal';
 $string['task_close_sessions'] = 'Mentor : Fermeture automatique des sessions';
 $string['task_open_sessions'] = 'Mentor : Ouverture automatique des sessions';
 $string['task_archive_sessions'] = 'Mentor : Archivage automatique des sessions';
+$string['errortask'] = 'Erreur lors de l\'exécution de la tâche';
+$string['errormoodleusers'] = 'Impossible de récupérer les utilisateurs moodle';
+$string['errorldapentries'] = 'Erreur lors de la récupération des entrées du LDAP';
+$string['errorldapdelete'] = 'Erreur lors de la tentative de suppression des utilisateurs dans le LDAP';
+$string['errormailreport'] = 'Erreur lors de l\'envoi du rapport d\'email : ';
+$string['errormailreportnodelete'] = 'Erreur lors de l\'envoi du rapport d\'email sans suppression : ';
+$string['errorconnectldap'] = 'Impossible de se connecter au serveur LDAP.';
+$string['errorsearchldap'] = 'La recherche LDAP a échouée';
+$string['task_clear_ldap'] = 'Mentor : Nettoyage du ldap';
+$string['clear_ldap_message'] = 'Cette action va retirer les comptes utilisateurs n\'existant plus dans Moodle.<br>Vous serez notifiés par mél des comptes utilisateurs supprimés du LDAP.';
 
 $string['errornotnumeric'] = 'Le nombre de participant doit être un nombre entier supérieur à zéro';
 $string['errorthumbnail']

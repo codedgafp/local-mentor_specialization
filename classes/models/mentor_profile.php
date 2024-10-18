@@ -152,7 +152,8 @@ class mentor_profile extends \local_mentor_core\profile {
         }
 
         foreach ($secondaryentitiesname as $secondaryentityname) {
-            $secondaryentities[] = entity_api::get_entity_by_name($secondaryentityname, true);
+            if ($secondaryentity = entity_api::get_entity_by_name($secondaryentityname, true))
+                $secondaryentities[] = $secondaryentity;
         }
 
         return $secondaryentities;

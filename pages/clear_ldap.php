@@ -26,9 +26,9 @@ if (!is_siteadmin()) {
     throw new \moodle_exception('Vous devez vous connecter en tant qu\'administrateur pour lancer ce script');
 }
 
-$confirm = optional_param('confirm', 0, PARAM_INT);
-
 $pluginlib = $CFG->dirroot . '/auth/ldap_syncplus/auth.php';
+require_once($pluginlib);
+$config = get_config('auth_ldap_syncplus', 'contexts');
 
 // Check if the ldap_syncplus plugin exists.
 if (!is_file($pluginlib)) {
@@ -36,83 +36,36 @@ if (!is_file($pluginlib)) {
     return;
 }
 
-require_once($pluginlib);
-
-$config = get_config('auth_ldap_syncplus', 'contexts');
-
-$url = new moodle_url('/local/mentor_specialization/pages/clear_ldap.php');
-
 // Check if the ldap_syncplus plugin has been configured.
 if (empty($config)) {
     echo 'Le plugin LDAP syncplus n\'est pas configuré';
     return;
 }
 
-// Récupére la liste des emails des utilisateurs Moodle censés exister dans le ldap.
-$moodleusers = $DB->get_fieldset_select('user', 'username', 'auth = \'ldap_syncplus\'');
-
-// Open an ldap connection.
-$auth = new auth_plugin_ldap_syncplus();
-$con = $auth->ldap_connect();
-
-// Paramètres de la recherche ldap.
-$basedn = $config;
-$filter = "(&(objectClass=person)(cn=*))";
-$attributes = ['cn'];
-
-// Cherche des résultats dans le ldap.
-$result = ldap_search($con, $basedn, $filter, $attributes);
+$url = new moodle_url('/local/mentor_specialization/pages/clear_ldap.php');
+$trigger = optional_param('trigger', 0, PARAM_BOOL);
+$clearldapmessage = get_string('clear_ldap_message', 'local_mentor_specialization');
 
 $PAGE->set_context(context_system::instance());
+
+if ($trigger) {
+    // Create and launch ad hoc task
+    $task = new \local_mentor_specialization\task\clear_ldap_task();
+    \core\task\manager::queue_adhoc_task($task);
+    try {
+        $task->execute();
+    } catch (\Exception $e) {
+        echo $OUTPUT->notification($e -> getMessage(), 'notifyproblem');
+        error_log($e->getMessage());
+    }
+}
+
+
 $PAGE->set_title('Nettoyage du LDAP');
 $PAGE->set_url($url);
 echo $OUTPUT->header();
-
 echo $OUTPUT->heading('Nettoyage du LDAP');
-
-if (false !== $result) {
-    // Récupére les entrées correspondantes au résultat.
-    $entries = ldap_get_entries($con, $result);
-
-    $count = $entries['count'];
-
-    echo '<div>Le LDAP contient ' . $count . ' utilisateurs</div>';
-
-    $notexisting = [];
-
-    for ($i = 0; $i < $count; $i++) {
-        $cn = $entries[$i]['cn'][0];
-        $dn = $entries[$i]['dn'];
-
-        if (!in_array($cn, $moodleusers)) {
-            if ($confirm) {
-                ldap_delete($con, $dn);
-                echo '<div>Utilisateur supprimé : ' . $cn . '</div>';
-            } else {
-                $notexisting[] = $entries[$i];
-            }
-        }
-    }
-
-    echo '<div>Utilisateurs à supprimer du LDAP (' . count($notexisting) . ') :</div>';
-
-    if (count($notexisting) > 0) {
-        echo '<ul>';
-
-        foreach ($notexisting as $notexistinguser) {
-            echo '<li>' . $notexistinguser['cn'][0] . '</li>';
-        }
-
-        echo '</ul>';
-
-        echo '<div><a href="' . $url . '?confirm=1">Nettoyer les utilisateurs</a></div>';
-    } else {
-        echo '<div>Aucun</div>';
-    }
-
-}
-
-// Close the ldap connection.
-$auth->ldap_close();
+echo '<div>' . $clearldapmessage . '</div>';
+echo '<div><a href="' . $url . '?trigger=1">Nettoyer les utilisateurs</a></div>';
 
 echo $OUTPUT->footer();

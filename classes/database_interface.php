@@ -1575,4 +1575,67 @@ class database_interface extends \local_mentor_core\database_interface {
     public function get_last_sync_sirh_by_session_id($sessionid) {
         return $this->db->get_field('session', 'lastsyncsirh', ['id' => $sessionid]);
     }
+
+    public function get_user_notification($notificationid, $userid, $type){
+        global $DB;
+        $sql = "SELECT * FROM {user_collection_notification} 
+        WHERE collection_id = :collection_id 
+        AND user_id = :user_id 
+        AND " . $DB->sql_compare_text('type') . " = " . $DB->sql_compare_text(':type');
+        $params = [
+            'collection_id' => $notificationid,
+            'user_id' => $userid,
+            'type' => $type
+        ];
+        return $DB->get_record_sql($sql, $params, IGNORE_MISSING);
+    }
+    
+    /**
+     * Delete a record of user collection notification 
+     *
+     * @return bool
+     */
+    public function delete_user_notification($notificationid){
+        global $DB;
+        return $DB->delete_records('user_collection_notification', ['id'=> $notificationid]);
+    }
+
+    /**
+     * Insert into database a user collection notification record
+     *
+     * @return void
+     */
+    public function insert_user_notification($usercollectionobject){
+        global $DB;
+        $DB->insert_record('user_collection_notification', $usercollectionobject, false, false);
+    }
+
+    /**
+     * Get user collections notifications
+     *
+     * @return array
+     */
+    public function get_user_collection_notifications($type) {
+        global $USER, $DB;
+        
+        $sql = "SELECT * FROM {user_collection_notification} 
+        WHERE user_id = :user_id 
+        AND " . $DB->sql_compare_text('type') . " = " . $DB->sql_compare_text(':type') . "
+        ORDER BY id ASC";
+        
+        $params = ['user_id' => $USER->id, 'type' => $type];
+
+        return $DB->get_records_sql($sql, $params, 0, 0);
+    }
+
+    /**
+     * Get all mentor collection 
+     *
+     * @return array
+     */
+    public function get_mentor_collections() {
+        global $DB;
+        return $DB->get_records('collection', [], 'shortname ASC', '*', 0, 0);
+    }
+
 }

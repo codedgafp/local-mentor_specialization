@@ -537,7 +537,7 @@ function local_mentor_specialization_list_departments() {
 function local_mentor_specialization_get_collections($data = 'name') {
     // Get collections from config plugins.
     $collectionlist = get_config('local_mentor_specialization', 'collections');
-
+    
     // If config not found, we return an empty array.
     if (false === $collectionlist || '' === $collectionlist) {
         return [];
@@ -1293,12 +1293,12 @@ function local_mentor_specialization_init_snippets()
             <h5>Ressources à consulter pour approfondir le sujet<br></h5>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu risus non est imperdiet condimentum. Vivamus vel elit posuere purus rhoncus vestibulum non eu est.</p>
             <ul class="unlist">
-                <li><a href="#" class="mentor-link-icon">[fa-file-pdf-o fa-1x fa-pull-left] Ressource 1 - fichier au format PDF</a></li>
+                <li><a href="#">[fa-file-pdf-o fa-1x] Ressource 1 - fichier au format PDF</a></li>
                 <li>
-                    <a href="#" class="mentor-link-icon">[fa-file-o fa-1x fa-pull-left] Ressource 2 - fichier non PDF</a>
+                    <a href="#">[fa-file-o fa-1x] Ressource 2 - fichier non PDF</a>
                 </li>
                 <li>
-                    <a href="#" class="mentor-link-icon" target="_blank" rel="noopener">[fa-external-link fa-1x fa-pull-left] Ressource 3 - lien externe (Ce lien s\'ouvrira dans un nouvel onglet de votre navigateur)</a>
+                    <a href="#" target="_blank" rel="noopener">[fa-external-link fa-1x] Ressource 3 - lien externe (Ce lien s\'ouvrira dans un nouvel onglet de votre navigateur)</a>
                 </li>
             </ul>
         </div>
@@ -1372,7 +1372,7 @@ function local_mentor_specialization_init_snippets()
         <span tabindex=0></span>
         <a href="#" type="button" role="button" class="card-header" data-toggle="collapse" aria-expanded="true">
             <h5 class="mb-0">
-                Collapsible
+                Titre accordéon
             </h5>
             <div class="header-right">
                 <i class="fa fa-chevron-down collapse-chevron" aria-hidden="true"></i>
@@ -1974,6 +1974,28 @@ function local_mentor_specialization_init_config() {
         'tool/dataprivacy:downloadownrequest',
         'tool/dataprivacy:requestdelete',
         'tool/policy:accept',
+        'moodle/course:viewhiddencourses',
+        'moodle/course:viewhiddensections',
+        'mod/book:viewhiddenchapters',
+        'moodle/course:viewhiddenactivities',
+        'moodle/user:viewdetails',
+        'block/online_users:viewlist',
+        'booktool/print:print',
+        'gradereport/summary:view',
+        'local/catalog:offeraccess',
+        'local/mentor_core:modifyentity',
+        'mod/bigbluebuttonbn:join',
+        'mod/customcert:view',
+        'mod/quiz:viewoverrides',
+        'moodle/backup:backupactivity',
+        'moodle/blog:search',
+        'moodle/comment:view',
+        'moodle/course:ignoreavailabilityrestrictions',
+        'moodle/user:changeownpassword',
+        'moodle/user:editownmessageprofile',
+        'moodle/user:editownprofile',
+        'report/usersessions:manageownsessions',
+        'tool/brickfield:viewcoursetools'
     ];
 
     local_mentor_core_remove_capabilities($noteditingreflocal, $noteditingreflocalremovecapabilities);
@@ -1982,8 +2004,6 @@ function local_mentor_specialization_init_config() {
     $noteditingreflocalallowcapabilities = [
         'block/completion_progress:showbar',
         'block/summary:canseehiddensections',
-        'booktool/print:print',
-        'gradereport/summary:view',
         'local/mentor_core:movesessions',
         'local/mentor_core:movesessionsinotherentities',
         'local/mentor_core:movetrainings',
@@ -1994,13 +2014,10 @@ function local_mentor_specialization_init_config() {
         'local/trainings:update',
         'mod/assignment:view',
         'mod/assign:view',
-        'mod/bigbluebuttonbn:join',
         'mod/bigbluebuttonbn:view',
         'mod/book:read',
-        'mod/book:viewhiddenchapters',
         'mod/chat:view',
         'mod/choice:view',
-        'mod/customcert:view',
         'mod/data:view',
         'mod/data:viewentry',
         'mod/feedback:view',
@@ -2014,42 +2031,20 @@ function local_mentor_specialization_init_config() {
         'mod/page:view',
         'mod/questionnaire:view',
         'mod/quiz:view',
-        'mod/quiz:viewoverrides',
         'mod/resource:view',
         'mod/url:view',
         'mod/via:view',
         'mod/wiki:viewpage',
         'mod/workshop:view',
-        'moodle/backup:backupactivity',
         'moodle/block:view',
-        'moodle/blog:search',
         'moodle/blog:view',
         'moodle/category:viewcourselist',
-        'moodle/comment:view',
         'moodle/course:downloadcoursecontent',
-        'moodle/course:ignoreavailabilityrestrictions',
         'moodle/course:view',
-        'moodle/course:viewhiddenactivities',
-        'moodle/course:viewhiddensections',
         'moodle/search:query',
-        'moodle/user:viewdetails',
-        'tool/brickfield:viewcoursetools',
     ];
 
     local_mentor_core_add_capabilities($noteditingreflocal, $noteditingreflocalallowcapabilities);
-
-    // Add prevent capability.
-    local_mentor_core_add_capability($noteditingreflocal, 'block/online_users:viewlist', CAP_PREVENT);
-
-    // Add prohibit capabilities.
-    $noteditingreflocalprohibitcapabilities = [
-        'moodle/user:changeownpassword',
-        'moodle/user:editownmessageprofile',
-        'moodle/user:editownprofile',
-        'report/usersessions:manageownsessions',
-    ];
-
-    local_mentor_core_add_capabilities($noteditingreflocal, $noteditingreflocalprohibitcapabilities, CAP_PROHIBIT);
 
     // Manage role authorization.
     mtrace('Manage roles assign');
@@ -2295,6 +2290,9 @@ function local_mentor_specialization_init_config() {
     local_mentor_core_add_capability($reflocal, 'local/mentor_specialization:changetraininglastupdate');
     local_mentor_core_add_capability($concepteur, 'local/mentor_specialization:changetraininglastupdate');
     local_mentor_core_add_capability($formateur, 'local/mentor_specialization:changetraininglastupdate');
+
+    // Add Collection Notifications Table
+    local_mentor_specialization_create_table_user_collection_notification(); 
 }
 
 /**
@@ -2982,4 +2980,71 @@ function local_mentor_specialization_remove_task_scheduled($taskname) {
     global $DB;
 
     $DB->delete_records('task_scheduled', ['component' => $taskname]);
+}
+
+
+/**
+ * Create Table for users notification about trainings sessions.
+ *
+ * @return void
+ * @throws dml_exception
+ */
+function local_mentor_specialization_create_table_user_collection_notification() {
+    global $DB;
+
+    $dbman = $DB->get_manager();
+    
+    $user_collection_table = new xmldb_table('user_collection_notification');
+    $collection_table = new xmldb_table('collection');
+    
+    if (!$dbman->table_exists($collection_table)) {
+        local_mentor_specialization_create_table_collection($collection_table);
+    }
+
+    $user_collection_table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+    $user_collection_table->add_field('user_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+    $user_collection_table->add_field('collection_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+    $user_collection_table->add_field('type', XMLDB_TYPE_TEXT, '10', null, XMLDB_NOTNULL, null, null);
+
+    $user_collection_table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+    
+    if (!$dbman->table_exists($user_collection_table)) {
+        $dbman->create_table($user_collection_table);
+    }
+    
+    $user_collection_table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['user_id'], 'user', ['id']);
+    $user_collection_table->add_key('fk_collection', XMLDB_KEY_FOREIGN, ['collection_id'], 'collection', ['id']);
+}
+
+function local_mentor_specialization_create_table_collection($table){
+    global $DB;
+
+    $dbman = $DB->get_manager();
+    
+    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+    $table->add_field('shortname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+    $table->add_field('fullname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+
+    $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+    $dbman->create_table($table);
+
+    $collections = [
+        ['shortname' => 'achat', 'fullname' => 'Achat public'],
+        ['shortname' => 'communication', 'fullname' => 'Communication et service aux usagers'],
+        ['shortname' => 'finances', 'fullname' => 'Finances publiques, gestion budgétaire et financière'],
+        ['shortname' => 'formations', 'fullname' => 'Formations spécifiques aux missions des ministères'],
+        ['shortname' => 'langues', 'fullname' => 'Langues'],
+        ['shortname' => 'management', 'fullname' => 'Management'],
+        ['shortname' => 'numerique', 'fullname' => 'Numérique et système d\'information et de communication'],
+        ['shortname' => 'politique', 'fullname' => 'Politiques publiques nationales, valeurs de la république'],
+        ['shortname' => 'preparation', 'fullname' => 'Préparation aux épreuves de concours et d\'examens professionnels'],
+        ['shortname' => 'ressources', 'fullname' => 'Ressources humaines'],
+        ['shortname' => 'techniques', 'fullname' => 'Techniques et affaires juridiques'],
+        ['shortname' => 'transformation', 'fullname' => 'Transformation de l\'action publique'],
+    ];
+    
+    foreach ($collections as $collection) {
+        $DB->insert_record('collection', $collection);
+    }
 }

@@ -13,7 +13,7 @@ namespace local_mentor_specialization\task;
 use dml_exception;
 use local_mentor_specialization\custom_notifications_service;
 
-class email_library_updates extends \core\task\scheduled_task
+class email_catalog_updates extends \core\task\scheduled_task
 {
     public $custom_notification_service;
 
@@ -24,13 +24,13 @@ class email_library_updates extends \core\task\scheduled_task
 
     public function get_name()
     {
-        return get_string('email_library_updates_new_course', 'local_mentor_specialization');
+        return get_string('email_catalog_updates_new_sessions', 'local_mentor_specialization');
     }
 
     public function execute()
-    {
-        $this->custom_notification_service->send_new_courses_notifications();
-
+    { 
+        $this->custom_notification_service->send_new_sessions_notifications();
     }
 
+    
 }

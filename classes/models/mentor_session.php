@@ -166,6 +166,9 @@ class mentor_session extends session {
     /** @var string */
     public $sessionnumber;
 
+    /** @var int */
+    public $sessiontimecreated;
+
     /**
      * session constructor.
      *
@@ -201,6 +204,9 @@ class mentor_session extends session {
             }
 
             $this->{$requiredfield} = $this->session->{$requiredfield};
+            if (isset($this->session->sessiontimecreated)) {
+                $this->timecreated = $this->session->sessiontimecreated;
+            }
         }
 
         // Add the manual enrolment method if missing.

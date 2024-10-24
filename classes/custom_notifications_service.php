@@ -17,12 +17,17 @@ defined('MOODLE_INTERNAL') || die;
 
 class custom_notifications_service
 {
-    public $EMAIL_LIBRARY_NEW_COURSES = "EMAIL_LIBRARY_NEW_COURSES";
-    public $EMAIL_LIBRARY_UPDATE_COURSES = "EMAIL_LIBRARY_UPDATE_COURSES";
-
     public static $LIBRARY_PAGE_TYPE = "LIBRARY";
     public static $CATALOG_PAGE_TYPE = "CATALOG";
 
+    public static $EMAIL_LIBRARY_NEW_COURSES = "EMAIL_LIBRARY_NEW_COURSES";
+    public static $EMAIL_CATALOG_NEW_SESSIONS = "EMAIL_CATALOG_NEW_SESSIONS";
+    public static $PERIOD_NEW_SESSIONS = 7;
+    protected $MAX_RESULT_SUBSCRIPTIONS = 1000;
+
+    public static $ADMIN = "admindedie";
+    public static $RFC = "respformation";
+    
     private static $instance;
 
     /**
@@ -35,64 +40,129 @@ class custom_notifications_service
         return self::$instance;
     }
 
+
     /**
-     * fetch concerned users from database to be notified about custom notifications
-     * @param string $sql
-     * @return array
+     * Send new courses email notifications
+     * @return void
      */
-    public function get_users_to_be_notified(string $sql): array
-    {
-        global $DB;
-        $users = [];
-        try {
-            $users = $DB->get_records_sql($sql, []);
-        } catch (dml_exception $e) {
-            mtrace('Custom notification: error sql getting users to be notified: ' . $e->getMessage());
+    public function send_new_courses_notifications(): void{
+        global $CFG;
+        $supportuser = \core_user::get_support_user();
+        $error_sending_emails = false;
+        $subscribers = $this->get_subscribers_of_library();
+        
+        $object = get_string('email_library_updates_new_course_object', 'local_mentor_specialization');
+        foreach ($subscribers as $subscriber) {
+            foreach($subscriber->trainings as $training){
+                $args = $training;
+                $args->wwwroot = $CFG->wwwroot;
+                $content = get_string('email_library_updates_new_course_content', 'local_mentor_specialization', $args);    
+                $contenthtml = text_to_html($content, true, true);
+                $error_sending_emails = !email_to_user($subscriber, $supportuser, $object, $content, $contenthtml);
+                $error_sending_emails ? mtrace(get_string('customnotificationerroremail', 'local_mentor_specialization', self::$EMAIL_LIBRARY_NEW_COURSES)) :
+                    mtrace(get_string('customnotificationsuccessemail', 'local_mentor_specialization', self::$EMAIL_LIBRARY_NEW_COURSES));
+            }
+        }     
+    }
+
+    /**
+     * Send new sessions email notifications
+     * @return void
+     */
+    public function send_new_sessions_notifications(){
+        global $CFG;
+        $supportuser = \core_user::get_support_user();
+        $error_sending_emails = false;
+        $subscribers = $this->get_subscribers_of_catalog_by_training();
+        foreach ($subscribers as $subscriber) {
+            $emailobjectkey = 'email_catalog_updates_new_session_object';
+            $nbtrainings  = count($subscriber->trainings);
+            if($nbtrainings < 1){
+                continue;
+            }
+            if($nbtrainings > 1){
+                $emailobjectkey = 'email_catalog_updates_new_sessions_object';
+            }
+
+            $object =  get_string($emailobjectkey, 'local_mentor_specialization');
+            
+            $args = new \stdClass();
+            $args->courseslist = $this->get_courses_list($subscriber->trainings);
+            
+            $content = get_string('email_catalog_updates_new_session_content', 'local_mentor_specialization', $args);
+            $contenthtml = text_to_html($content, true, true);
+            
+            $error_sending_emails = !email_to_user($subscriber, $supportuser, $object, $content, $contenthtml);
+        }
+        $error_sending_emails ? mtrace(get_string('customnotificationerroremail', 'local_mentor_specialization', self::$EMAIL_CATALOG_NEW_SESSIONS)) :
+        mtrace(get_string('customnotificationsuccessemail', 'local_mentor_specialization', self::$EMAIL_CATALOG_NEW_SESSIONS));    
+    }
+
+    /**
+     * Get training data for each user (subscriber) limited to MAX_RESULT_SUBSCRIPTIONS by result
+     *
+     * @return array
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
+    function get_subscribers_of_catalog_by_training() {
+        $dbi = database_interface::get_instance();
+        $subscribers = [];
+        $offset = 0;
+        $hasMoreResults = true;
+
+        while ($hasMoreResults) {
+            $results = $dbi->get_subscribers_of_catalog($this->MAX_RESULT_SUBSCRIPTIONS, $offset);
+            if (empty($results)) {
+                $hasMoreResults = false;
+                break;
+            }
+
+            foreach ($results as $result) {
+
+                $user = $subscribers[$result->userid] ?? $result;
+
+                if(!isset($user->trainings)){
+                    $user->trainings = [];
+                }
+                
+                if (!isset($user->trainings[$result->trainingid])) {
+                    $training = new \stdClass();
+                    $training->trainingid = $result->trainingid;
+                    $training->coursefullname = $result->coursefullname;
+                    $user->trainings[$result->trainingid] = $training;
+                }
+                
+                unset($user->trainingid);
+                unset($user->coursefullname);
+                
+                $subscribers[$result->userid] = $user;
+            }
+            $offset += $this->MAX_RESULT_SUBSCRIPTIONS;
+        }
+        return $subscribers;
+    }
+
+    /**
+     * Get users (subscribers) with trainings data for library new trainings
+     *
+     * @return array
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
+    function get_subscribers_of_library(){
+        $dbi = database_interface::get_instance();
+        $users = $dbi->get_all_admins_and_rfcs();
+        $trainings = $dbi->get_new_added_trainings();
+        
+        foreach($users as $user){
+            $user->trainings = $trainings;
         }
         return $users;
     }
 
     /**
-     * fetch data from database to be notified about (courses, categories, ...)
-     * @return array
-     */
-    public function get_data_to_be_notified_about(string $sql): array
-    {
-        $data = [];
-        try {
-            global $DB;
-            $data = $DB->get_records_sql($sql, []);
-        } catch (dml_exception $e) {
-            mtrace('email_library_update error sql getting trainings: ' . $e->getMessage());
-        }
-        return $data;
-    }
-
-    /**
-     * Send notification email to the users depending on notification type
-     * @return array
-     */
-    public function send_custom_notification(string $notification_type, array $users, object $data): void
-    {
-        global $CFG;
-        $supportuser = \core_user::get_support_user();
-        $error_sending_emails = false;
-        switch ($notification_type) {
-            case self::EMAIL_LIBRARY_NEW_COURSES:
-                $object = get_string('email_library_updates_new_course_object', 'local_mentor_specialization');
-                foreach ($users as $user) {
-                    $data->wwwroot = $CFG->wwwroot;
-                    $content = get_string('email_library_updates_new_course_content', 'local_mentor_specialization', $data);
-                    $contenthtml = text_to_html($content, true, true);
-                    $error_sending_emails = !email_to_user($user, $supportuser, $object, $content, $contenthtml);
-                }
-        }
-        $error_sending_emails ? mtrace('Error sending email Custom Notifications Type:' . self::EMAIL_LIBRARY_NEW_COURSES . '.') :
-            mtrace('Success emails Custom Notifications Type:' . self::EMAIL_LIBRARY_NEW_COURSES . ' sent.');
-    }
-
-    /**
-     * Set user collection notifications 
+     * Set user collection notifications
      *
      * @return string
      * @throws coding_exception
@@ -122,15 +192,44 @@ class custom_notifications_service
         return get_string('usercollectionnotif:sucess', 'local_catalog');
     }
 
+    /**
+     * Get all Mentor collections 
+     *
+     * @return array
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     public function get_mentor_collections(){
         $dbi = database_interface::get_instance();
 
         return $dbi->get_mentor_collections();
     }
 
+    /**
+     * Get collection for a certain use
+     *
+     * @return array
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     public function get_user_collection_notifications($type){
         $dbi = database_interface::get_instance();
         return $dbi->get_user_collection_notifications($type);
+    }
+    
+    /**
+     * Build string courses list content
+     *
+     * @return string
+     */
+    function get_courses_list($courses){
+        global $CFG;
+        $courseslist = "";
+        foreach($courses as $course){
+            $link = "{$CFG->wwwroot}/local/catalog/pages/training.php?trainingid={$course->trainingid}";
+            $courseslist .= "{$course->coursefullname}: <a href=\"$link\">$link</a>\n\n";
+        }
+        return $courseslist;
     }
 
 }

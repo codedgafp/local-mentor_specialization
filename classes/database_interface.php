@@ -26,6 +26,7 @@
 namespace local_mentor_specialization;
 
 use core\notification;
+use local_mentor_core\session;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -1636,6 +1637,158 @@ class database_interface extends \local_mentor_core\database_interface {
     public function get_mentor_collections() {
         global $DB;
         return $DB->get_records('collection', [], 'shortname ASC', '*', 0, 0);
+    }
+
+    /**
+     * fetch users (subscribers) with collection, region, and entities data
+     * @return array
+     */
+    public function get_subscribers_of_catalog($limit, $offset = 0, $days = 7): array
+    {
+        global $DB;
+        $sql = "SELECT
+            DISTINCT on (u.id, t.id)
+            ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
+            u.id userid,
+            t.id trainingid,
+            c.fullname AS coursefullname,
+            u.*
+            FROM
+                {session} s
+            JOIN
+                {course} c ON c.shortname = s.courseshortname
+            JOIN
+                {course_categories} ccs_main_entity ON ccs_main_entity.id = c.category
+            JOIN
+                {course_categories} ccs_main_entity_name ON ccs_main_entity.parent = ccs_main_entity_name.id
+            JOIN
+                {training} t ON t.id = s.trainingid
+            JOIN
+                {category_options} co ON co.categoryid = ccs_main_entity.parent
+            LEFT JOIN
+                {session_sharing} ss ON ss.sessionid = s.id
+            -- Users subscribers CATALOG
+            LEFT JOIN
+                (SELECT DISTINCT ucn.user_id, shortname FROM {collection} c
+                    JOIN {user_collection_notification} ucn ON ( c.id = ucn.collection_id AND ucn.type = '".custom_notifications_service::$CATALOG_PAGE_TYPE."')
+                ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ','))
+            -- Users Admins & RFCs
+            JOIN
+                {user} u on u.id IS NOT NULL
+            JOIN
+                {user_info_data} uid ON uid.userid = u.id
+            JOIN
+                {user_info_field} uif ON uif.id = uid.fieldid
+            JOIN
+                {course_categories} ccu_main_entity ON ccu_main_entity.name = uid.data
+            JOIN
+                {user_info_data} uid_second_entity ON uid_second_entity.userid = u.id
+            JOIN
+                {user_info_field} uif_second_entity ON uif_second_entity.id = uid_second_entity.fieldid
+            LEFT JOIN
+                {course_categories} ccu_second_entity ON ccu_second_entity.name = ANY (string_to_array(uid_second_entity.data, ','))
+            JOIN
+                {user_info_data} uid_region ON uid_region.userid = u.id
+            JOIN
+                {user_info_field} uif_region ON uif_region.id = uid_region.fieldid
+            JOIN
+                {regions} r ON r.name = uid_region.data
+            JOIN
+                {role_assignments} ra ON ra.userid = u.id
+            JOIN
+                {role} role ON role.id = ra.roleid
+            JOIN
+                {context} con ON con.id = ra.contextid
+            WHERE
+                ccs_main_entity.name = 'Sessions'
+                AND ccs_main_entity.visible = 1
+                AND s.timecreated IS NOT NULL AND to_timestamp(s.timecreated) > (CURRENT_TIMESTAMP - INTERVAL '".$days." day')
+                AND s.status IN ('".session::STATUS_OPENED_REGISTRATION."', '".session::STATUS_IN_PROGRESS."')
+                AND co.name = 'regionid'
+                AND uif.shortname = 'mainentity'
+                AND uif_second_entity.shortname = 'secondaryentities'
+                AND uif_region.shortname = 'region'
+                AND
+                (
+                    -- session rules
+                    (s.opento = '".session::OPEN_TO_ALL."'
+                        OR (s.opento = '".session::OPEN_TO_CURRENT_MAIN_ENTITY."'AND ccu_main_entity.id = ccs_main_entity.parent)
+                        OR (s.opento = '".session::OPEN_TO_CURRENT_ENTITY."' AND (ccs_main_entity.parent = ccu_main_entity.id OR ccs_main_entity_name.name = ANY (string_to_array(uid_second_entity.data, ',')) OR CAST(r.id AS VARCHAR) = ANY (string_to_array(co.value , ','))))
+                        OR (s.opento = '".session::OPEN_TO_OTHER_ENTITY."' AND (ccu_main_entity.id = ccs_main_entity.parent  OR ccu_main_entity.id = ss.coursecategoryid))
+                    )
+                    AND
+                    (
+                        (
+                        con.contextlevel = 40
+                        AND
+                        (    
+                            -- admin dedié
+                            role.shortname = '".custom_notifications_service::$ADMIN."'
+                            -- RFC
+                            OR
+                            role.shortname = '".custom_notifications_service::$RFC."'
+                        )
+                        )
+                        -- subscriber
+                        OR
+                        (
+                            usercollection.shortname = ANY (string_to_array(t.collection, ','))
+                        AND usercollection.user_id = u.id
+                        )
+                    )
+                )
+                GROUP BY u.id, t.id, c.id";
+        $users = [];
+        try {
+            $users = $DB->get_records_sql($sql, [], $offset, $limit);
+        } catch (dml_exception $e) {
+            mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
+        }
+        return $users;
+    }
+
+    /**
+     * fetch new trainings with course data depending on number of days
+     * @return array
+     */
+    public function get_new_added_trainings(int $days = 1): array
+    {
+        global $DB;
+        $sql = "SELECT l.trainingid as trainingid, cc2.name as course_category_name, c.fullname as course_name  FROM {library} l
+                    JOIN {training} t ON t.id = l.originaltrainingid
+                    JOIN {course} c ON c.shortname = t.courseshortname
+                    JOIN {course_categories} cc ON cc.id = c.category
+                    LEFT JOIN {course_categories} cc2 ON cc.parent = cc2.id
+                WHERE to_timestamp(l.timecreated) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')";
+        $trainings = [];
+        try {
+            $trainings = $DB->get_records_sql($sql, []);
+        } catch (dml_exception $e) {
+            mtrace('Error sql getting new added trainings: ' . $e->getMessage());
+        }
+        return $trainings;
+    }
+
+    /**
+     * fetch users to be notified about library new courses: admins and rfcs
+     * @return array
+     */
+    public function get_all_admins_and_rfcs(): array
+    {
+        global $DB;
+        $sql = "SELECT DISTINCT  u.id, u.*
+            FROM {role_assignments} ra
+                JOIN {user} u ON ra.userid = u.id
+                JOIN {role} r ON r.id = ra.roleid
+                JOIN {context} ctx ON ctx.id = ra.contextid
+            WHERE ctx.contextlevel = 40 AND r.shortname IN ('admindedie', 'respformation');";
+        $users = [];
+        try {
+            $users = $DB->get_records_sql($sql, []);
+        } catch (dml_exception $e) {
+            mtrace('Error sql getting library collections subscribers : ' . $e->getMessage());
+        }
+        return $users;
     }
 
 }

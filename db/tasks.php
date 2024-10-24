@@ -71,4 +71,13 @@ $tasks = [
         'dayofweek' => '*',
         'month' => '*',
     ],
+    [
+        'classname' => 'local_mentor_specialization\task\email_catalog_updates',
+        'blocking' => 0,
+        'minute' => 0,
+        'hour' => '8',
+        'day' => '*',
+        'dayofweek' => '1',
+        'month' => '*',
+    ]
 ];

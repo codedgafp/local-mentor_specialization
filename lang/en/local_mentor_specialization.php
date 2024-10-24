@@ -138,6 +138,7 @@ $string['erroropentolist'] = 'Vous devez choisir au moins un espace dédié.';
 $string['erroromail'] = 'L\'adresse mèl saisie ne respecte pas le format obligatoire.';
 $string['errorsessionpermanent']
     = 'Ce champ est obligatoire pour enregistrer une session non permanente à tous les statuts sauf "En préparation"';
+$string['erroruserscustomnotification'] = 'Custom notifications: error data getting users to be notified ';
 
 // Used for session form.
 $string['mentor_specialization:changesessionfullname'] = 'Mettre à jour le libellé';
@@ -304,8 +305,9 @@ Voulez-vous continuer ?';
 
 $string['lastsyncsirh'] = 'Date de synchronisation de l\'achèvement de la session';
 
-
 $string['email_library_updates_new_course'] = 'Notifier par email l\'ajout d\'un nouveau cours dans la bibliothèque de formation.';
+$string['email_catalog_updates_new_sessions'] = 'Notifier par email l\'ajout de nouvelles sessions de cours dans l\'offre de formation.';
+// New courses in library email content
 $string['email_library_updates_new_course_object'] = 'Mentor : Nouvelle publication dans la bibliothèque de formations Mentor';
 $string['email_library_updates_new_course_content'] = 'Bonjour, 
 
@@ -316,6 +318,23 @@ Pour en savoir plus, vous pouvez consulter <a href={$a->wwwroot}/local/library/p
 L\'équipe Mentor
 
 <img src=\'https://mentor.gouv.fr/theme/mentor/pix/logo.png\' alt=\'Logo de Mentor\' style=\'width:200px; height:56px;\'> ';
+
+// New sessions in catalog email content
+$string['email_catalog_updates_new_session'] = 'Notifier par email l\'ajout d\'un nouveau cours dans la bibliothèque de formation.';
+$string['email_catalog_updates_new_sessions_object'] = 'Nouvelles sessions disponibles dans l\'offre de formation Mentor';
+$string['email_catalog_updates_new_session_object'] = 'Nouvelle session disponible dans l\'offre de formation Mentor';
+$string['email_catalog_updates_new_session_content'] = 'Bonjour,
+
+De nouvelles sessions de formation sont proposées dans l\'offre de formation Mentor. N\'hésitez pas à aller les consulter :
+
+    {$a->courseslist}
+
+L\'équipe Mentor
+
+<img src="https://mentor.gouv.fr/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
+
+$string['customnotificationerroremail']= 'Error sending email Custom Notifications Type: {$a}';
+$string['customnotificationsuccessemail']= 'Success sending email Custom Notifications Type: {$a}';
 
 // Capabilitites
 $string['mentor_specialization:changetraininglastupdate'] = 'Donne la possibilité de mettre à jour la date de dernière modification de la formation';

@@ -26,7 +26,7 @@
 use local_mentor_core\session_form;
 use local_mentor_core\specialization;
 use local_mentor_core\training;
-
+use \local_mentor_specialization\custom_notifications_service;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -399,5 +399,82 @@ class local_mentor_specialization_tasks_testcase extends advanced_testcase {
 
         self::resetAllData();
     }
+
+    public function create_entity($entityname) {
+        $entityid = \local_mentor_core\entity_api::create_entity(['name' => $entityname, 'shortname' => $entityname]);
+        return \local_mentor_core\entity_api::get_entity($entityid);
+    }
+    public function create_training($entity, $shorntname = 'shortname') {
+
+        $trainingdata = new stdClass();
+        $trainingdata->name = 'fullname';
+        $trainingdata->shortname = $shorntname;
+        $trainingdata->teaser = 'http://www.edunao.com/';
+        $trainingdata->teaserpicture = '';
+        $trainingdata->prerequisite = 'TEST';
+        $trainingdata->collection = 'accompagnement';
+        $trainingdata->traininggoal = 'TEST TRAINING ';
+        $trainingdata->idsirh = 'TEST ID SIRH';
+        $trainingdata->licenseterms = 'cc-sa';
+        $trainingdata->typicaljob = 'TEST';
+        $trainingdata->skills = ['FP2SF001', 'FP2SF002'];
+        $trainingdata->certifying = '1';
+        $trainingdata->presenceestimatedtimehours = '12';
+        $trainingdata->presenceestimatedtimeminutes = '10';
+        $trainingdata->remoteestimatedtimehours = '15';
+        $trainingdata->remoteestimatedtimeminutes = '30';
+        $trainingdata->trainingmodalities = 'd';
+        $trainingdata->producingorganization = 'TEST';
+        $trainingdata->producerorganizationlogo = '';
+        $trainingdata->designers = 'TEST';
+        $trainingdata->contactproducerorganization = 'TEST';
+        $trainingdata->thumbnail = '';
+        $trainingdata->status = 'dr';
+        $trainingdata->content = [];
+        $trainingdata->content['text'] = 'ContentText';
+        $formationid = $entity->get_entity_formation_category();
+        $trainingdata->categorychildid = $formationid;
+        $trainingdata->categoryid = $entity->id;
+        $trainingdata->creativestructure = $entity->id;
+        return \local_mentor_core\training_api::create_training($trainingdata);
+    }
+
+
+
+    /**
+     * Test send email of published courses
+     *
+     * @covers \local_mentor_specialization\task\email_library_publish::execute
+     */
+    public function test_email_library_publish_execute() {
+
+        $this->resetAfterTest(true);
+        $this->init_config();
+        $this->reset_singletons();
+
+        self::setAdminUser();
+         $library = \local_mentor_core\library_api::get_or_create_library();
+
+         $entity = $this->create_entity('Entity');
+         $training = $this->create_training($entity);
+         \local_mentor_core\library_api::publish_to_library($training->id, true);
+ 
+        // Start output buffering
+        ob_start();
+         $task = new \local_mentor_specialization\task\email_library_publish();
+      
+        $task->execute();
+         // Start output buffering
+         // Get the printed output
+         $output = ob_get_clean();
+         // Assert that the output contains the expected string
+         $this->assertStringContainsString(
+         get_string('customnotificationsuccessemail', 'local_mentor_specialization', custom_notifications_service::$EMAIL_LIBRARY_NEW_COURSES),
+         $output
+         );
+         ob_end_clean();
+   
+    }
+
 }
 

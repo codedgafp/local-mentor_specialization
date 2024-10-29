@@ -79,5 +79,14 @@ $tasks = [
         'day' => '*',
         'dayofweek' => '1',
         'month' => '*',
-    ]
+    ],
+    [
+        'classname' => 'local_mentor_specialization\task\email_library_publish',
+        'blocking' => 0,
+        'minute' => 0,
+        'hour' => '8',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ],
 ];

@@ -27,6 +27,7 @@ namespace local_mentor_specialization;
 
 use core\notification;
 use local_mentor_core\session;
+use local_mentor_core\training;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -1787,6 +1788,70 @@ class database_interface extends \local_mentor_core\database_interface {
             $users = $DB->get_records_sql($sql, []);
         } catch (dml_exception $e) {
             mtrace('Error sql getting library collections subscribers : ' . $e->getMessage());
+        }
+        return $users;
+    }
+
+    /**
+     * fetch users (subscribers) to notify with new published trainings 
+     * @return array
+     */
+    public function get_subscribers_of_library($days = 1): array
+    {
+        global $DB;
+        $sql = "SELECT 
+                ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
+                u.id AS userid,
+                l.trainingid,
+                c.fullname AS coursefullname,
+                u.email,
+                cc2.name AS course_category_name
+                FROM {training} t  
+                JOIN  {library} l  ON t.id = l.originaltrainingid
+                JOIN {course} c ON c.shortname = t.courseshortname
+                JOIN {course_categories} cc ON cc.id = c.category
+                LEFT JOIN {course_categories} cc2 ON cc.parent = cc2.id
+                    -- Users subscribers LIBRARY
+                LEFT JOIN
+                    (SELECT DISTINCT ucn.user_id, shortname
+                    FROM  {collection} c
+                    JOIN  {user_collection_notification} ucn ON ( c.id = ucn.collection_id AND ucn.type =  '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
+                            ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ',')
+                    )
+                    -- Users Admins & RFCs
+                    JOIN {user} u on u.id IS NOT NULL
+                    JOIN {role_assignments} ra ON ra.userid = u.id
+                    JOIN {role} role ON role.id = ra.roleid
+                    JOIN {context} con ON con.id = ra.contextid
+                    WHERE
+                    t.status = '".training::STATUS_ELABORATION_COMPLETED."'
+                    AND to_timestamp(l.timecreated) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')
+                    AND (
+                        (
+                            con.contextlevel = 40
+                            AND
+                            (    
+                                -- admin dedié
+                                role.shortname = '".custom_notifications_service::$ADMIN."'
+                                -- RFC
+                                OR
+                                role.shortname = '".custom_notifications_service::$RFC."'
+                            )
+                        )
+                            -- subscriber
+                            OR
+                            (
+                            usercollection.shortname = ANY (string_to_array(t.collection, ','))
+                            AND usercollection.user_id = u.id
+                            )
+                        )
+
+                    GROUP BY u.id, l.originaltrainingid, c.id, cc2.name,l.trainingid";
+        $users = [];
+        try {
+            $users = $DB->get_records_sql($sql, []);
+        } catch (\dml_exception $e) {
+            mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
         }
         return $users;
     }

@@ -79,4 +79,8 @@ $observers = [
                 'eventname' => '\core\event\role_assigned',
                 'callback' => 'local_mentor_specialization_observer::enrol_session_send_mail',
         ],
+        [
+                'eventname'   => 'local_mentor_specialization\event\collections_form_submitted',
+                'callback'    => 'local_mentor_specialization_observer::collections_form_submission_trigger'
+        ]
 ];

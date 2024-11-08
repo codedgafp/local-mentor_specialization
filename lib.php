@@ -555,6 +555,37 @@ function local_mentor_specialization_get_collections($data = 'name') {
     return $collections;
 }
 
+
+/**
+ * Get collections objects list
+ *
+ * @return array
+ * @throws dml_exception
+ */
+function local_mentor_specialization_get_collections_objects() {
+    // Get collections from config plugins.
+    $collectionlist = get_config('local_mentor_specialization', 'collections');
+    
+    // If config not found, we return an empty array.
+    if (false === $collectionlist || '' === $collectionlist) {
+        return [];
+    }
+
+    // Convert line breaks into standard line breaks.
+    $collectionlist = str_replace(["\r\n", "\r"], "\n", $collectionlist);
+
+    $collections = [];
+    foreach (explode("\n", $collectionlist) as $collectionitem) {
+        $items = explode("|", $collectionitem);
+        $collection = new stdClass();
+        $collection->shortname = $items[0]; 
+        $collection->fullname = $items[1];
+        $collections[] = $collection;
+    }
+
+    return $collections;
+}
+
 /**
  * Get licenses list.
  *
@@ -2291,8 +2322,9 @@ function local_mentor_specialization_init_config() {
     local_mentor_core_add_capability($concepteur, 'local/mentor_specialization:changetraininglastupdate');
     local_mentor_core_add_capability($formateur, 'local/mentor_specialization:changetraininglastupdate');
 
-    // Add Collection Notifications Table
-    local_mentor_specialization_create_table_user_collection_notification(); 
+    // Add Custom notifications Tables & Synchro with the plugin
+    local_mentor_specialization_create_custom_notifications_tables();
+    local_mentor_specialization_sync_table_collection();
 }
 
 /**
@@ -2983,6 +3015,11 @@ function local_mentor_specialization_remove_task_scheduled($taskname) {
 }
 
 
+function local_mentor_specialization_create_custom_notifications_tables(){
+    local_mentor_specialization_create_table_collection();
+    local_mentor_specialization_create_table_user_collection_notification();
+}
+
 /**
  * Create Table for users notification about trainings sessions.
  *
@@ -2991,60 +3028,78 @@ function local_mentor_specialization_remove_task_scheduled($taskname) {
  */
 function local_mentor_specialization_create_table_user_collection_notification() {
     global $DB;
-
     $dbman = $DB->get_manager();
     
     $user_collection_table = new xmldb_table('user_collection_notification');
-    $collection_table = new xmldb_table('collection');
-    
-    if (!$dbman->table_exists($collection_table)) {
-        local_mentor_specialization_create_table_collection($collection_table);
-    }
-
-    $user_collection_table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-    $user_collection_table->add_field('user_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-    $user_collection_table->add_field('collection_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-    $user_collection_table->add_field('type', XMLDB_TYPE_TEXT, '10', null, XMLDB_NOTNULL, null, null);
-
-    $user_collection_table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-    
     if (!$dbman->table_exists($user_collection_table)) {
+        
+        $user_collection_table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $user_collection_table->add_field('user_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $user_collection_table->add_field('collection_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $user_collection_table->add_field('type', XMLDB_TYPE_TEXT, '10', null, XMLDB_NOTNULL, null, null);
+        
+        $user_collection_table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $user_collection_table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['user_id'], 'user', ['id']);
+        $user_collection_table->add_key('fk_collection', XMLDB_KEY_FOREIGN, ['collection_id'], 'collection', ['id']);
+        
         $dbman->create_table($user_collection_table);
     }
-    
-    $user_collection_table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['user_id'], 'user', ['id']);
-    $user_collection_table->add_key('fk_collection', XMLDB_KEY_FOREIGN, ['collection_id'], 'collection', ['id']);
 }
 
-function local_mentor_specialization_create_table_collection($table){
+function local_mentor_specialization_create_table_collection(){
     global $DB;
-
+    
     $dbman = $DB->get_manager();
+
+    $collection_table = new xmldb_table('collection');
+    if (!$dbman->table_exists($collection_table)) {
+        $collection_table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $collection_table->add_field('shortname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $collection_table->add_field('fullname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
     
-    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-    $table->add_field('shortname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
-    $table->add_field('fullname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $collection_table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);    
+        
+        $dbman->create_table($collection_table);
+    }
+}
 
-    $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-
-    $dbman->create_table($table);
-
-    $collections = [
-        ['shortname' => 'achat', 'fullname' => 'Achat public'],
-        ['shortname' => 'communication', 'fullname' => 'Communication et service aux usagers'],
-        ['shortname' => 'finances', 'fullname' => 'Finances publiques, gestion budgétaire et financière'],
-        ['shortname' => 'formations', 'fullname' => 'Formations spécifiques aux missions des ministères'],
-        ['shortname' => 'langues', 'fullname' => 'Langues'],
-        ['shortname' => 'management', 'fullname' => 'Management'],
-        ['shortname' => 'numerique', 'fullname' => 'Numérique et système d\'information et de communication'],
-        ['shortname' => 'politique', 'fullname' => 'Politiques publiques nationales, valeurs de la république'],
-        ['shortname' => 'preparation', 'fullname' => 'Préparation aux épreuves de concours et d\'examens professionnels'],
-        ['shortname' => 'ressources', 'fullname' => 'Ressources humaines'],
-        ['shortname' => 'techniques', 'fullname' => 'Techniques et affaires juridiques'],
-        ['shortname' => 'transformation', 'fullname' => 'Transformation de l\'action publique'],
-    ];
+/**
+ * Synchronization between collection table and mentor_specialization collections plugin
+ *
+ * @return void
+ * @throws dml_exception
+ */
+function local_mentor_specialization_sync_table_collection(){
+    global $DB;
+    $collectionsconfig = local_mentor_specialization_get_collections_objects();
     
-    foreach ($collections as $collection) {
-        $DB->insert_record('collection', $collection);
+    // Update records or Insert 
+    foreach ($collectionsconfig as $colconfig) {
+        $existingcollection = $DB->get_record('collection', ["shortname" => $colconfig->shortname], '*', IGNORE_MISSING);
+        if(!$existingcollection){
+            $DB->insert_record('collection', $colconfig);
+        }
+        
+        if($existingcollection && $existingcollection->fullname != $colconfig->fullname){
+            $existingcollection->fullname = $colconfig->fullname;
+            $DB->update_record('collection', $existingcollection);
+        }
+    }
+    
+    // Delete unwanted collections
+    $recordscollections = $DB->get_records('collection', null, '', 'shortname');
+    $collections = array_map(function($item) { return $item->shortname;}, $recordscollections);
+    $configcollections = array_map(function($item) { return $item->shortname;}, $collectionsconfig);
+    $deltacollections = array_diff($collections, $configcollections);    
+    
+    foreach ($deltacollections as  $dcol){
+        try {       
+            $sql = "collection_id IN (SELECT id FROM {collection} WHERE shortname = :shortname)";
+            $params = ['shortname' => $dcol];
+            $DB->delete_records_select('user_collection_notification', $sql, $params);
+            $DB->delete_records('collection', ['shortname' => $dcol]);
+        } catch (\dml_exception $e) {
+            mtrace('Error trying to delete user_collection_notification ' . $dcol);
+        }
     }
 }

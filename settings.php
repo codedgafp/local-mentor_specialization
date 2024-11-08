@@ -53,6 +53,14 @@ if ($hassiteconfig) {
 
     $ADMIN->add('localplugins', $settings);
 
+    // Trigger event to sync collections
+    $event = local_mentor_specialization\event\collections_form_submitted::create([
+        'context' => \context_system::instance(),
+        'userid' => $USER->id,
+    ]);
+    $event->trigger();
+
+
     // Add link to ldap cleanup.
     $ADMIN->add('server', new admin_externalpage('clear_ldap',
             'Nettoyage du LDAP',

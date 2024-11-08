@@ -24,4 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['resettouronpage'] = 'Visite Guidée';
+$string['endonesteptour'] = 'J\'ai compris';
+$string['endtour'] = 'J\'ai compris';
+$string['resettouronpage'] = 'Aide contextuelle';
+$string['skip_tour'] = 'Ne pas lire la suite des explications';

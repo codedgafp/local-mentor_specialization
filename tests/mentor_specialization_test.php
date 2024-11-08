@@ -634,11 +634,11 @@ class local_mentor_specialization_testcase extends advanced_testcase {
      * @covers \local_mentor_specialization\mentor_specialization::get_user_template_params()
      */
     public function test_local_specialization_get_user_template_params() {
+        global $PAGE;
+        
         $this->resetAfterTest();
         $this->init_config();
         $this->reset_singletons();
-
-        $dbinterface = \local_mentor_specialization\database_interface::get_instance();
 
         // Create new entity.
         \local_mentor_core\entity_api::create_entity([
@@ -647,18 +647,17 @@ class local_mentor_specialization_testcase extends advanced_testcase {
             'userid' => 2,  // Set the admin user as manager of the entity.
         ]);
 
+        // Create course.
+        $course = self::getDataGenerator()->create_course();
+
+        // Set PAGE.
+        $PAGE->set_course($course);
+
         $specialization = new \local_mentor_specialization\mentor_specialization();
         $params = [];
         $params = $specialization->get_specialization('get_user_template_params', $params);
-
         $listentities = \local_mentor_core\entity_api::get_all_entities();
         self::assertEquals(count(array_merge([0 => ''], $listentities)), count($params['mainentities']));
-
-        $noregion = new \stdClass();
-        $noregion->id = 0;
-        $noregion->name = get_string('none', 'local_mentor_core');
-        $regions = $dbinterface->get_all_regions();
-        self::assertEquals(array_merge([$noregion], $regions), $params['regions']);
 
         self::resetAllData();
     }

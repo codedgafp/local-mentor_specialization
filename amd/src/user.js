@@ -230,19 +230,42 @@ define([
      * Create add user modal
      */
     local_user.addUserPopup = function () {
-
-        var thatBis = this;
-
         var warningMessageDisplayClass = 'user-admin-form-warning-none';
 
+        let mainSpaceSelected = {
+            state: false,
+            id: 0 
+        };
+
         // Get all main entity data select.
-        var formMainEntityList = $.map($('#user-admin-form-add-entity').find('option'), function (opt) {
-            return { value: opt.value, text: opt.text };
+        $.map($('#user-admin-form-add-entity').find('option'), function (opt) {
+            if ($(opt).hasClass('js-main-dedicated-space')) {
+                mainSpaceSelected.state = true;
+                mainSpaceSelected.id = opt.value;
+                $(opt).prop('selected', true);
+            }
         });
 
-        // Get all secondary entity data select.
-        var formSecondaryEntityList = $.map($('#user-admin-form-add-secondary-entities').find('option'), function (opt) {
-            return { value: opt.value, text: opt.text };
+        if (!mainSpaceSelected.state) {
+            $('#user-admin-form-add-entity option.js-default-space').prop('selected', true);
+        }
+
+        $("#user-admin-form-set-isexternal").on('change', function() {
+            if (this.checked) {
+                $('#user-admin-form-add-entity').prop('disabled', true);
+
+                $.map($('#user-admin-form-add-entity').find('option'), function (opt) {
+                    $(opt).prop('selected', false);
+                });
+
+                mainSpaceSelected.state 
+                    ? $(`#user-admin-form-add-entity option[value="${mainSpaceSelected.id}"`).prop('selected', true)
+                    : $('#user-admin-form-add-entity option.js-default-space').prop('selected', true)
+
+                return true;
+            }
+
+            $('#user-admin-form-add-entity').prop('disabled', false);
         });
 
         mentor.dialog('#user-admin-add', {
@@ -274,8 +297,6 @@ define([
                                         M.table.ajax.reload();
                                         $('.user-admin-form-warning').addClass(warningMessageDisplayClass).html('');
                                         $('#user-admin-form-add')[0].reset();
-                                        thatBis.secondaryEntitiesFilterForm(formSecondaryEntityList);
-                                        thatBis.mainEntityFilterForm(formMainEntityList);
                                         that.dialog("destroy");
                                     } else {
                                         var messageStatus = response.message;
@@ -298,93 +319,21 @@ define([
                     // Cancel button
                     text: M.util.get_string('cancel', 'format_edadmin'),
                     class: "btn-secondary",
-                    click: function (e) {//Just close the modal
+                    click: function () {
+                        //Just close the modal
                         $('.user-admin-form-warning').addClass(warningMessageDisplayClass).html('');
                         $('#user-admin-form-add')[0].reset();
-                        thatBis.secondaryEntitiesFilterForm(formSecondaryEntityList);
-                        thatBis.mainEntityFilterForm(formMainEntityList);
                         $(this).dialog("destroy");
                     }
                 }
             ],
-            close: function (event, ui) {
+            close: function () {
+                //Just close the modal
                 $('.user-admin-form-warning').addClass(warningMessageDisplayClass).html('');
                 $('#user-admin-form-add')[0].reset();
-                thatBis.secondaryEntitiesFilterForm(formSecondaryEntityList);
-                thatBis.mainEntityFilterForm(formMainEntityList);
                 $(this).dialog("destroy");
             },
         });
-
-        // Create select2 input.
-        $('#user-admin-form-add-secondary-entities').select2();
-
-        // When user change main entity select.
-        $('#user-admin-form-add-entity').change(function () {
-            thatBis.secondaryEntitiesFilterForm(formSecondaryEntityList);
-        });
-
-        // When user change secondary entities select.
-        $('#user-admin-form-add-secondary-entities').change(function () {
-            thatBis.mainEntityFilterForm(formMainEntityList);
-        });
-        /**
-         * Setting main entity select input.
-         *
-         * @param {Array} formEntityList
-         */
-        local_user.mainEntityFilterForm = function (formEntityList) {
-
-            // Get secondary entities select.
-            var mainEntitySelect = $('#user-admin-form-add-entity').val();
-
-            // Get secondary entities select.
-            var secondaryEntitiesSelect = $('#user-admin-form-add-secondary-entities').val();
-
-            // Remove entity already selected.
-            var filterMainEntityFormList = formEntityList.filter(function (opt) {
-                return !secondaryEntitiesSelect.includes(opt.value);
-            });
-
-            // Create new list option select.
-            var $select = $('#user-admin-form-add-entity');
-            $select.empty(); // Remove old options.
-            $.each(filterMainEntityFormList, function (key, value) {
-                $select.append($("<option></option>")
-                    .attr("value", value.value).text(value.text));
-            });
-            // Set older element select.
-            $select.val(mainEntitySelect);
-        };
-        /**
-         * Setting secondary entities select input.
-         *
-         * @param {Array} formEntityList
-         */
-        local_user.secondaryEntitiesFilterForm = function (formEntityList) {
-
-            // Get main entity select.
-            var mainEntitySelect = $('#user-admin-form-add-entity').val();
-
-            // Get secondary entities select.
-            var secondaryEntitiesSelect = $('#user-admin-form-add-secondary-entities').val();
-
-            // Remove entity already selected.
-            var filterSecondaryEntitiesFormList = formEntityList.filter(function (opt) {
-                return mainEntitySelect !== opt.value;
-            });
-
-            // Create new list option select.
-            var $select = $('#user-admin-form-add-secondary-entities');
-            $select.empty(); // Remove old options.
-            $.each(filterSecondaryEntitiesFormList, function (key, value) {
-                var optionHtml = "<option></option>";
-                $select.append($(optionHtml)
-                    .attr("value", value.value).text(value.text));
-            });
-            // Set older elements select.
-            $select.val(secondaryEntitiesSelect).trigger('change');
-        };
     };
 
     // Export the table as csv.

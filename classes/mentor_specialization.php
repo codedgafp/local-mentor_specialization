@@ -272,31 +272,33 @@ class mentor_specialization {
      * @throws \moodle_exception
      */
     public function get_user_template_params($params) {
-        $dbinterface = \local_mentor_specialization\database_interface::get_instance();
+        global $PAGE;
 
-        $listmainentities = \local_mentor_core\entity_api::get_all_entities(true, [], true, null, false, false);
-
+        $listmainentities = entity_api::get_all_entities(true, [], true, null, false, false);
+        
         // Sort entity by shortname.
         uasort($listmainentities, function($a, $b) {
             return strcmp(local_mentor_core_sanitize_string($a->shortname), local_mentor_core_sanitize_string($b->shortname));
         });
-
+        
         $params['mainentities'] = array_merge([0 => ''], $listmainentities);
-        $listsecondaryentities = \local_mentor_core\entity_api::get_all_entities(true, [], true, null, false);
+        
+        // Ajout des infos de si l'entité est un "espace dédié principale" ou une "entité de rattachement principal"
+        foreach ($params['mainentities'] as $index => $entity) {
+            if ($entity && isset($PAGE) && $PAGE instanceof \moodle_page) {
+                $params['mainentities'][$index] = (object) array_merge( (array)$entity, ['maindedicatedspace' => false, 'defaultspace' => false]);
 
-        // Sort entity by shortname.
-        uasort($listsecondaryentities, function($a, $b) {
-            return strcmp(local_mentor_core_sanitize_string($a->shortname), local_mentor_core_sanitize_string($b->shortname));
-        });
+                if ($entity->shortname == $PAGE->category->idnumber) {
+                    $params['mainentities'][$index]->maindedicatedspace = true;
+                }
 
-        $params['secondarymainentities'] = array_merge([0 => ''], $listsecondaryentities);
+                $defaultEntity = \local_mentor_specialization\mentor_entity::get_default_entity();
+                if ($entity->shortname == $defaultEntity->idnumber) {
+                    $params['mainentities'][$index]->defaultspace = true;
+                }
+            }
+        }
 
-        $noregion = new \stdClass();
-        $noregion->id = 0;
-        $noregion->name = get_string('none', 'local_mentor_core');
-        $regions = $dbinterface->get_all_regions();
-        $regionsoptions = array_merge([$noregion], $regions);
-        $params['regions'] = $regionsoptions;
         return $params;
     }
 

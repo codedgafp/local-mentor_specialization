@@ -140,12 +140,12 @@ class mentor_profile extends \local_mentor_core\profile {
 
         // Check if the secondaryentities has already been set.
         if (property_exists($user, 'secondaryentities')) {
-            $secondaryentitiesname = !empty($user->secondaryentities) ? explode(', ', $user->secondaryentities) : [];
+            $secondaryentitiesname = !empty($user->secondaryentities) ? $this->dbinterface->get_secondaryentity_names_array($user->secondaryentities) : [];
         } else {
             $profileuserrecord = profile_user_record($this->id);
             if (property_exists($profileuserrecord, 'secondaryentities')) {
                 $secondaryentitiesname = !empty($profileuserrecord->secondaryentities) ?
-                    explode(', ', $profileuserrecord->secondaryentities) : [];
+                $this->dbinterface->get_secondaryentity_names_array($profileuserrecord->secondaryentities) : [];
             } else {
                 $secondaryentitiesname = [];
             }
@@ -175,8 +175,8 @@ class mentor_profile extends \local_mentor_core\profile {
 
         // Check if the entity is part of the user's secondary entity list.
         $entity = \local_mentor_core\entity_api::get_entity($entityid);
-        $secondaryentitiesname = explode(', ', $secondaryentities);
-        return in_array($entity->get_name(), $secondaryentitiesname);
+
+        return in_array($entity->get_name(), $this->dbinterface->get_secondaryentity_names_array($secondaryentities));
     }
 
     /**

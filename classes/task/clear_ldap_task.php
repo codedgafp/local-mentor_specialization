@@ -152,10 +152,10 @@ class clear_ldap_task extends \core\task\adhoc_task {
         $count = count($notexisting);
         $syntaxe = $count > 1 ? 'utilisateurs ont été supprimés' : 'utilisateur a été supprimé';
         $subject = "Rapport de nettoyage du LDAP";
-        $messagetext = "Bonjour,\n\nSuite à votre nettoyage du LDAP effectué le $date, $countentries utilsateurs ont été identifiés dans le LDAP et et $count $syntaxe :\n\n";
+        $messagetext = "Bonjour,\n\nSuite à votre nettoyage du LDAP effectué le $date, $countentries utilisateurs ont été identifiés dans le LDAP et et $count $syntaxe :\n\n";
         $messagehtml = "
             <p>Bonjour,</p>
-            <p>Suite à votre nettoyage du LDAP effectué le $date, $countentries utilsateurs ont été identifiés dans le LDAP et $count $syntaxe :</p>
+            <p>Suite à votre nettoyage du LDAP effectué le $date, $countentries utilisateurs ont été identifiés dans le LDAP et $count $syntaxe :</p>
             <table border='1' cellpadding='5' cellspacing='0'>
                 <tr>
                     <th>ID Moodle</th>

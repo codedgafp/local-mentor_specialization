@@ -271,6 +271,8 @@ class local_mentor_specialization_observer {
     public static function manager_change_user_entities_notification(\core\event\user_updated $event) {
         global $CFG, $USER;
 
+        $dbi = \local_mentor_specialization\database_interface::get_instance();
+
         require_once($CFG->dirroot . '/local/profile/lib.php');
 
         // Check if other data exist.
@@ -302,7 +304,7 @@ class local_mentor_specialization_observer {
 
         // Get old and new secondary entities.
         $oldsecondaryentities = $olddatauser->profile_field_secondaryentities;
-        $newsecondaryentities = explode(', ', $newdatauser->profile_field_secondaryentities);
+        $newsecondaryentities = $dbi->get_secondaryentity_names_array($newdatauser->profile_field_secondaryentities);
 
         // Check if old and new entities (main and secondary) are different.
         if (
@@ -331,7 +333,7 @@ class local_mentor_specialization_observer {
         // If they exist, add all secondary entities to mail.
         if (!empty($newdatauser->profile_field_secondaryentities)) {
             $content .= "Entité(s) secondaire(s) : \n";
-            $secondaryentities = explode(', ', $newdatauser->profile_field_secondaryentities);
+            $secondaryentities = $dbi->get_secondaryentity_names_array($newdatauser->profile_field_secondaryentities);
 
             foreach ($secondaryentities as $secondaryentityname) {
                 $secondaryentity = \local_mentor_core\entity_api::get_entity_by_name($secondaryentityname);
@@ -536,5 +538,9 @@ class local_mentor_specialization_observer {
         $supportuser = \core_user::get_support_user();
         email_to_user($user, $supportuser, $subject, $messagetext, $messagehtml);
         return true;
+    }
+
+    public static function collections_form_submission_trigger() {
+        local_mentor_specialization_sync_table_collection();
     }
 }

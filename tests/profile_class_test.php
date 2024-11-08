@@ -320,7 +320,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
 
         // Create database interface Mock.
         $dbinterfacemock = $this->getMockBuilder('\local_mentor_core\database_interface')
-            ->setMethods(['get_user_by_id'])
+            ->onlyMethods(['get_user_by_id', 'get_secondaryentity_names_array'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -329,6 +329,10 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
             ->method('get_user_by_id')
             ->will($this->returnValue($user));
 
+        $dbinterfacemock->expects($this->any())
+        ->method('get_secondaryentity_names_array')
+        ->will($this->returnValue([$entity2->name]));
+        
         // Replace dbinterface data to profile object with mock.
         $reflection = new ReflectionClass($profile);
         $reflectionproperty = $reflection->getProperty('dbinterface');

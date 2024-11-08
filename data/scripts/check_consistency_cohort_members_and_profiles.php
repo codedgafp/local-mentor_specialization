@@ -28,12 +28,15 @@
 // This script can only be called by CLI.
 define('CLI_SCRIPT', true);
 
-require_once(__DIR__ . '/config.php');
+require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->dirroot . '/local/mentor_core/api/entity.php');
 
 // Set admin user.
 $admin = get_admin();
 \core\session\manager::set_user($admin);
+
+if ($argc > 1)
+    update_users_secondary_entities_name(json_decode($argv[1], true));
 
 // Get all entities.
 $allmainentity = \local_mentor_core\entity_api::get_all_entities(true, [], true, null, false);
@@ -152,16 +155,20 @@ function check_consistency_cohort_members_and_profiles_get_users_by_secondaryent
     ]);
 
     foreach ($usersdata as $userdata) {
-        $secondaryentities = explode(', ', $userdata->data);
-        $key = array_search($secondaryentity, $secondaryentities);
-
-        if ($key === false) {
-            continue;
+        if(str_contains($userdata->data, $secondaryentity)) {
+            unset($userdata->data);
+            $users[$userdata->id] = $userdata;
         }
-
-        unset($userdata->data);
-        $users[$userdata->id] = $userdata;
     }
 
     return $users;
+}
+
+
+function update_users_secondary_entities_name($edit_names_json)
+{
+    $db = \local_mentor_core\database_interface::get_instance();
+    foreach ($edit_names_json as $newname => $oldname) {
+        $db->update_secondary_entities_name($oldname, $newname);
+    }
 }

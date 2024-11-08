@@ -728,7 +728,9 @@ class local_mentor_specialization_observer_testcase extends advanced_testcase {
 
         self::setAdminUser();
 
-        // Create entity.
+        // Create entities.
+        \local_mentor_core\entity_api::create_entity(['name' => 'Entity1', 'shortname' => 'Entity1']);
+        \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
         $entityid = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
         $entity = \local_mentor_core\entity_api::get_entity($entityid);
 

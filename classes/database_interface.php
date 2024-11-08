@@ -1636,7 +1636,7 @@ class database_interface extends \local_mentor_core\database_interface {
      */
     public function get_mentor_collections() {
         global $DB;
-        return $DB->get_records('collection', [], 'shortname ASC', '*', 0, 0);
+        return $DB->get_records('collection', [], 'fullname ASC', '*', 0, 0);
     }
 
     /**

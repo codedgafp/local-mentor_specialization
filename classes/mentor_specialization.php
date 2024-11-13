@@ -743,6 +743,7 @@ class mentor_specialization {
                         = $session->trainingproducerorganizationshortname;
                     $trainings[$session->trainingid]->catchphrase = $session->trainingcatchphrase;
                     $trainings[$session->trainingid]->collection = $session->trainingcollection;
+                    $trainings[$session->trainingid]->sessionstartdate = $session->sessionstartdate;
 
                     // Create string collection for template.
                     $trainings[$session->trainingid]->collectionstr = '';
@@ -826,15 +827,15 @@ class mentor_specialization {
 
         usort($trainings, function($a, $b) {
 
-            // Same session time created : Order by training name.
-            if ($a->lastsessiontimecreated === $b->lastsessiontimecreated) {
+            // Same session start date : Order by training name.
+            if ($a->sessionstartdate === $b->sessionstartdate) {
                 return strcmp($a->name, $b->name);
             }
 
-            // Order by last session time created (DESC).
-            return ($a->lastsessiontimecreated < $b->lastsessiontimecreated) ? 1 : -1;
+            // Order by session start date (DESC).
+            return ($a->sessionstartdate < $b->sessionstartdate) ? 1 : -1;
         });
-
+        
         return $trainings;
     }
 

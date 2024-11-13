@@ -165,7 +165,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
      * @return training
      * @throws moodle_exception
      */
-    public function init_training_creation() {
+    public function init_training_creation(string $trainingshortname = null, int $entityid = 0) {
         global $DB;
 
         // Remove the miscelleanous category.
@@ -174,13 +174,15 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         // Init test data.
         $data = $this->init_session_data(true);
 
+        
         try {
-            // Get entity object for default category.
-            $entityid = \local_mentor_core\entity_api::create_entity([
-                'name' => 'New Entity 1',
-                'shortname' => 'New Entity 1',
-            ]);
-
+            if(!$entityid){
+                // Get entity object for default category.
+                $entityid = \local_mentor_core\entity_api::create_entity([
+                    'name' => 'New Entity 1',
+                    'shortname' => 'New Entity 1',
+                ]);
+            }
             $entity = \local_mentor_core\entity_api::get_entity($entityid);
         } catch (\Exception $e) {
             self::fail($e->getMessage());
@@ -188,7 +190,9 @@ class local_mentor_specialization_testcase extends advanced_testcase {
 
         // Init data with entity data.
         $data = $this->init_training_entity($data, $entity);
-
+        if($trainingshortname){
+            $data->shortname = $trainingshortname;
+        }
         // Test standard training creation.
         try {
             $training = \local_mentor_core\training_api::create_training($data);
@@ -205,9 +209,9 @@ class local_mentor_specialization_testcase extends advanced_testcase {
      * @return int
      * @throws moodle_exception
      */
-    public function init_session_creation($sessionname = 'TESTUNITCREATESESSION') {
+    public function init_session_creation($sessionname = 'TESTUNITCREATESESSION', string $trainingshortname = null, int $entityid = 0) {
         // Create training.
-        $training = $this->init_training_creation();
+        $training = $this->init_training_creation($trainingshortname, $entityid);
 
         // Test standard session creation.
         try {
@@ -1250,5 +1254,44 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         self::assertEquals($library->shortname, $librairyobject->idnumber);
 
         self::resetAllData();
+    }
+
+    /**
+     * Test if get_user_available_sessions_by_trainings return the tr<ainings ordered by sessionstartdate and then alphabetic
+     * @covers \local_mentor_specialization\mentor_specialization::get_user_available_sessions_by_trainings()
+     */
+
+    public function test_get_user_available_sessions_by_trainings_order_ok(): void {
+        global $USER;
+
+        $this->resetAfterTest();
+        $this->init_config();
+        $this->reset_singletons();
+
+        self::setAdminUser();
+
+        try {
+            $entityid = \local_mentor_core\entity_api::create_entity(['name' => "entity2",'shortname' => "entity2",]);
+        } catch (\Exception $e) {
+            self::fail($e->getMessage());
+        }
+        $sessiondate1 = 1731509580; //13/11/2024 15:53:00
+        $sessonid1 = $this->init_session_creation('session1');
+        $session1 = session_api::get_session($sessonid1);
+        $session1->update_status(\local_mentor_core\session::STATUS_OPENED_REGISTRATION);
+        $session1->sessionstartdate = $sessiondate1;
+        session_api::update_session($session1);
+        
+        $sessiondate2 = 1731509836; //13/11/2024 15:57:16
+        $sessonid2 = $this->init_session_creation('session2', 'training2', $entityid);
+        $session2 = session_api::get_session($sessonid2);
+        $session2->update_status(\local_mentor_core\session::STATUS_OPENED_REGISTRATION);
+        $session2->sessionstartdate = $sessiondate2;
+        session_api::update_session($session2);
+        
+        $trainings = training_api::get_user_available_sessions_by_trainings($USER->id);
+
+        self::assertEquals( $sessiondate2, $trainings[0]->sessionstartdate);
+        self::assertEquals( $sessiondate1, $trainings[1]->sessionstartdate);
     }
 }

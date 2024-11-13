@@ -95,9 +95,16 @@ class entity_form extends \moodleform {
 
         // Entity can be main entity.
         if (has_capability('local/entities:manageentity', $this->entity->get_context())) {
-            $mform->addElement('advcheckbox', 'canbemainentity', get_string('mainentity', 'local_mentor_specialization'), ' ');
+            $mainentitycheckbox = $mform->addElement(
+                'advcheckbox',
+                'canbemainentity',
+                get_string('mainentity', 'local_mentor_specialization'),
+                ' ',
+                [], // pas de paramètre à ajouter, donc vide
+                [0, 1] // valeur à attribuer si la valeur est false ou true
+            );
             if (!is_siteadmin()) {
-                $mform->disabledIf('canbemainentity', '');
+                $mainentitycheckbox->freeze();
             }
         }
 

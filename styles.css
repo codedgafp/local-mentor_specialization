@@ -14,6 +14,7 @@
 #page-course-view-edadmin #user-admin-add #user-admin-form-add > div {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  align-items: center;
 }
 #page-course-view-edadmin #user-admin-add #user-admin-form-add > div > label {
   font-size: 14px;

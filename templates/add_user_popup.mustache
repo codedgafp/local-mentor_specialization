@@ -63,6 +63,12 @@
             <input type="email" id="user-admin-form-add-mail" name="mail">
         </div>
         <div>
+            <label for="user-admin-form-set-isexternal">
+                {{# str }} externaluser, local_user {{/ str }} :
+            </label>
+            <input type="checkbox" id="user-admin-form-set-isexternal" name="isexternal" value="true">
+        </div>
+        <div>
             <label for="user-admin-form-add-entity">
                 {{# str }} connectingmainentity, local_mentor_specialization {{/ str }} :
             </label>
@@ -79,12 +85,6 @@
                     </option>
                 {{/ mainentities }}
             </select>
-        </div>
-        <div>
-            <label for="user-admin-form-set-isexternal">
-                {{# str }} externaluser, local_user {{/ str }} :
-            </label>
-            <input type="checkbox" id="user-admin-form-set-isexternal" name="isexternal" value="true">
         </div>
     </form>
     <p class="user-admin-form-warning user-admin-form-warning-none"></p>

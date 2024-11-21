@@ -1856,4 +1856,45 @@ class database_interface extends \local_mentor_core\database_interface {
         return $users;
     }
 
+     /* fetch users (subscribers) of library, with training data
+     * @return array
+     */
+    public function get_subscribers_of_updated_library_courses($days = 1): array {
+        global $DB;
+        $sql = "SELECT 
+                DISTINCT on (u.id, t.id)
+                ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
+                l.trainingid as trainingid, cc2.name as course_category_name, c.fullname as course_name, t.collection coursecollections, u.*
+                    FROM {library} l
+                    JOIN {training} t ON t.id = l.originaltrainingid
+                    JOIN {course} c ON c.shortname = t.courseshortname
+                    JOIN {course_categories} cc ON cc.id = c.category
+                    JOIN {course_categories} cc2 ON cc.parent = cc2.id
+                    -- Users subscribers LIBRARY
+                    LEFT JOIN
+                        (SELECT distinct ucn.user_id, shortname from {collection} c
+                            JOIN {user_collection_notification} ucn on ( c.id = ucn.collection_id AND ucn.type = '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
+                        ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ','))
+                    -- Users Admins & RFCs
+                    JOIN
+                        {user} u on u.id IS NOT NULL
+                    JOIN {role_assignments} ra
+                        ON ra.userid = u.id
+                    JOIN {role} r 
+                        ON r.id = ra.roleid
+                    JOIN {context} ctx 
+                        ON ctx.id = ra.contextid
+                    WHERE
+                    ctx.contextlevel = 40
+                    AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND usercollection.shortname = ANY (string_to_array(t.collection, ','))))
+                    AND to_timestamp(l.timemodified) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day');";
+        $users = [];
+        try {
+            $users = $DB->get_records_sql($sql);
+        } catch (\dml_exception $e) {
+            mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
+        }
+        return $users;
+    }
+
 }

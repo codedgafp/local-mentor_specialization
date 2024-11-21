@@ -12,6 +12,7 @@ namespace local_mentor_specialization;
 
 use dml_exception;
 use local_mentor_specialization\database_interface;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -22,13 +23,14 @@ class custom_notifications_service
 
     public static $EMAIL_LIBRARY_NEW_COURSES = "EMAIL_LIBRARY_NEW_COURSES";
     public static $EMAIL_CATALOG_NEW_SESSIONS = "EMAIL_CATALOG_NEW_SESSIONS";
+    public static $EMAIL_LIBRARY_UPDATED_COURSES = "EMAIL_LIBRARY_UPDATED_COURSES";
     public static $PERIOD_NEW_SESSIONS = 7;
     protected $MAX_RESULT_SUBSCRIPTIONS = 1000;
 
     public static $ADMIN = "admindedie";
     public static $RFC = "respformation";
-    public static $VistBiblio = "visiteurbiblio";
-
+    public static $LIBRARYVISITOR = "visiteurbiblio";
+    
     private static $instance;
 
     /**
@@ -41,7 +43,6 @@ class custom_notifications_service
         return self::$instance;
     }
 
-
     /**
      * Send new courses email notifications
      * @return void
@@ -50,7 +51,7 @@ class custom_notifications_service
         global $CFG;
         $supportuser = \core_user::get_support_user();
         $error_sending_emails = false;
-        $subscribers = $this->get_subscribers_of_library();
+        $subscribers = $this->get_subscribers_of_library(self::$EMAIL_LIBRARY_NEW_COURSES);
         
         $object = get_string('email_library_updates_new_course_object', 'local_mentor_specialization');
         foreach ($subscribers as $subscriber) {
@@ -63,6 +64,30 @@ class custom_notifications_service
                 $error_sending_emails ? mtrace(get_string('customnotificationerroremail', 'local_mentor_specialization', self::$EMAIL_LIBRARY_NEW_COURSES)) :
                     mtrace(get_string('customnotificationsuccessemail', 'local_mentor_specialization', self::$EMAIL_LIBRARY_NEW_COURSES));
             }
+        }     
+    }
+
+    /**
+     * Send updated Library courses email notifications
+     * @return void
+     */
+    public function send_updated_courses_notifications(): void{
+        global $CFG;
+        $supportuser = \core_user::get_support_user();
+        $error_sending_emails = false;
+        $subscribers = $this->get_subscribers_of_library(self::$EMAIL_LIBRARY_UPDATED_COURSES);
+        $object = get_string('email_library_updates_updated_course_object', 'local_mentor_specialization');
+        foreach ($subscribers as $subscriber) {
+            $args = new stdClass();
+            $args->course_name = $subscriber->course_name;
+            $args->trainingid = $subscriber->trainingid;
+            $args->course_category_name = $subscriber->course_category_name;
+            $args->wwwroot = $CFG->wwwroot;
+            $content = get_string('email_library_updates_updated_course_content', 'local_mentor_specialization', $args);
+            $contenthtml = text_to_html($content, true, true);
+            $error_sending_emails = !email_to_user($subscriber, $supportuser, $object, $content, $contenthtml);
+            $error_sending_emails ? mtrace(get_string('customnotificationerroremail', 'local_mentor_specialization', self::$EMAIL_LIBRARY_UPDATED_COURSES)) :
+                mtrace(get_string('customnotificationsuccessemail', 'local_mentor_specialization', self::$EMAIL_LIBRARY_UPDATED_COURSES));
         }     
     }
 
@@ -151,13 +176,18 @@ class custom_notifications_service
      * @throws coding_exception
      * @throws moodle_exception
      */
-    function get_subscribers_of_library(){
+    function get_subscribers_of_library(string $typecourseupdate){
+        $users = [];
         $dbi = database_interface::get_instance();
-        $users = $dbi->get_all_admins_and_rfcs();
-        $trainings = $dbi->get_new_added_trainings();
-        
-        foreach($users as $user){
-            $user->trainings = $trainings;
+        if($typecourseupdate == self::$EMAIL_LIBRARY_NEW_COURSES){
+            $users = $dbi->get_all_admins_and_rfcs();
+            $trainings = $dbi->get_new_added_trainings();
+            foreach($users as $user){
+                $user->trainings = $trainings;
+            }
+        }
+        if($typecourseupdate == self::$EMAIL_LIBRARY_UPDATED_COURSES){
+            $users  = $dbi->get_subscribers_of_updated_library_courses(10);
         }
         return $users;
     }

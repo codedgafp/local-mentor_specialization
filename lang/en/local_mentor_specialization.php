@@ -305,13 +305,24 @@ Voulez-vous continuer ?';
 
 $string['lastsyncsirh'] = 'Date de synchronisation de l\'achèvement de la session';
 
-$string['email_library_updates_new_course'] = 'Notifier par email l\'ajout d\'un nouveau cours dans la bibliothèque de formation.';
-$string['email_catalog_updates_new_sessions'] = 'Notifier par email l\'ajout de nouvelles sessions de cours dans l\'offre de formation.';
+$string['email_library_updates_new_course'] = 'Notifier par email l\'ajout ou la mise à jour d\'un nouveau cours dans la bibliothèque de formation.';
 // New courses in library email content
 $string['email_library_updates_new_course_object'] = 'Mentor : Nouvelle publication dans la bibliothèque de formations Mentor';
 $string['email_library_updates_new_course_content'] = 'Bonjour, 
 
 L\'espace dédié {$a->course_category_name} a ajouté récemment la formation {$a->course_name} dans la bibliothèque de formations.
+
+Pour en savoir plus, vous pouvez consulter <a href={$a->wwwroot}/local/library/pages/training.php?trainingid={$a->trainingid}>cette page</a>.
+
+L\'équipe Mentor
+
+<img src=\'https://mentor.gouv.fr/theme/mentor/pix/logo.png\' alt=\'Logo de Mentor\' style=\'width:200px; height:56px;\'> ';
+
+// Updated courses in library email content
+$string['email_library_updates_updated_course_object'] = 'Mise à jour d\'une publication dans la bibliothèque de formations Mentor';
+$string['email_library_updates_updated_course_content'] = 'Bonjour, 
+
+L\'espace dédié {$a->course_category_name} a mis à jour récemment la formation {$a->course_name} dans la bibliothèque de formations.
 
 Pour en savoir plus, vous pouvez consulter <a href={$a->wwwroot}/local/library/pages/training.php?trainingid={$a->trainingid}>cette page</a>.
 

@@ -542,7 +542,7 @@ function xmldb_local_mentor_specialization_upgrade($oldversion)
         }
     }
 
-    apply_upgrades_scripts($oldversion);
+    apply_mentor_specialization_upgrades_scripts($oldversion);
 
     local_mentor_specialization_init_config();
 
@@ -554,7 +554,7 @@ function xmldb_local_mentor_specialization_upgrade($oldversion)
  *
  * @param int $oldversion
  */
-function apply_upgrades_scripts($oldversion)
+function apply_mentor_specialization_upgrades_scripts($oldversion)
 {
     $upgrade_scripts = glob(__DIR__ . '/updates/*.php');
     sort($upgrade_scripts);

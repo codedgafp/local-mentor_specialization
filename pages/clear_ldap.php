@@ -51,7 +51,6 @@ $PAGE->set_context(context_system::instance());
 if ($trigger) {
     // Create and launch ad hoc task
     $task = new \local_mentor_specialization\task\clear_ldap_task();
-    \core\task\manager::queue_adhoc_task($task);
     try {
         $task->execute();
     } catch (\Exception $e) {

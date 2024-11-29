@@ -355,7 +355,7 @@ $string['email_library_published_new_course'] = 'Nouvelle publication dans la bi
 $string['email_library_publish_new_course_object'] = 'Nouvelle publication dans la bibliothèque de formations Mentor';
 $string['email_library_publish_new_course_content'] = 'Bonjour,
 
-L\'espace dédié {$a->course_category_name} a ajouté récemment la formation <Nom long de la formation> dans la bibliothèque de formations.
+L\'espace dédié {$a->course_category_name} a ajouté récemment la formation {$a->course_full_name} dans la bibliothèque de formations.
 
 
 

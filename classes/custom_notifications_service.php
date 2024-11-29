@@ -287,6 +287,7 @@ class custom_notifications_service
             $args = new \stdClass();
             $args->link = "{$CFG->wwwroot}/local/library/pages/training.php?trainingid={$record->trainingid}";
             $args->course_category_name = $record->course_category_name;
+            $args->course_full_name = $record->coursefullname;
             $content = get_string('email_library_publish_new_course_content', 'local_mentor_specialization', $args);
             $contenthtml = text_to_html($content, true, true);
             $user = \core_user::get_user($record->userid);

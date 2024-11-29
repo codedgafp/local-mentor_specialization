@@ -29,7 +29,7 @@ class email_library_publish extends \core\task\scheduled_task
 
     public function execute()
     {
-        $this->custom_notification_service->send_published_new_courses_notifications();
+        $this->custom_notification_service->send_published_new_courses_notifications_for_library();
 
     }
 

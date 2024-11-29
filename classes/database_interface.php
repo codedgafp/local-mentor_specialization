@@ -1644,7 +1644,7 @@ class database_interface extends \local_mentor_core\database_interface {
      * fetch users (subscribers) with collection, region, and entities data
      * @return array
      */
-    public function get_subscribers_of_catalog($limit, $offset = 0, $days = 7): array
+    public function get_subscribers_of_new_catalog_sessions($limit, $offset = 0, $days = 7): array
     {
         global $DB;
         $sql = "SELECT
@@ -1742,52 +1742,8 @@ class database_interface extends \local_mentor_core\database_interface {
         $users = [];
         try {
             $users = $DB->get_records_sql($sql, [], $offset, $limit);
-        } catch (dml_exception $e) {
+        } catch (\dml_exception $e) {
             mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
-        }
-        return $users;
-    }
-
-    /**
-     * fetch new trainings with course data depending on number of days
-     * @return array
-     */
-    public function get_new_added_trainings(int $days = 1): array
-    {
-        global $DB;
-        $sql = "SELECT l.trainingid as trainingid, cc2.name as course_category_name, c.fullname as course_name  FROM {library} l
-                    JOIN {training} t ON t.id = l.originaltrainingid
-                    JOIN {course} c ON c.shortname = t.courseshortname
-                    JOIN {course_categories} cc ON cc.id = c.category
-                    LEFT JOIN {course_categories} cc2 ON cc.parent = cc2.id
-                WHERE to_timestamp(l.timecreated) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')";
-        $trainings = [];
-        try {
-            $trainings = $DB->get_records_sql($sql, []);
-        } catch (dml_exception $e) {
-            mtrace('Error sql getting new added trainings: ' . $e->getMessage());
-        }
-        return $trainings;
-    }
-
-    /**
-     * fetch users to be notified about library new courses: admins and rfcs
-     * @return array
-     */
-    public function get_all_admins_and_rfcs(): array
-    {
-        global $DB;
-        $sql = "SELECT DISTINCT  u.id, u.*
-            FROM {role_assignments} ra
-                JOIN {user} u ON ra.userid = u.id
-                JOIN {role} r ON r.id = ra.roleid
-                JOIN {context} ctx ON ctx.id = ra.contextid
-            WHERE ctx.contextlevel = 40 AND r.shortname IN ('admindedie', 'respformation');";
-        $users = [];
-        try {
-            $users = $DB->get_records_sql($sql, []);
-        } catch (dml_exception $e) {
-            mtrace('Error sql getting library collections subscribers : ' . $e->getMessage());
         }
         return $users;
     }
@@ -1796,7 +1752,7 @@ class database_interface extends \local_mentor_core\database_interface {
      * fetch users (subscribers) to notify with new published trainings 
      * @return array
      */
-    public function get_subscribers_of_library($days = 1): array
+    public function get_subscribers_of_new_library_courses($days = 1): array
     {
         global $DB;
         $sql = "SELECT 
@@ -1887,7 +1843,9 @@ class database_interface extends \local_mentor_core\database_interface {
                     WHERE
                     ctx.contextlevel = 40
                     AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND usercollection.shortname = ANY (string_to_array(t.collection, ','))))
-                    AND to_timestamp(l.timemodified) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day');";
+                    AND to_timestamp(l.timemodified) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')
+                    AND to_timestamp(l.timemodified) > to_timestamp(l.timecreated)
+                    ;";
         $users = [];
         try {
             $users = $DB->get_records_sql($sql);

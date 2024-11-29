@@ -305,20 +305,21 @@ Voulez-vous continuer ?';
 
 $string['lastsyncsirh'] = 'Date de synchronisation de l\'achèvement de la session';
 
-$string['email_library_updates_new_course'] = 'Notifier par email l\'ajout ou la mise à jour d\'un nouveau cours dans la bibliothèque de formation.';
-// New courses in library email content
-$string['email_library_updates_new_course_object'] = 'Mentor : Nouvelle publication dans la bibliothèque de formations Mentor';
-$string['email_library_updates_new_course_content'] = 'Bonjour, 
+// Library new courses notifications
+$string['email_library_published_new_course'] = 'Notifier d\'une nouvelle publication dans la bibliothèque de formations';
+$string['email_library_publish_new_course_object'] = 'Nouvelle publication dans la bibliothèque de formations Mentor';
+$string['email_library_publish_new_course_content'] = 'Bonjour,
 
-L\'espace dédié {$a->course_category_name} a ajouté récemment la formation {$a->course_name} dans la bibliothèque de formations.
+L\'espace dédié {$a->course_category_name} a ajouté récemment la formation <Nom long de la formation> dans la bibliothèque de formations.
 
-Pour en savoir plus, vous pouvez consulter <a href={$a->wwwroot}/local/library/pages/training.php?trainingid={$a->trainingid}>cette page</a>.
+Pour en savoir plus, vous pouvez consulter <a href={$a->link}>cette page</a>.
 
 L\'équipe Mentor
 
-<img src=\'https://mentor.gouv.fr/theme/mentor/pix/logo.png\' alt=\'Logo de Mentor\' style=\'width:200px; height:56px;\'> ';
+<img src="https://mentor.gouv.fr/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
 
-// Updated courses in library email content
+// Library Updated courses notifications
+$string['email_library_updated_course'] = 'Notifier de la mise à jour d\'une publication dans la bibliothèque de formations';
 $string['email_library_updates_updated_course_object'] = 'Mise à jour d\'une publication dans la bibliothèque de formations Mentor';
 $string['email_library_updates_updated_course_content'] = 'Bonjour, 
 
@@ -330,8 +331,8 @@ L\'équipe Mentor
 
 <img src=\'https://mentor.gouv.fr/theme/mentor/pix/logo.png\' alt=\'Logo de Mentor\' style=\'width:200px; height:56px;\'> ';
 
-// New sessions in catalog email content
-$string['email_catalog_updates_new_session'] = 'Notifier par email l\'ajout d\'un nouveau cours dans la bibliothèque de formation.';
+// Catalog New sessions notifications
+$string['email_catalog_updates_new_sessions'] = 'Notifier des nouvelles sessions disponibles dans l\'offre de formation';
 $string['email_catalog_updates_new_sessions_object'] = 'Nouvelles sessions disponibles dans l\'offre de formation Mentor';
 $string['email_catalog_updates_new_session_object'] = 'Nouvelle session disponible dans l\'offre de formation Mentor';
 $string['email_catalog_updates_new_session_content'] = 'Bonjour,
@@ -346,9 +347,6 @@ L\'équipe Mentor
 
 $string['customnotificationerroremail']= 'Error sending email Custom Notifications Type: {$a}';
 $string['customnotificationsuccessemail']= 'Success sending email Custom Notifications Type: {$a}';
-
-// Capabilitites
-$string['mentor_specialization:changetraininglastupdate'] = 'Donne la possibilité de mettre à jour la date de dernière modification de la formation';
 
 //Library notification
 $string['email_library_published_new_course'] = 'Nouvelle publication dans la bibliothèque de formations Mentor';
@@ -366,3 +364,6 @@ Pour en savoir plus, vous pouvez consulter <a href={$a->link}>cette page</a>.
 L\'équipe Mentor
 
 <img src="https://mentor.gouv.fr/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
+
+// Capabilitites
+$string['mentor_specialization:changetraininglastupdate'] = 'Donne la possibilité de mettre à jour la date de dernière modification de la formation';

@@ -29,7 +29,7 @@ class email_catalog_updates extends \core\task\scheduled_task
 
     public function execute()
     { 
-        $this->custom_notification_service->send_new_sessions_notifications();
+        $this->custom_notification_service->send_new_sessions_notifications_for_catalog();
     }
 
     

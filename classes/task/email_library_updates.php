@@ -24,13 +24,12 @@ class email_library_updates extends \core\task\scheduled_task
 
     public function get_name()
     {
-        return get_string('email_library_updates_new_course', 'local_mentor_specialization');
+        return get_string('email_library_updated_course', 'local_mentor_specialization');
     }
 
     public function execute()
     {
-        $this->custom_notification_service->send_new_courses_notifications();
-        $this->custom_notification_service->send_updated_courses_notifications();
+        $this->custom_notification_service->send_updated_courses_notifications_for_library();
     }
 
 }

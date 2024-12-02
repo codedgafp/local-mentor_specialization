@@ -310,7 +310,7 @@ $string['email_library_published_new_course'] = 'Notifier d\'une nouvelle public
 $string['email_library_publish_new_course_object'] = 'Nouvelle publication dans la bibliothèque de formations Mentor';
 $string['email_library_publish_new_course_content'] = 'Bonjour,
 
-L\'espace dédié {$a->course_category_name} a ajouté récemment la formation <Nom long de la formation> dans la bibliothèque de formations.
+L\'espace dédié {$a->course_category_name} a ajouté récemment la formation {$a->course_full_name} dans la bibliothèque de formations.
 
 Pour en savoir plus, vous pouvez consulter <a href={$a->link}>cette page</a>.
 
@@ -345,25 +345,9 @@ L\'équipe Mentor
 
 <img src="https://mentor.gouv.fr/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
 
+
 $string['customnotificationerroremail']= 'Error sending email Custom Notifications Type: {$a}';
 $string['customnotificationsuccessemail']= 'Success sending email Custom Notifications Type: {$a}';
-
-//Library notification
-$string['email_library_published_new_course'] = 'Nouvelle publication dans la bibliothèque de formations Mentor';
-$string['email_library_publish_new_course_object'] = 'Nouvelle publication dans la bibliothèque de formations Mentor';
-$string['email_library_publish_new_course_content'] = 'Bonjour,
-
-L\'espace dédié {$a->course_category_name} a ajouté récemment la formation {$a->course_full_name} dans la bibliothèque de formations.
-
-
-
-Pour en savoir plus, vous pouvez consulter <a href={$a->link}>cette page</a>.
-
-
-
-L\'équipe Mentor
-
-<img src="https://mentor.gouv.fr/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
 
 // Capabilitites
 $string['mentor_specialization:changetraininglastupdate'] = 'Donne la possibilité de mettre à jour la date de dernière modification de la formation';

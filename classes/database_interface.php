@@ -1842,7 +1842,7 @@ class database_interface extends \local_mentor_core\database_interface {
                         ON ctx.id = ra.contextid
                     WHERE
                     ctx.contextlevel = 40
-                    AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND usercollection.shortname = ANY (string_to_array(t.collection, ','))))
+                    AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND usercollection.shortname = ANY (string_to_array(t.collection, ',')) AND usercollection.user_id = u.id ))
                     AND to_timestamp(l.timemodified) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')
                     AND to_timestamp(l.timemodified) > to_timestamp(l.timecreated)
                     ;";

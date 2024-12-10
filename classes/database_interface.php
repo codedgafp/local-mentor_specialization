@@ -330,7 +330,7 @@ class database_interface extends \local_mentor_core\database_interface {
     public function get_sessions_by_entity_id($data) {
 
         // Get the session data + the number of participants of the session.
-        $request = 'SELECT DISTINCT s.id, (
+        $request = "SELECT DISTINCT s.id, (
                         SELECT count(DISTINCT(ra.userid))
                         FROM {role_assignments} ra
                         JOIN {role} r ON ra.roleid = r.id
@@ -338,15 +338,25 @@ class database_interface extends \local_mentor_core\database_interface {
                         AND (r.shortname = :participant OR r.shortname = :participantnonediteur)
                     ) as numberparticipants,
                     s.maxparticipants,
-                    co.fullname,
+                    co.fullname as trainingfullname,
                     co.shortname,
                     co.id as courseid,
-                    s.status,
-                    s.sessionstartdate,
-                    s.sessionnumber,
-                    cc4.name
+                    s.status as statusshortname,
+                    s.sessionstartdate as timecreated,
+                    CONCAT('#', s.sessionnumber) AS sessionnumber,
+                    cc4.name,
+                    s.trainingid,
+                    s.opento,
+                    t.courseshortname,
+                    cc4.name as entityparendname,
+                    STRING_AGG(DISTINCT  cl.fullname, ';') AS collectionstr,  -- Utilisation de STRING_AGG pour concaténer les valeurs de collectionstr
+                    cc.id as entityId
                 FROM {session} s
                 JOIN {training} t ON s.trainingid = t.id
+                LEFT JOIN (
+                        SELECT DISTINCT shortname, TRIM(fullname) AS fullname  -- Apply DISTINCT at this level
+                        FROM {collection}
+                    ) cl ON cl.shortname = ANY (string_to_array(t.collection, ',')) 
                 JOIN {course} co ON co.shortname = s.courseshortname
                 JOIN {course} co2 ON co2.shortname = t.courseshortname
                 JOIN {course_categories} cc ON cc.id = co.category
@@ -358,7 +368,7 @@ class database_interface extends \local_mentor_core\database_interface {
                 JOIN {context} con2 ON con2.instanceid = co3.id
                 WHERE
                     (cc.parent = :entityid OR cc5.parent = :entityid2)
-                    AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)';
+                    AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)";
 
         $params = [
             'participant' => 'participant',
@@ -384,7 +394,9 @@ class database_interface extends \local_mentor_core\database_interface {
             co.fullname,
             co.shortname,
             co.id,
-            s.sessionstartdate';
+            s.sessionstartdate,
+            t.courseshortname,
+            cc.id ';
 
         // Sort order.
         if ($data->order) {
@@ -402,7 +414,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     $request .= " ORDER BY co.shortname " . $data->order['dir'];
                     break;
                 case 4:
-                    $request .= " ORDER BY s.sessionnumber " . $data->order['dir'];
+                    $request .= " ORDER BY sessionnumber " . $data->order['dir'];
                     break;
                 case 5:
                     $request .= " ORDER BY s.sessionstartdate " . $data->order['dir'];

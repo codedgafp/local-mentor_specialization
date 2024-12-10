@@ -431,60 +431,41 @@ class mentor_specialization {
      * @throws \moodle_exception
      */
     public function get_sessions_by_entity($data) {
+        global $USER;
 
         $db = database_interface::get_instance();
         $listsessionsrecord = $db->get_sessions_by_entity_id($data);
-        $listsession = [];
-        $trainings = [];
         $opentostatus = \local_mentor_core\session_api::get_all_open_to_status();
+        
+        $entities = $this->get_sessions_entities($listsessionsrecord);
 
-        foreach ($listsessionsrecord as $sessionrecord) {
+
+        foreach ($listsessionsrecord as $key => &$sessionrecord) {
 
             $session = \local_mentor_core\session_api::get_session($sessionrecord->id, false);
-
-            // Check if user manage session.
-            if (!$session->is_manager()) {
+            $entity = $entities[$sessionrecord->id];
+            // Check if user manage session. 
+            $sessioncontext = \context_course::instance($sessionrecord->courseid);
+            if (! has_capability('local/session:manage',  $sessioncontext, $USER->id)) {
                 continue;
             }
 
-            if (!isset($trainings[$session->trainingid])) {
-                try {
-                    $trainings[$session->trainingid] = $session->get_training();
-                } catch (dml_missing_record_exception $e) {
-                    // When the course does not exist in the database.
-                    continue;
-                }
-            }
-
-            $entity = $session->get_entity();
-
-            $listsession[] = [
-                'id' => $session->id,
-                'link' => $session->get_url()->out(),
-                'shortname' => $session->shortname,
-                'status' => get_string($session->status, 'local_mentor_core'),
-                'statusshortname' => $session->status,
-                'timecreated' => $session->sessionstartdate,
-                'nbparticipant' => $sessionrecord->numberparticipants,
-                'opento' => $opentostatus[$session->get_open_to_status()],
-                'trainingfullname' => $trainings[$session->trainingid]->name,
-                'subentityname' => !$entity->is_main_entity() ? $entity->get_name() : '',
-                'sessionname' => $session->get_course()->fullname,
-                'actions' => $session->get_actions(),
-                'sessionnumber' => '#' . $session->sessionnumber,
-                'collection' => $session->collection,
-                'collectionstr' => str_replace(';', "<br/>", $trainings[$session->trainingid]->collectionstr),
-                'entityid' => $entity->id,
-                'maxparticipants' => $sessionrecord->maxparticipants,
-            ];
-
+            $sessionrecord->link = $session->get_url()->out();
+            $sessionrecord->actions = $session->get_actions();
+            $sessionrecord->status =  get_string($sessionrecord->statusshortname, 'local_mentor_core');
+            $sessionrecord->opento =  $opentostatus[$sessionrecord->opento];
+            $sessionrecord->subentityname =  !$entity->is_main_entity() ? $entity->get_name() : '';
+            $sessionrecord->collectionstr =  !is_null($sessionrecord->collectionstr) ? str_replace(';', "<br/>",$sessionrecord->collectionstr) : null;
+            $sessionrecord->entityid =  $entity->id;
+            $sessionrecord->nbparticipant =  $sessionrecord->numberparticipants;
+            $sessionrecord = (array)$sessionrecord;
         }
-
+       
         if ($data->order) {
             switch ($data->order['column']) {
                 case 7:
                     // Order by shared.
-                    usort($listsession, function($a, $b) use ($data) {
+                    usort(array_values($listsessionsrecord), function($a, $b) use ($data) {
                         if ($data->order['dir'] === 'asc') {
                             // True first.
                             return (($a['shared'] === $b['shared']) ? 0 : $a['shared']) ? -1 : 1;
@@ -496,7 +477,7 @@ class mentor_specialization {
                     break;
                 case 8 :
                     // Order by status.
-                    usort($listsession, function($a, $b) use ($data) {
+                    usort(array_values($listsessionsrecord), function($a, $b) use ($data) {
                         if ($data->order['dir'] === 'asc') {
                             // Acs.
                             return strnatcmp($a['status'], $b['status']);
@@ -511,7 +492,53 @@ class mentor_specialization {
             }
         }
 
-        return $listsession;
+        return array_values($listsessionsrecord);
+    }
+
+ /**
+     * Get entities for the provided sessions.
+     *
+     * This method processes an array of session objects, checks if each session's associated entity has already been 
+     * processed, and if not, fetches and stores the entity in the cache. It returns the corresponding entity 
+     * for each session, either from the cache or freshly retrieved.
+     *
+     * @param array $sessions Array of session objects. Each object should have at least an 'id' and 'entityid' property.
+     * @return array Array of entities corresponding to the provided sessions.
+     */
+    public function get_sessions_entities($sessions) {
+        $processedEntityIds = [];
+        return array_map(function($sessions) use (&$processedEntityIds, &$entities) {
+
+            // Check if the entityid for this session has already been processed
+            if (in_array($sessions->entityid, $processedEntityIds)) {
+                // If the entity is already processed, retrieve it from the $entities array
+                $entity = array_filter($entities, function($entity) use ($sessions) {
+                    return $entity->id == $sessions->entityid;
+                });
+
+                if (!empty($entity)) {
+                    $entity = reset($entity); // Get the first element of the filtered result
+                    $entities[$sessions->id] = $entity;  // Store the entity under the session id
+                    return $entity;
+                }
+                
+            }
+            // Fetch session details
+            $sessionDetails = \local_mentor_core\session_api::get_session($sessions->id, false);
+
+            // Fetch the entity for the session if it hasn't been processed yet
+            $entity = $sessionDetails->get_entity(false);
+
+            // Store the entity in the $entities array with the session id as the key
+            if ($entity) {
+                $processedEntityIds[] = $sessions->entityid;  // Mark the entityid as processed
+                $entities[$sessions->id] = $entity;  // Store the entity with the session id as the key
+            }
+
+            // Return the newly fetched entity
+            return $entity;
+        }, $sessions);
+        
     }
 
     /**

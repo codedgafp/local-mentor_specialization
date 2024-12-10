@@ -71,7 +71,9 @@ function check_consistency_cohort_members_and_profiles_sync_link_user_to_cohort_
     $users = $newusers + $entityusers + $secondaryentityusers;
 
     // Get entity cohort member.
-    $userscohort = $dbi->get_cohort_members_by_cohort_id($entity->get_cohort()->id, 'active');
+    $data = new stdClass();
+    $data->suspendedusers = 'active';
+    $userscohort = $dbi->get_cohort_members_by_cohort_id($entity->get_cohort()->id, $data);
 
     // Difference between users linked with their profile and those registered in the cohort.
     // List of users to be registered in the cohort.

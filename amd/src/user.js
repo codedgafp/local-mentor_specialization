@@ -66,9 +66,15 @@ define([
         $("#filter-reset").click(function () {
             that.resetFilters();
         });
-
         //table course edadmin user admin
         M.table = $('#user-admin-table').DataTable({
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }],
+            processing: true,
+            serverSide: true,//For use Ajax
+            ordering: true,
             ajax: {
                 //Call data members cohort
                 url: M.cfg.wwwroot + '/local/user/ajax/ajax.php',
@@ -80,14 +86,14 @@ define([
                     d.externalusers = that.externalusers;
                     d.mainonly = true;
                     d.format = 'json';
-                },
-                dataSrc: 'message'
+                    d.search = d.search && d.search.value ? d.search.value : null;
+                }
+                
             },
             oLanguage: {
                 sUrl: M.cfg.wwwroot + '/local/mentor_core/datatables/lang/' + M.util.get_string('langfile', 'local_user') + ".json"
             },
             order: [[3, "asc"]],
-            pageLength: 50,
             dom: 'Blfrtip',
             buttons: [
                 {

@@ -1276,7 +1276,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
             self::fail($e->getMessage());
         }
         $sessiondate1 = 1731509580; //13/11/2024 15:53:00
-        $sessonid1 = $this->init_session_creation('session1');
+        $sessonid1 = $this->init_session_creation('session1', 'training1');
         $session1 = session_api::get_session($sessonid1);
         $session1->update_status(\local_mentor_core\session::STATUS_OPENED_REGISTRATION);
         $session1->sessionstartdate = $sessiondate1;

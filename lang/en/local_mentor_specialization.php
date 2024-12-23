@@ -351,3 +351,20 @@ $string['customnotificationsuccessemail']= 'Success sending email Custom Notific
 
 // Capabilitites
 $string['mentor_specialization:changetraininglastupdate'] = 'Donne la possibilité de mettre à jour la date de dernière modification de la formation';
+
+// Preventing archived sessions deletion notification
+$string['task_deletion_archived_sessions'] = 'Prévenir 2 mois aupravant les participants aux sessions de la supression des sessions archivées depuis plus de 3ans.';
+$string['email_prevention_delete_archived_session_object'] = ' Suppression de la session archivée {$a->session_name}';
+$string['email_prevention_delete_archived_session_content'] = 'Bonjour, 
+
+Vous avez participé à la session {$a->session_name} <a href="{$a->course_url}">{$a->course_url}</a>.
+
+Celle-ci est archivée depuis près de 3 ans et sera supprimée dans 2 mois. 
+
+Nous vous invitons à récupérer dès à présent les documents que vous souhaitez conserver, plus particulièrement votre attestation de participation car la suppression sera définitive. 
+
+Pour rappel, toutes vos attestations de participation déjà obtenues dans des sessions existantes sont disponibles dans votre profil Mentor ou directement sur cette page : <a href="{$a->wwwroot}/mod/customcert/my_certificates.php">{$a->wwwroot}/mod/customcert/my_certificates.php</a>.
+
+L\'équipe Mentor
+
+<img src="{$a->wwwroot}/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';

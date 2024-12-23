@@ -28,6 +28,7 @@ namespace local_mentor_specialization;
 use core\notification;
 use local_mentor_core\session;
 use local_mentor_core\training;
+use local_mentor_specialization\task\delete_archived_sessions;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -1855,4 +1856,56 @@ class database_interface extends \local_mentor_core\database_interface {
         return $users;
     }
 
+    
+    /**
+     * Get archived sessions whithin a periode of time
+     * @return array
+     */
+    public function get_archived_sessions($interval, $limit, $offset = 0){
+        global $DB;
+        $status = session::STATUS_ARCHIVED;
+        $intervalend = $interval + delete_archived_sessions::$PERIODE_TASK;
+        $sessions = [];
+        try {
+            $sessions = $DB->get_records_sql("
+            SELECT
+                s.id as id,
+                c.id as courseid,
+                s.courseshortname as name,
+                s.trainingid as trainingid
+            FROM
+                {session} s
+            JOIN
+                {course} c ON c.shortname = s.courseshortname
+            WHERE
+                s.status = :status AND
+                to_timestamp(s.sessionenddate)
+                    BETWEEN (CURRENT_TIMESTAMP - INTERVAL '". $intervalend ."') 
+                    AND (CURRENT_TIMESTAMP - INTERVAL '". $interval ."')",
+        ['status' => $status, ], $offset, $limit);
+        } catch (\dml_exception $e) {
+            mtrace('Error sql getting archived sessions: ' . $e->getMessage());
+        }
+        return $sessions;
+    }
+
+    /**
+     * Delete archived sessions whithin an interval of time
+     * @return void
+     */
+    public function delete_archived_sessions($interval){
+        global $DB;
+        $status = session::STATUS_ARCHIVED;
+        $intervalend = $interval + delete_archived_sessions::$PERIODE_TASK;
+
+        try {
+            $this->db->delete_records_select(
+                'session',
+                "status = :status AND to_timestamp(sessionenddate) BETWEEN (CURRENT_TIMESTAMP - INTERVAL '" . $intervalend . "') AND (CURRENT_TIMESTAMP - INTERVAL '" .$interval. "')", 
+                ['status' => $status]
+            );
+        } catch (\dml_exception $e) {
+            mtrace('Error sql deletting archived sessions: ' . $e->getMessage());
+        }
+    }
 }

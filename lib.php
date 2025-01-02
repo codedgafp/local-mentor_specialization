@@ -1887,8 +1887,8 @@ function local_mentor_specialization_init_config() {
         local_mentor_specialization_init_allowed_email_addresses();
     }
 
-    // Do not check allowed email when updating users.
-    local_mentor_core_set_moodle_config('verifychangedemail', 0);
+    // Check allowed email when updating users.
+    local_mentor_core_set_moodle_config('verifychangedemail', 1);
 
     // Mod_bigbluebuttonbn default settings.
     local_mentor_specialization_init_bigbluebutton_settings();

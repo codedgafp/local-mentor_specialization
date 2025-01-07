@@ -79,7 +79,7 @@ class database_interface extends \local_mentor_core\database_interface {
     }
 
 
-     /**
+    /**
      * Get the value of a category option
      *
      * @param int $entityid
@@ -1718,9 +1718,13 @@ class database_interface extends \local_mentor_core\database_interface {
      * fetch users (subscribers) with collection, region, and entities data
      * @return array
      */
-    public function get_subscribers_of_new_catalog_sessions($limit, $offset = 0, $days = 7): array
+    public function get_subscribers_of_new_catalog_sessions($limit, $offset = 0): array
     {
         global $DB;
+
+        $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_catalog_updates');
+        $tasktimeinterval = make_task_time_interval($task);
+
         $sql = "SELECT
             DISTINCT on (u.id, t.id)
             ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
@@ -1777,7 +1781,7 @@ class database_interface extends \local_mentor_core\database_interface {
             WHERE
                 ccs_main_entity.name = 'Sessions'
                 AND ccs_main_entity.visible = 1
-                AND s.timecreated IS NOT NULL AND to_timestamp(s.timecreated) > (CURRENT_TIMESTAMP - INTERVAL '".$days." day')
+                AND s.timecreated IS NOT NULL AND s.timecreated > $tasktimeinterval
                 AND s.status IN ('".session::STATUS_OPENED_REGISTRATION."', '".session::STATUS_IN_PROGRESS."')
                 AND co.name = 'regionid'
                 AND uif.shortname = 'mainentity'
@@ -1826,18 +1830,22 @@ class database_interface extends \local_mentor_core\database_interface {
      * fetch users (subscribers) to notify with new published trainings 
      * @return array
      */
-    public function get_subscribers_of_new_library_courses($days = 1): array
+    public function get_subscribers_of_new_library_courses(): array
     {
         global $DB;
+
+        $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_library_publish');
+        $tasktimeinterval = make_task_time_interval($task);
+
         $sql = "SELECT 
-                ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
+                ROW_NUMBER() over (ORDER BY u.id ASC) AS ligne,
                 u.id AS userid,
                 l.trainingid,
                 c.fullname AS coursefullname,
                 u.email,
                 cc2.name AS course_category_name
                 FROM {training} t  
-                JOIN  {library} l  ON t.id = l.originaltrainingid
+                JOIN  {library} l ON t.id = l.originaltrainingid
                 JOIN {course} c ON c.shortname = t.courseshortname
                 JOIN {course_categories} cc ON cc.id = c.category
                 LEFT JOIN {course_categories} cc2 ON cc.parent = cc2.id
@@ -1855,7 +1863,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     JOIN {context} con ON con.id = ra.contextid
                     WHERE
                     t.status = '".training::STATUS_ELABORATION_COMPLETED."'
-                    AND to_timestamp(l.timecreated) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')
+                    AND l.timecreated > $tasktimeinterval
                     AND (
                         (
                             con.contextlevel = 40
@@ -1886,11 +1894,16 @@ class database_interface extends \local_mentor_core\database_interface {
         return $users;
     }
 
-     /* fetch users (subscribers) of library, with training data
+    /* fetch users (subscribers) of library, with training data
      * @return array
      */
-    public function get_subscribers_of_updated_library_courses($days = 1): array {
+    public function get_subscribers_of_updated_library_courses(): array
+    {
         global $DB;
+
+        $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_library_updates');
+        $tasktimeinterval = make_task_time_interval($task);
+
         $sql = "SELECT 
                 DISTINCT on (u.id, t.id)
                 ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
@@ -1903,7 +1916,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     -- Users subscribers LIBRARY
                     LEFT JOIN
                         (SELECT distinct ucn.user_id, shortname from {collection} c
-                            JOIN {user_collection_notification} ucn on ( c.id = ucn.collection_id AND ucn.type = '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
+                            JOIN {user_collection_notification} ucn on (c.id = ucn.collection_id AND ucn.type = '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
                         ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ','))
                     -- Users Admins & RFCs
                     JOIN
@@ -1917,7 +1930,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     WHERE
                     ctx.contextlevel = 40
                     AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND usercollection.shortname = ANY (string_to_array(t.collection, ',')) AND usercollection.user_id = u.id ))
-                    AND to_timestamp(l.timemodified) > (CURRENT_TIMESTAMP - INTERVAL  '".$days." day')
+                    AND l.timemodified > $tasktimeinterval
                     AND to_timestamp(l.timemodified) > to_timestamp(l.timecreated)
                     ;";
         $users = [];
@@ -1929,7 +1942,6 @@ class database_interface extends \local_mentor_core\database_interface {
         return $users;
     }
 
-    
     /**
      * Get archived sessions whithin a periode of time
      * @return array

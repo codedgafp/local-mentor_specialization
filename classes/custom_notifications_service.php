@@ -60,7 +60,7 @@ class custom_notifications_service
 
             $object =  get_string('email_library_publish_new_course_object', 'local_mentor_specialization');
             
-            $args = new \stdClass();
+            $args = new stdClass();
             $args->link = "{$CFG->wwwroot}/local/library/pages/training.php?trainingid={$record->trainingid}";
             $args->course_category_name = $record->course_category_name;
             $args->course_full_name = $record->coursefullname;
@@ -119,7 +119,7 @@ class custom_notifications_service
 
             $object =  get_string($emailobjectkey, 'local_mentor_specialization');
             
-            $args = new \stdClass();
+            $args = new stdClass();
             $args->courseslist = $this->get_courses_list($subscriber->trainings);
             
             $content = get_string('email_catalog_updates_new_session_content', 'local_mentor_specialization', $args);
@@ -138,7 +138,7 @@ class custom_notifications_service
      * @throws coding_exception
      * @throws moodle_exception
      */
-    function get_subscribers_of_catalog_by_training() {
+    private function get_subscribers_of_catalog_by_training() {
         $dbi = database_interface::get_instance();
         $subscribers = [];
         $offset = 0;
@@ -160,7 +160,7 @@ class custom_notifications_service
                 }
                 
                 if (!isset($user->trainings[$result->trainingid])) {
-                    $training = new \stdClass();
+                    $training = new stdClass();
                     $training->trainingid = $result->trainingid;
                     $training->coursefullname = $result->coursefullname;
                     $user->trainings[$result->trainingid] = $training;

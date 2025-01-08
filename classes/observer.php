@@ -303,7 +303,7 @@ class local_mentor_specialization_observer {
         }
 
         // Get old and new secondary entities.
-        $oldsecondaryentities = $olddatauser->profile_field_secondaryentities;
+        $oldsecondaryentities = json_decode(json_encode($olddatauser->profile_field_secondaryentities), true);
         $newsecondaryentities = $dbi->get_secondaryentity_names_array($newdatauser->profile_field_secondaryentities);
 
         // Check if old and new entities (main and secondary) are different.

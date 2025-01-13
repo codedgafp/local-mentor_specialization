@@ -3,7 +3,6 @@
  * Summary of namespace local_mentor_specialization\task
  * Delete archived sessions that are old than 3 years
  * Warning users about this delete 2 months before
- * Keep in mide that 1 month is added automatically to make sure the session is archived 
  * See archived_sessions.php
  * * @package    local_mentor_specialization
  */
@@ -16,11 +15,11 @@ class delete_archived_sessions extends \core\task\scheduled_task {
     /** Task run period time in secondes = 1 day */
     public static $PERIODE_TASK = 86400;
     
-    /** Time interval in secondes within archived sessions are fetched = 2 years and 11 months*/
-    public $TIME_INTERVAL_PARTICIPANTS_SESSIONS = 94608000;
+    /** Time interval in secondes within archived sessions are fetched = 2 years and 10 months*/
+    public $TIME_INTERVAL_PARTICIPANTS_SESSIONS =  89415360  ;
     
-    /** Time interval in secondes within archived sessions are fetched = 3 years and 1 month*/
-    public $TIME_INTERVAL_DELETE_SESSIONS = 97632000;
+    /** Time interval in secondes within archived sessions are fetched = 3 years */
+    public $TIME_INTERVAL_DELETE_SESSIONS = 96843600;
     public $LIMIT_SQL_REQUEST = 1000;
     
     public function get_name() {

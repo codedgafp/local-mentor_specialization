@@ -1028,37 +1028,89 @@ class mentor_specialization {
                     }
                 }
             }
-        }
+        }     
 
-        // Format trainings as array.
-        $trainingsarray = [];
+        $entities = $this->get_trainings_entities($trainingsrecord);
+       
+        foreach ($trainingsrecord as &$training) {
 
-        foreach ($trainingsrecord as $key => $training) {
-            $training = self::get_training($training->id);
-            $trainingentity = $training->get_entity(false);
-
+            $trainingDetails = self::get_training($training->id);
+            $trainingentity = $entities[$training->id];
             // The user has access if it is a master entity or if he manages formations on this entity or its sub-entity.
             if ($trainingentity->is_main_entity() || $trainingentity->is_trainings_manager($USER)) {
-                $trainingsarray[] = [
-                    'id' => $training->id,
-                    'name' => $training->name,
-                    'idsirh' => $training->idsirh,
-                    'status' => $training->status,
-                    'entityid' => $trainingentity->id,
-                    'subentityname' => !$trainingentity->is_main_entity() ?
-                        $trainingentity->get_name() : '',
-                    'collectionstr' => $training->collectionstr,
-                    'url' => $training->get_url()->out(),
-                    'actions' => $training->get_actions($USER, $actiondata),
-                    'shortname' => $training->courseshortname,
-                    'sessions' => $training->get_session_number(),
-                    'urlsessions' => $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .
-                                     '&trainingid=' . $training->id,
-                ];
+
+                if (!$onlymainentity) {
+                    $training->entityid = $trainingentity->id;
+                    $training->subentityname = !$trainingentity->is_main_entity() ?  $trainingentity->get_name() : '';
+                    $training->url =  $trainingDetails->get_url()->out();
+                    $training->actions = $trainingDetails->get_actions($USER, $actiondata);
+                    $training->urlsessions = $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .'&trainingid=' . $training->id;                  
+                   
+                }else{
+                    $training->id = $training->id;
+                    $training->name = $trainingDetails->name;
+                    $training->idsirh = $training->name;
+                    $training->status = $training->status;
+                    $training->entityid =  $trainingentity->id;
+                    $training->subentityname =  !$trainingentity->is_main_entity() ? $trainingentity->get_name() : '';
+                    $training->collectionstr =  $trainingDetails->collectionstr;
+                    $training->url = $trainingDetails->get_url()->out();
+                    $training->actions = $trainingDetails->get_actions($USER, $actiondata) ;
+                    $training->shortname = $trainingDetails->courseshortname;
+                    $training->sessions = $trainingDetails->get_session_number();
+                    $training->urlsessions = $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .'&trainingid=' . $training->id ;
+                } 
+                $training = (array)$training;               
             }
         }
 
-        return array_values($trainingsarray);
+        return array_values($trainingsrecord);
+    }
+
+    /**
+     * Get entities for the provided trainings.
+     *
+     * This method processes an array of training objects, checks if each training's associated entity has already been 
+     * processed (cached), and if not, fetches and stores the entity in the cache. It returns the corresponding entity 
+     * for each training, either from the cache or freshly retrieved.
+     *
+     * @param array $trainings Array of training objects. Each object should have at least an 'id' and 'entityid' property.
+     * @return array Array of entities corresponding to the provided trainings.
+     */
+    public function get_trainings_entities($trainings) {
+        $processedEntityIds = [];
+        return array_map(function($trainings) use (&$processedEntityIds, &$entities) {
+
+            // Check if the entityid for this training has already been processed
+            if (in_array($trainings->entityid, $processedEntityIds)) {
+                // If the entity is already processed, retrieve it from the $entities array
+                $entity = array_filter($entities, function($entity) use ($trainings) {
+                    return $entity->id == $trainings->entityid;
+                });
+
+                if (!empty($entity)) {
+                    $entity = reset($entity); // Get the first element of the filtered result
+                    $entities[$trainings->id] = $entity;  // Store the entity under the training id
+                    return $entity;
+                }
+                
+            }
+            // Fetch training details
+            $trainingDetails = self::get_training($trainings->id);
+
+            // Fetch the entity for the training if it hasn't been processed yet
+            $entity = $trainingDetails->get_entity(false);
+
+            // Store the entity in the $entities array with the training id as the key
+            if ($entity) {
+                $processedEntityIds[] = $trainings->entityid;  // Mark the entityid as processed
+                $entities[$trainings->id] = $entity;  // Store the entity with the training id as the key
+            }
+
+            // Return the newly fetched entity
+            return $entity;
+        }, $trainings);
+        
     }
 
     /**

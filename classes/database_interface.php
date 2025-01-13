@@ -966,10 +966,24 @@ class database_interface extends \local_mentor_core\database_interface {
         }
 
         // Initialize request.
-        $request = 'SELECT
-                    t.*
+        $request = "SELECT
+                    t.id,
+                    t.idsirh,
+                    t.status,
+                    t.courseshortname as courseshortname ,                   
+                    co.fullname as name,
+                    STRING_AGG(DISTINCT  cl.fullname, ';') AS collectionstr,
+                    COUNT(DISTINCT s.id) as sessions,
+                    cc.parent as entityId,
+                    t.traininggoal
                 FROM
                     {training} t
+                LEFT JOIN (
+                        SELECT DISTINCT shortname, TRIM(fullname) AS fullname 
+                        FROM {collection}
+                    ) cl ON cl.shortname = ANY (string_to_array(t.collection, ',')) 
+                LEFT JOIN
+                    {session} s ON s.trainingid = t.id  
                 JOIN
                     {course} co ON co.shortname = t.courseshortname
                 LEFT JOIN
@@ -985,11 +999,15 @@ class database_interface extends \local_mentor_core\database_interface {
                 JOIN
                     {course} co3 ON co3.shortname = t.courseshortname
                 WHERE
-                    (cc.parent = :entityid OR cc4.parent = :entityid2)' .
+                    (cc.parent = :entityid OR cc4.parent = :entityid2)" .
                    $where;
-
+                  
         // Get resultat request without condition and filter.
         if (!$withfilter) {
+              $request .= " GROUP BY
+                t.id,
+                co.fullname,
+                cc.parent";
             return $this->db->get_records_sql($request,
                 [
                     'entityid' => $entityid,
@@ -1003,24 +1021,29 @@ class database_interface extends \local_mentor_core\database_interface {
             'entityid' => $entityid,
             'entityid2' => $entityid,
         ];
-
+        
         // Filters.
         $request .= $this->generate_trainings_by_entity_id_filter($data, $params);
 
         // Generate reseach part request.
         $request .= $this->generate_trainings_by_entity_id_search($data, $params);
 
+        $request .= " GROUP BY
+                t.id,
+                co.fullname,
+                cc.parent ";
+
         // Sort order.
         if ($data->order && isset($data->order['column'])) {
             switch ($data->order['column']) {
                 case 0: // Sub-entity name.
-                    $request .= " ORDER BY cc3.name " . $data->order['dir'];
+                    $request .= ",cc3.name ORDER BY cc3.name " . $data->order['dir'];
                     break;
                 case 1: // Collection.
                     $request .= " ORDER BY t.collection " . $data->order['dir'];
                     break;
                 case 2: // Training shortname.
-                    $request .= " ORDER BY co3.fullname " . $data->order['dir'];
+                    $request .= " , co3.fullname ORDER BY co3.fullname " . $data->order['dir'];
                     break;
                 case 4: // Id SIRH.
                     $request .= " ORDER BY t.idsirh " . $data->order['dir'];
@@ -1033,7 +1056,6 @@ class database_interface extends \local_mentor_core\database_interface {
             // Default : sort by id.
             $request .= " ORDER BY t.id DESC";
         }
-
         // Execute request with conditions and filters.
         return $this->db->get_records_sql(
             $request,

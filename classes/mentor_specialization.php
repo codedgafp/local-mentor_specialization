@@ -1039,14 +1039,6 @@ class mentor_specialization {
             // The user has access if it is a master entity or if he manages formations on this entity or its sub-entity.
             if ($trainingentity->is_main_entity() || $trainingentity->is_trainings_manager($USER)) {
 
-                if (!$onlymainentity) {
-                    $training->entityid = $trainingentity->id;
-                    $training->subentityname = !$trainingentity->is_main_entity() ?  $trainingentity->get_name() : '';
-                    $training->url =  $trainingDetails->get_url()->out();
-                    $training->actions = $trainingDetails->get_actions($USER, $actiondata);
-                    $training->urlsessions = $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .'&trainingid=' . $training->id;                  
-                   
-                }else{
                     $training->id = $training->id;
                     $training->name = $trainingDetails->name;
                     $training->idsirh = $training->name;
@@ -1059,7 +1051,7 @@ class mentor_specialization {
                     $training->shortname = $trainingDetails->courseshortname;
                     $training->sessions = $trainingDetails->get_session_number();
                     $training->urlsessions = $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .'&trainingid=' . $training->id ;
-                } 
+               
                 $training = (array)$training;               
             }
         }

@@ -151,19 +151,23 @@ class training_form extends \moodleform {
             'style' => 'width : 405px',
         ];
 
+        
         if ($this->haspublication) {
             $filedstatusoption[] = 'disabled';
         }
-
+        
         $mform->addElement('select', 'status', get_string('status', 'local_trainings'), array_map(function($status) {
             return get_string($status, 'local_trainings');
         }, training_api::get_status_list()), $filedstatusoption);
-        $mform->addRule('status', get_string('required'), 'required');
 
+        if (!$this->haspublication) {
+            $mform->addRule('status', get_string('required'), 'required');
+        }
+        
         if (!has_capability('local/mentor_core:changetrainingstatus', $context)) {
             $mform->disabledIf('status', '');
         }
-
+        
         // Libellé de la formation.
         $mform->addElement('text', 'name', get_string('name', 'local_trainings'), ['size' => 40]);
         $mform->setType('name', PARAM_RAW_TRIMMED);
@@ -634,6 +638,11 @@ class training_form extends \moodleform {
         global $USER;
         $dbinterface = database_interface::get_instance();
 
+        if(!isset($data['status']) && $this->training->status){
+            $data['status'] = $this->training->status;
+        }
+
+        
         $errors = parent::validation($data, $files);
 
         // Status that must have a thumbnail.

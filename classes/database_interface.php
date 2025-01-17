@@ -34,6 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/mentor_core/classes/database_interface.php');
 require_once($CFG->dirroot . '/local/mentor_specialization/lib.php');
+require_once($CFG->dirroot . '/local/mentor_specialization/classes/utils/taskUtils.php');
 
 class database_interface extends \local_mentor_core\database_interface {
 
@@ -1898,8 +1899,10 @@ class database_interface extends \local_mentor_core\database_interface {
     public function get_archived_sessions($interval, $limit, $offset = 0){
         global $DB;
         $status = session::STATUS_ARCHIVED;
-        $intervalend = $interval + delete_archived_sessions::$PERIODE_TASK;
         $sessions = [];
+        $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\notify_delete_archived_sessions');
+        $tasktimeinterval = make_task_time_interval_string($task);
+    
         try {
             $sessions = $DB->get_records_sql("
             SELECT
@@ -1914,9 +1917,11 @@ class database_interface extends \local_mentor_core\database_interface {
             WHERE
                 s.status = :status AND
                 to_timestamp(s.sessionenddate)
-                    BETWEEN (CURRENT_TIMESTAMP - INTERVAL '". $intervalend ."') 
-                    AND (CURRENT_TIMESTAMP - INTERVAL '". $interval ."')",
+                    BETWEEN    (CURRENT_TIMESTAMP - INTERVAL '". $interval ."')
+                    AND (CURRENT_TIMESTAMP - INTERVAL '". $interval ."' +  INTERVAL '".$tasktimeinterval."')  " 
+                   ,
         ['status' => $status, ], $offset, $limit);
+
         } catch (\dml_exception $e) {
             mtrace('Error sql getting archived sessions: ' . $e->getMessage());
         }
@@ -1928,14 +1933,13 @@ class database_interface extends \local_mentor_core\database_interface {
      * @return void
      */
     public function delete_archived_sessions($interval){
-        global $DB;
+       
         $status = session::STATUS_ARCHIVED;
-        $intervalend = $interval + delete_archived_sessions::$PERIODE_TASK;
-
         try {
             $this->db->delete_records_select(
                 'session',
-                "status = :status AND to_timestamp(sessionenddate) BETWEEN (CURRENT_TIMESTAMP - INTERVAL '" . $intervalend . "') AND (CURRENT_TIMESTAMP - INTERVAL '" .$interval. "')", 
+                "status = :status 
+                AND to_timestamp(sessionenddate) <= (CURRENT_TIMESTAMP - INTERVAL '" .$interval. "')", 
                 ['status' => $status]
             );
         } catch (\dml_exception $e) {

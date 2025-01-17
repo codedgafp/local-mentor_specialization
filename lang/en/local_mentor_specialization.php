@@ -353,7 +353,9 @@ $string['customnotificationsuccessemail']= 'Success sending email Custom Notific
 $string['mentor_specialization:changetraininglastupdate'] = 'Donne la possibilité de mettre à jour la date de dernière modification de la formation';
 
 // Preventing archived sessions deletion notification
-$string['task_deletion_archived_sessions'] = 'Prévenir 2 mois aupravant les participants aux sessions de la supression des sessions archivées depuis plus de 3ans.';
+$string['task_deletion_archived_sessions'] = 'Supprimer les sessions archivées de plus de 3 ans';
+$string['task_notify_deletion_archived_sessions'] = 'Prévenir les participants de la suppression d\'une session archivée (2 mois auparavant)';
+
 $string['email_prevention_delete_archived_session_object'] = ' Suppression de la session archivée {$a->session_name}';
 $string['email_prevention_delete_archived_session_content'] = 'Bonjour, 
 

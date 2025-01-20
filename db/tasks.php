@@ -97,6 +97,7 @@ $tasks = [
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
+        'disabled' => 1,
     ],
     [
         'classname' => 'local_mentor_specialization\task\notify_delete_archived_sessions',
@@ -106,6 +107,7 @@ $tasks = [
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*',
+        'disabled' => 1,
     ],
     
 ];

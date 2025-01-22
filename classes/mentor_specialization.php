@@ -439,10 +439,9 @@ class mentor_specialization {
         
         $entities = $this->get_sessions_entities($listsessionsrecord);
 
-
         foreach ($listsessionsrecord as $key => &$sessionrecord) {
-
             $session = \local_mentor_core\session_api::get_session($sessionrecord->id, false);
+            $session->set_numberparticipants($sessionrecord->numberparticipants);
             $entity = $entities[$sessionrecord->id];
             // Check if user manage session. 
             $sessioncontext = \context_course::instance($sessionrecord->courseid);

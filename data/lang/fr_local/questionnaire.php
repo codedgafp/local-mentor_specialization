@@ -15,22 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version file
+ * Local language pack from http://dgafp.local
  *
- * @package    local_mentor_specialization
- * @copyright  2020 Edunao SAS (contact@edunao.com)
- * @author     adrien <adrien@edunao.com>
+ * @package    mod
+ * @subpackage quastionnaire
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2025012300;       // The current module version (Date: YYYYMMDDXX).
-$plugin->requires = 2014051219;       // Requires this Moodle version.
-/** @var String $plugin */
-$plugin->component = 'local_mentor_specialization';       // Full name of the plugin (used for diagnostics).
-$plugin->dependencies = [
-    'local_mentor_core' => 2020112700,
-    'enrol_sirh' => 2022042700,
-    'profilefield_autocomplete' => 2022071900,
-];
+
+$string['completionsubmit'] = 'Compléter le questionnaire';

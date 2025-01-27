@@ -34,7 +34,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/local/mentor_core/classes/database_interface.php');
 require_once($CFG->dirroot . '/local/mentor_specialization/lib.php');
-require_once($CFG->dirroot . '/local/mentor_specialization/classes/utils/taskUtils.php');
 
 class database_interface extends \local_mentor_core\database_interface {
 
@@ -1937,8 +1936,8 @@ class database_interface extends \local_mentor_core\database_interface {
         $status = session::STATUS_ARCHIVED;
         $sessions = [];
         $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\notify_delete_archived_sessions');
-        $tasktimeinterval = make_task_time_interval_string($task);
-    
+        $tasktimeinterval = $task->get_next_scheduled_time() - $task->get_last_run_time();
+
         try {
             $sessions = $DB->get_records_sql("
             SELECT
@@ -1953,8 +1952,8 @@ class database_interface extends \local_mentor_core\database_interface {
             WHERE
                 s.status = :status AND
                 to_timestamp(s.sessionenddate)
-                    BETWEEN    (CURRENT_TIMESTAMP - INTERVAL '". $interval ."')
-                    AND (CURRENT_TIMESTAMP - INTERVAL '". $interval ."' +  INTERVAL '".$tasktimeinterval."')  " 
+                    BETWEEN    (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' - INTERVAL '". $interval ."')
+                    AND (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' - INTERVAL '". $interval ."' +  INTERVAL '".$tasktimeinterval."')  " 
                    ,
         ['status' => $status, ], $offset, $limit);
 

@@ -50,7 +50,7 @@ class notify_delete_archived_sessions extends \core\task\scheduled_task {
             $subject = get_string('email_prevention_delete_archived_session_object', 'local_mentor_specialization', ["session_name" => $session->name]);
             $message = get_string('email_prevention_delete_archived_session_content', 'local_mentor_specialization', [
                 'session_name' => $session->name,
-                'course_url' => $CFG->wwwroot . '/local/catalog/pages/training.php?trainingid=' . $session->trainingid,
+                'course_url' => $CFG->wwwroot . '/course/view.php?id=' . $session->courseid,
                 'wwwroot' => $CFG->wwwroot
             ]);
             $error_sending_email = !email_to_user($user, \core_user::get_support_user(), $subject, $message);

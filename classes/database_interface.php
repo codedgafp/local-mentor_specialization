@@ -25,15 +25,18 @@
 
 namespace local_mentor_specialization;
 
+
+defined('MOODLE_INTERNAL') || die();
+
 use core\notification;
 use local_mentor_core\session;
 use local_mentor_core\training;
 use local_mentor_specialization\task\delete_archived_sessions;
 
-defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot . '/local/mentor_core/classes/database_interface.php');
 require_once($CFG->dirroot . '/local/mentor_specialization/lib.php');
+require_once($CFG->dirroot . '/local/mentor_specialization/classes/models/mentor_profile.php');
+
 
 class database_interface extends \local_mentor_core\database_interface {
 
@@ -1953,7 +1956,7 @@ class database_interface extends \local_mentor_core\database_interface {
                 s.status = :status AND
                 to_timestamp(s.sessionenddate)
                     BETWEEN    (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' - INTERVAL '". $interval ."')
-                    AND (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' - INTERVAL '". $interval ."' +  INTERVAL '".$tasktimeinterval."')  " 
+                    AND (CURRENT_TIMESTAMP AT TIME ZONE 'UTC' - INTERVAL '". $interval ."' +  INTERVAL '".$tasktimeinterval."')  "
                    ,
         ['status' => $status, ], $offset, $limit);
 
@@ -1981,4 +1984,39 @@ class database_interface extends \local_mentor_core\database_interface {
             mtrace('Error sql deletting archived sessions: ' . $e->getMessage());
         }
     }
+
+
+    /**
+     * get enrolments users to a specific course having specific roles (tuteur, formateur, concepteur, participantnonediteur)
+     * 
+     * @param int $courseid
+     * @return array
+     */
+    public function get_session_enrolled_users(int $courseid) {
+        $sql = '
+            SELECT DISTINCT(ue.id), u.*
+            FROM {user_enrolments} ue
+            INNER JOIN {enrol} e ON e.id = ue.enrolid
+            INNER JOIN {user} u ON ue.userid = u.id
+            JOIN {role_assignments} ra ON ra.userid = u.id
+            JOIN {role} r ON r.id = ra.roleid
+            JOIN {context} ctx ON ctx.id = ra.contextid
+            WHERE e.courseid = :courseid
+                AND ctx.contextlevel = :contextlevel
+                AND (r.shortname = :tuteur
+                    OR r.shortname = :formateur 
+                    OR r.shortname = :concepteur 
+                    OR r.shortname = :participantnonediteur)  ';
+
+
+        return $this->db->get_records_sql($sql, [
+            'courseid' => $courseid,
+            'contextlevel' =>  CONTEXT_COURSE,
+            'tuteur' => \local_mentor_specialization\mentor_profile::ROLE_TUTEUR,
+            'formateur' => \local_mentor_specialization\mentor_profile::ROLE_FORMATEUR,
+            'concepteur' => \local_mentor_specialization\mentor_profile::ROLE_CONCEPTEUR,
+            'participantnonediteur' => \local_mentor_specialization\mentor_profile::ROLE_PARTICIPANTNONEDITEUR,
+        ]);
+    }
+
 }

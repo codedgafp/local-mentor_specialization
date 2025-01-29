@@ -29,12 +29,13 @@ class notify_delete_archived_sessions extends \core\task\scheduled_task {
      * from 3 years
      * @return void
      */
-    public function execute() {   
+    public function execute() {  
+        $dbi = database_interface::get_instance();
+ 
        // Send warning emails to participants
        $warningsessions = $this->get_sessions_archived_paginated($this->TIME_INTERVAL_PARTICIPANTS_SESSIONS);
         foreach ($warningsessions as $warningsession) {
-            $session = new \local_mentor_core\session($warningsession->id);
-            $participants = $session->get_participants();
+            $participants = $dbi->get_session_enrolled_users($warningsession->courseid);
             $this->send_warning_emails($participants, $warningsession);
         }       
      

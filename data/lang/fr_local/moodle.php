@@ -108,3 +108,6 @@ En cas de difficulté, vous pouvez vous rapprocher de votre assistance en cliqua
 L\'équipe Mentor
 
 <img src="https://mentor.gouv.fr/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
+
+
+$string['myhome'] = 'Page d\'acceuil';

@@ -162,7 +162,7 @@ $string['gradersubmissionupdatedsmall']
 $string['gradersubmissionupdatedtext']
         = '{$a->username} a modifié son travail remis pour la contribution « {$a->assignment} » le {$a->timeupdated}. Ce travail est disponible ici : {$a->url}';
 $string['gradingduedate_help']
-        = 'Le délai pour l\'évaluation des contributions par l\'enseignant. Cette date est utilisée afin de prioriser les notifications du tableau de bord des enseignants.';
+        = 'Le délai pour l\'évaluation des contributions par l\'enseignant. Cette date est utilisée afin de prioriser les notifications de la page d’accueil des enseignants.';
 $string['hidegrader_help']
         = 'Si ce réglage est activé, l\'identité de tout utilisateur qui évalue un travail remis dans une contribution ne sera pas affichée, afin que les étudiants ne voient pas qui a évalué leur travail. Remarque : ce réglage n\'a pas d\'effet sur le champ de commentaires sur la page d\'évaluation.';
 $string['indicator:cognitivedepth'] = 'Contribution : aspect cognitif';

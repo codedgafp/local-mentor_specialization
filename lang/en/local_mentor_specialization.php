@@ -264,7 +264,7 @@ L\'équipe du programme Mentor';
 $string['email_open_session_object'] = 'Ouverture de la session {$a}';
 $string['email_open_session_content'] = 'Bonjour,
 
-La session de formation {$a->fullname} est ouverte depuis aujourd\'hui. Vous pouvez donc dès à présent y accéder depuis votre tableau de bord : <a href="{$a->dashboardurl}">{$a->dashboardurl}</a>
+La session de formation {$a->fullname} est ouverte depuis aujourd\'hui. Vous pouvez donc dès à présent y accéder depuis votre page d’accueil : <a href="{$a->dashboardurl}">{$a->dashboardurl}</a>
 
 
 A très bientôt sur Mentor
@@ -275,7 +275,7 @@ $string['email_enrol_user_session_content'] = 'Bonjour {$a->firstname} {$a->last
 
 Nous vous informons de votre inscription en tant que {$a->rolename} à la session de formation {$a->fullname} dont la date de début est le {$a->startdate}.
 
-Vous pourrez accéder à la session de formation sur votre tableau de bord dès que celle-ci sera disponible : <a href="{$a->dashboardurl}">{$a->dashboardurl}</a>
+Vous pourrez accéder à la session de formation sur votre page d’accueil dès que celle-ci sera disponible : <a href="{$a->dashboardurl}">{$a->dashboardurl}</a>
 
 Pour tout renseignement, veuillez contacter votre gestionnaire ou responsable de formation.
 
@@ -285,7 +285,7 @@ $string['email_enrol_user_session_content_no_start_date'] = 'Bonjour {$a->firstn
 
 Nous vous informons de votre inscription en tant que {$a->rolename} à la session de formation {$a->fullname}.
 
-Vous pourrez accéder à la session de formation sur votre tableau de bord dès que celle-ci sera disponible : <a href="{$a->dashboardurl}">{$a->dashboardurl}</a>
+Vous pourrez accéder à la session de formation sur votre page d’accueil dès que celle-ci sera disponible : <a href="{$a->dashboardurl}">{$a->dashboardurl}</a>
 
 Pour tout renseignement, veuillez contacter votre gestionnaire ou responsable de formation.
 

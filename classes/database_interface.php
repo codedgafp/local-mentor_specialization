@@ -36,6 +36,7 @@ use local_mentor_specialization\task\delete_archived_sessions;
 require_once($CFG->dirroot . '/local/mentor_core/classes/database_interface.php');
 require_once($CFG->dirroot . '/local/mentor_specialization/lib.php');
 require_once($CFG->dirroot . '/local/mentor_specialization/classes/models/mentor_profile.php');
+require_once($CFG->dirroot . '/local/mentor_specialization/classes/utils/taskUtils.php');
 
 
 class database_interface extends \local_mentor_core\database_interface {

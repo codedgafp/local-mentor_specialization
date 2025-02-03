@@ -1742,8 +1742,8 @@ class database_interface extends \local_mentor_core\database_interface {
                 {course_categories} ccs_main_entity_name ON ccs_main_entity.parent = ccs_main_entity_name.id
             JOIN
                 {training} t ON t.id = s.trainingid
-            JOIN
-                {category_options} co ON co.categoryid = ccs_main_entity.parent
+            LEFT JOIN
+                {category_options} co ON co.categoryid = ccs_main_entity.parent AND co.name = 'regionid'
             LEFT JOIN
                 {session_sharing} ss ON ss.sessionid = s.id
             -- Users subscribers CATALOG
@@ -1762,14 +1762,14 @@ class database_interface extends \local_mentor_core\database_interface {
                 {course_categories} ccu_main_entity ON ccu_main_entity.name = uid.data
             JOIN
                 {user_info_data} uid_second_entity ON uid_second_entity.userid = u.id
-            JOIN
-                {user_info_field} uif_second_entity ON uif_second_entity.id = uid_second_entity.fieldid
+            LEFT JOIN
+                {user_info_field} uif_second_entity ON uif_second_entity.id = uid_second_entity.fieldid AND uif_second_entity.shortname = 'secondaryentities'
             LEFT JOIN
                 {course_categories} ccu_second_entity ON ccu_second_entity.name = ANY (string_to_array(uid_second_entity.data, ','))
             JOIN
                 {user_info_data} uid_region ON uid_region.userid = u.id
-            JOIN
-                {user_info_field} uif_region ON uif_region.id = uid_region.fieldid
+            LEFT JOIN
+                {user_info_field} uif_region ON uif_region.id = uid_region.fieldid AND uif_region.shortname = 'region'
             JOIN
                 {regions} r ON r.name = uid_region.data
             JOIN
@@ -1783,10 +1783,7 @@ class database_interface extends \local_mentor_core\database_interface {
                 AND ccs_main_entity.visible = 1
                 AND s.timecreated IS NOT NULL AND s.timecreated > $tasktimeinterval
                 AND s.status IN ('".session::STATUS_OPENED_REGISTRATION."', '".session::STATUS_IN_PROGRESS."')
-                AND co.name = 'regionid'
                 AND uif.shortname = 'mainentity'
-                AND uif_second_entity.shortname = 'secondaryentities'
-                AND uif_region.shortname = 'region'
                 AND
                 (
                     -- session rules

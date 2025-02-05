@@ -1850,6 +1850,7 @@ function local_mentor_specialization_init_config() {
 
     // Init snippets.
     local_mentor_specialization_init_snippets();
+    local_mentor_specialization_init_tiny_snippets();
 
     // Disable activity plugins.
     local_mentor_specialization_disable_module('chat');
@@ -3104,4 +3105,132 @@ function local_mentor_specialization_sync_table_collection(){
             mtrace('Error trying to delete user_collection_notification ' . $dcol);
         }
     }
+}
+
+/**
+ * Initialize tiny snippets
+ */
+function local_mentor_specialization_init_tiny_snippets()
+{
+    global $CFG;
+
+    $templateurl = "{$CFG->dirroot}/local/mentor_specialization/templates/tiny_snippet";
+    $mustache = new \core\output\mustache_engine();
+
+    set_config('snippetcount', 14, 'tiny_snippet');
+
+    // Consigne.
+    set_config('snippetname_1', 'Consigne', 'tiny_snippet');
+    set_config('snippetkey_1', 'consigne', 'tiny_snippet');
+    set_config('snippetinstructions_1', '', 'tiny_snippet');
+    set_config('defaults_1', '', 'tiny_snippet');
+    $instructionrender = file_get_contents("{$templateurl}/instructionrender.mustache");
+    set_config('snippet_1', $instructionrender,'tiny_snippet');
+
+    // Image / Texte.
+    set_config('snippetname_2', 'Image/Texte', 'tiny_snippet');
+    set_config('snippetkey_2', 'image-texte', 'tiny_snippet');
+    set_config('snippetinstructions_2', '', 'tiny_snippet');
+    set_config('defaults_2', '', 'tiny_snippet');
+    $imagetexthtml = file_get_contents("{$templateurl}/imagetext.mustache");
+    $imagetextrender = $mustache->render($imagetexthtml, ["wwwroot" => $CFG->wwwroot]);
+    set_config('snippet_2', $imagetextrender, 'tiny_snippet');
+
+    // Separator.
+    set_config('snippetname_3', 'Séparateur', 'tiny_snippet');
+    set_config('snippetkey_3', 'separateur', 'tiny_snippet');
+    set_config('snippetinstructions_3', '', 'tiny_snippet');
+    set_config('defaults_3', '', 'tiny_snippet');
+    $separatorrender = file_get_contents("{$templateurl}/separator.mustache");
+    set_config('snippet_3', $separatorrender, 'tiny_snippet');
+
+    // A retenir.
+    set_config('snippetname_4', 'À retenir', 'tiny_snippet');
+    set_config('snippetkey_4', 'a retenir', 'tiny_snippet');
+    set_config('snippetinstructions_4', '', 'tiny_snippet');
+    set_config('defaults_4', '', 'tiny_snippet');
+    $torememberrender = file_get_contents("{$templateurl}/toremember.mustache");
+    set_config('snippet_4', $torememberrender, 'tiny_snippet');
+
+    // Aller plus loin.
+    set_config('snippetname_5', 'Aller plus loin', 'tiny_snippet');
+    set_config('snippetkey_5', 'aller plus loin', 'tiny_snippet');
+    set_config('snippetinstructions_5', '', 'tiny_snippet');
+    set_config('defaults_5', '', 'tiny_snippet');
+    $gofurtherrender = file_get_contents("{$templateurl}/gofurther.mustache");
+    set_config('snippet_5', $gofurtherrender, 'tiny_snippet');
+
+    // Dans la pratique.
+    set_config('snippetname_6', 'Dans la pratique', 'tiny_snippet');
+    set_config('snippetkey_6', 'dans la pratique', 'tiny_snippet');
+    set_config('snippetinstructions_6', '', 'tiny_snippet');
+    set_config('defaults_6', '', 'tiny_snippet');
+    $inpracticerender = file_get_contents("{$templateurl}/inpractice.mustache");
+    set_config('snippet_6', $inpracticerender, 'tiny_snippet');
+
+    // Définition.
+    set_config('snippetname_7', 'Définition', 'tiny_snippet');
+    set_config('snippetkey_7', 'definition', 'tiny_snippet');
+    set_config('snippetinstructions_7', '', 'tiny_snippet');
+    set_config('defaults_7', '', 'tiny_snippet');
+    $definitionrender = file_get_contents("{$templateurl}/definition.mustache");
+    set_config('snippet_7', $definitionrender, 'tiny_snippet');
+
+    // Important.
+    set_config('snippetname_8', 'Important', 'tiny_snippet');
+    set_config('snippetkey_8', 'important', 'tiny_snippet');
+    set_config('snippetinstructions_8', '', 'tiny_snippet');
+    set_config('defaults_8', '', 'tiny_snippet');
+    $importantrender = file_get_contents("{$templateurl}/important.mustache");
+    set_config('snippet_8', $importantrender, 'tiny_snippet');
+
+    // Accordéon.
+    set_config('snippetname_9', get_string('snippet_collapse', 'local_mentor_specialization'), 'tiny_snippet');
+    set_config('snippetkey_9', 'accordion', 'tiny_snippet');
+    set_config('snippetinstructions_9', '', 'tiny_snippet');
+    set_config('defaults_9', '', 'tiny_snippet');
+    $accordionrender = file_get_contents("{$templateurl}/accordion.mustache");
+    set_config('snippet_9', $accordionrender, 'tiny_snippet');
+
+    // Card.
+    set_config('snippetname_10', 'Carte', 'tiny_snippet');
+    set_config('snippetkey_10', 'Carte', 'tiny_snippet');
+    set_config('snippetinstructions_10', '', 'tiny_snippet');
+    set_config('defaults_10', '', 'tiny_snippet');
+    $cardhtml = file_get_contents("{$templateurl}/card.mustache");
+    $cardrender = $mustache->render($cardhtml, ["wwwroot" => $CFG->wwwroot]);
+    set_config('snippet_10', $cardrender, 'tiny_snippet');
+
+    // Button.
+    set_config('snippetname_11', 'Bouton', 'tiny_snippet');
+    set_config('snippetkey_11', 'bouton', 'tiny_snippet');
+    set_config('snippetinstructions_11', '', 'tiny_snippet');
+    set_config('defaults_11', 'Texte=,Url=', 'tiny_snippet');
+    $buttonrender = file_get_contents("{$templateurl}/button.mustache");
+    set_config('snippet_11', $buttonrender, 'tiny_snippet');
+
+    // Classe virtuelle.
+    set_config('snippetname_12', 'Classe virtuelle', 'tiny_snippet');
+    set_config('snippetkey_12', 'classe virtuelle', 'tiny_snippet');
+    set_config('snippetinstructions_12', '', 'tiny_snippet');
+    set_config('defaults_12', 'Url=', 'tiny_snippet');
+    $virtualclassrender = file_get_contents("{$templateurl}/virtualclass.mustache");
+    set_config('snippet_12', $virtualclassrender, 'tiny_snippet');
+
+    // Presentiel.
+    set_config('snippetname_13', 'Presentiel', 'tiny_snippet');
+    set_config('snippetkey_13', 'presentiel', 'tiny_snippet');
+    set_config('snippetinstructions_13', '', 'tiny_snippet');
+    set_config('defaults_13', '', 'tiny_snippet');
+    $classroomrender = file_get_contents("{$templateurl}/classroom.mustache");
+    set_config('snippet_13', $classroomrender, 'tiny_snippet');
+
+    // Présentation de la formation.
+    set_config('snippetname_14', 'Presentation de la formation', 'tiny_snippet');
+    set_config('snippetkey_14', 'Ppresentation de la formation', 'tiny_snippet');
+    set_config('snippetinstructions_14', '', 'tiny_snippet');
+    set_config('defaults_14', '', 'tiny_snippet');
+    $coursepresentationhtml = file_get_contents("{$templateurl}/coursepresentation.mustache");
+    $coursepresentationrender = $mustache->render($coursepresentationhtml, ["wwwroot" => $CFG->wwwroot]);
+    set_config('snippet_14', $coursepresentationrender, 'tiny_snippet');
 }

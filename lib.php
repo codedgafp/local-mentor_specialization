@@ -2255,8 +2255,10 @@ function local_mentor_specialization_init_config() {
     local_mentor_core_remove_capability($formateur, 'local/mentor_core:suspendusers');
 
     // User menu items.
-    local_mentor_core_set_moodle_config('customusermenuitems',
-        'messages,message|/message/index.php');
+    local_mentor_core_set_moodle_config(
+        'customusermenuitems',
+        "messages,message|/message/index.php \nmycertificates,customcert|/mod/customcert/my_certificates.php"
+    );
 
     // Remove capabilities to all role.
     local_mentor_core_remove_capability_for_all('enrol/cohort:config');

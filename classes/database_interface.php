@@ -1792,12 +1792,42 @@ class database_interface extends \local_mentor_core\database_interface {
                         {regions} r ON r.name = uid_region.data
                 ) AS user_info ON user_info.user_id = u.id
             WHERE
-                -- sessions rules
-                s.opento = '".session::OPEN_TO_ALL."'
-                OR (s.opento = '".session::OPEN_TO_CURRENT_MAIN_ENTITY."'AND user_info.user_mainentity_id = ccs_main_entity.parent)
-                OR (s.opento = '".session::OPEN_TO_CURRENT_ENTITY."' AND (user_info.user_mainentity_id = ccs_main_entity.parent OR ccs_main_entity_name.name = ANY (string_to_array(user_secondaryentities_ids, ',')) OR CAST(user_region AS VARCHAR) = ANY (string_to_array(co.value , ','))))
-                OR (s.opento = '".session::OPEN_TO_OTHER_ENTITY."' AND (user_info.user_mainentity_id = ccs_main_entity.parent  OR user_info.user_mainentity_id = ss.coursecategoryid))
-            GROUP BY u.id, t.id, c.id";
+                ccs_main_entity.name = 'Sessions'
+                AND ccs_main_entity.visible = 1
+                AND s.timecreated IS NOT NULL AND s.timecreated > $tasktimeinterval
+                AND s.status IN ('".session::STATUS_OPENED_REGISTRATION."', '".session::STATUS_IN_PROGRESS."')
+                AND uif.shortname = 'mainentity'
+                AND
+                (
+                    -- session rules
+                    (s.opento = '".session::OPEN_TO_ALL."'
+                        OR (s.opento = '".session::OPEN_TO_CURRENT_MAIN_ENTITY."'AND ccu_main_entity.id = ccs_main_entity.parent)
+                        OR (s.opento = '".session::OPEN_TO_CURRENT_ENTITY."' AND (ccs_main_entity.parent = ccu_main_entity.id OR ccs_main_entity_name.name = ANY (string_to_array(uid_second_entity.data, ',')) OR CAST(r.id AS VARCHAR) = ANY (string_to_array(co.value , ','))))
+                        OR (s.opento = '".session::OPEN_TO_OTHER_ENTITY."' AND (ccu_main_entity.id = ccs_main_entity.parent  OR ccu_main_entity.id = ss.coursecategoryid))
+                    )
+                    AND
+                    (
+                        (
+                        con.contextlevel = 40
+                        AND
+                        (    
+                            -- admin dedié
+                            role.shortname = '".custom_notifications_service::$ADMIN."'
+                            -- RFC
+                            OR
+                            role.shortname = '".custom_notifications_service::$RFC."'
+                        )
+                        )
+                        -- subscriber
+                        OR
+                        (
+                            usercollection.shortname = ANY (string_to_array(t.collection, ','))
+                        AND usercollection.user_id = u.id
+                        AND NOT role.shortname = '". custom_notifications_service::$EXTERNALUSER ."'
+                        )
+                    )
+                )
+                GROUP BY u.id, t.id, c.id";
         $users = [];
         try {
             $users = $DB->get_records_sql($sql, [], $offset, $limit);

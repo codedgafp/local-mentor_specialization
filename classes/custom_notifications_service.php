@@ -30,6 +30,7 @@ class custom_notifications_service
     public static $ADMIN = "admindedie";
     public static $RFC = "respformation";
     public static $LIBRARYVISITOR = "visiteurbiblio";
+    public static $EXTERNALUSER = "utilisateurexterne";
     
     private static $instance;
 

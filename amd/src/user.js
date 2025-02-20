@@ -88,12 +88,11 @@ define([
                     d.format = 'json';
                     d.search = d.search && d.search.value ? d.search.value : null;
                 }
-                
             },
             oLanguage: {
                 sUrl: M.cfg.wwwroot + '/local/mentor_core/datatables/lang/' + M.util.get_string('langfile', 'local_user') + ".json"
             },
-            order: [[3, "asc"]],
+            order: [],
             dom: 'Blfrtip',
             buttons: [
                 {

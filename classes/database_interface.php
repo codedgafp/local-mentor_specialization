@@ -1885,7 +1885,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     (SELECT DISTINCT ucn.user_id, shortname
                     FROM  {collection} c
                     JOIN  {user_collection_notification} ucn ON ( c.id = ucn.collection_id AND ucn.type =  '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
-                            ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ',')
+                            ) AS users_collection ON users_collection.shortname = ANY (string_to_array(t.collection, ',')
                     )
                     -- Users Admins & RFCs
                     JOIN {user} u on u.id IS NOT NULL

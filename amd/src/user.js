@@ -186,6 +186,7 @@ define([
                     //create two button action per user (link profil and  remove to cohort)
                     data: 'id',
                     className: 'user-admin-table-actions',
+                    sortable: false,
                     render: function (data, type, row, meta) {
                         if (row.hasconfigaccess) {
                             if (type !== 'display') {

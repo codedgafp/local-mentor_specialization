@@ -1837,7 +1837,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     (SELECT DISTINCT ucn.user_id, shortname
                     FROM  {collection} c
                     JOIN  {user_collection_notification} ucn ON ( c.id = ucn.collection_id AND ucn.type =  '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
-                            ) AS users_collection ON users_collection.shortname = ANY (string_to_array(t.collection, ',')
+                            ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ',')
                     )
                     -- Users Admins & RFCs
                     JOIN {user} u on u.id IS NOT NULL
@@ -1890,17 +1890,19 @@ class database_interface extends \local_mentor_core\database_interface {
         $sql = "SELECT 
                 DISTINCT on (u.id, t.id)
                 ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
-                l.trainingid as trainingid, cc2.name as course_category_name, c.fullname as course_name, t.collection coursecollections, u.*
+                l.trainingid as trainingid, cc4.name AS course_category_name, c.fullname as course_name, t.collection coursecollections, u.*
                     FROM {library} l
                     JOIN {training} t ON t.id = l.originaltrainingid
                     JOIN {course} c ON c.shortname = t.courseshortname
                     JOIN {course_categories} cc ON cc.id = c.category
                     JOIN {course_categories} cc2 ON cc.parent = cc2.id
+                    JOIN {course_categories}  cc3 ON cc3.id = cc2.parent
+                    JOIN {course_categories}  cc4 ON cc4.id = cc3.parent
                     -- Users subscribers LIBRARY
                     LEFT JOIN
                         (SELECT distinct ucn.user_id, shortname from {collection} c
                             JOIN {user_collection_notification} ucn on (c.id = ucn.collection_id AND ucn.type = '".custom_notifications_service::$LIBRARY_PAGE_TYPE."')
-                        ) AS usercollection ON usercollection.shortname = ANY (string_to_array(t.collection, ','))
+                        ) AS userscollection ON userscollection.shortname = ANY (string_to_array(t.collection, ','))
                     -- Users Admins & RFCs
                     JOIN
                         {user} u on u.id IS NOT NULL
@@ -1912,7 +1914,7 @@ class database_interface extends \local_mentor_core\database_interface {
                         ON ctx.id = ra.contextid
                     WHERE
                     ctx.contextlevel = 40
-                    AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND usercollection.shortname = ANY (string_to_array(t.collection, ',')) AND usercollection.user_id = u.id ))
+                    AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND userscollection.shortname = ANY (string_to_array(t.collection, ',')) AND userscollection.user_id = u.id ))
                     AND l.timemodified > $tasktimeinterval
                     AND to_timestamp(l.timemodified) > to_timestamp(l.timecreated)
                     ;";

@@ -63,7 +63,7 @@ class custom_notifications_service
             $args = new stdClass();
             $args->link = "{$CFG->wwwroot}/local/library/pages/training.php?trainingid={$record->trainingid}";
             $args->course_category_name = $record->course_category_name;
-            $args->course_full_name = $record->coursefullname;
+            $args->course_full_name = $record->course_category_name_last_level ?? $record->course_category_name_first_level;
             $content = get_string('email_library_publish_new_course_content', 'local_mentor_specialization', $args);
             $contenthtml = text_to_html($content, true, true);
             $user = \core_user::get_user($record->userid);
@@ -88,7 +88,7 @@ class custom_notifications_service
             $args = new stdClass();
             $args->course_name = $subscriber->course_name;
             $args->trainingid = $subscriber->trainingid;
-            $args->course_category_name = $subscriber->course_category_name;
+            $args->course_category_name = $subscriber->course_category_name_last_level ?? $subscriber->course_category_name_first_level;
             $args->wwwroot = $CFG->wwwroot;
             $content = get_string('email_library_updates_updated_course_content', 'local_mentor_specialization', $args);
             $contenthtml = text_to_html($content, true, true);

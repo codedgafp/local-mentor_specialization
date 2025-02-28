@@ -1735,7 +1735,7 @@ class database_interface extends \local_mentor_core\database_interface {
             FROM
                 {course} c
             JOIN
-                {session} s ON c.shortname = s.courseshortname AND s.status IN ('".session::OPEN_TO_CURRENT_MAIN_ENTITY."', '".session::STATUS_IN_PROGRESS."') AND (s.timecreated IS NOT NULL AND s.timecreated  > ".$tasktimeinterval.")
+                {session} s ON c.shortname = s.courseshortname AND s.status IN ('".session::STATUS_OPENED_REGISTRATION."', '".session::STATUS_IN_PROGRESS."') AND (s.timecreated IS NOT NULL AND s.timecreated  > ".$tasktimeinterval.")
             JOIN
                 {course_categories} ccs_main_entity ON ccs_main_entity.id = c.category AND ccs_main_entity.name = 'Sessions' AND ccs_main_entity.visible = 1
             JOIN
@@ -1824,14 +1824,15 @@ class database_interface extends \local_mentor_core\database_interface {
                 l.trainingid,
                 c.fullname AS coursefullname,
                 u.email,
-                cc4.name AS course_category_name
+                cc2.name AS course_category_name_first_level, 
+                cc4.name AS course_category_name_last_level 
                 FROM {training} t  
                 JOIN  {library} l ON t.id = l.originaltrainingid
                 JOIN {course} c ON c.shortname = t.courseshortname
                 JOIN {course_categories} cc ON cc.id = c.category
                 JOIN {course_categories} cc2 ON cc.parent = cc2.id
-                JOIN {course_categories}  cc3 ON cc3.id = cc2.parent
-                JOIN {course_categories}  cc4 ON cc4.id = cc3.parent
+                LEFT JOIN {course_categories}  cc3 ON cc3.id = cc2.parent
+                LEFT JOIN {course_categories}  cc4 ON cc4.id = cc3.parent
                     -- Users subscribers LIBRARY
                 LEFT JOIN
                     (SELECT DISTINCT ucn.user_id, shortname
@@ -1867,7 +1868,7 @@ class database_interface extends \local_mentor_core\database_interface {
                             )
                         )
 
-                    GROUP BY u.id, l.originaltrainingid, c.id, cc4.name,l.trainingid";
+                    GROUP BY u.id, l.originaltrainingid, c.id, cc4.name,cc2.name,l.trainingid";
         $users = [];
         try {
             $users = $DB->get_records_sql($sql, []);
@@ -1890,14 +1891,19 @@ class database_interface extends \local_mentor_core\database_interface {
         $sql = "SELECT 
                 DISTINCT on (u.id, t.id)
                 ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
-                l.trainingid as trainingid, cc4.name AS course_category_name, c.fullname as course_name, t.collection coursecollections, u.*
+                l.trainingid as trainingid, 
+                cc2.name AS course_category_name_first_level, 
+                cc4.name AS course_category_name_last_level, 
+                c.fullname as course_name,
+                 t.collection coursecollections, 
+                 u.*
                     FROM {library} l
                     JOIN {training} t ON t.id = l.originaltrainingid
                     JOIN {course} c ON c.shortname = t.courseshortname
                     JOIN {course_categories} cc ON cc.id = c.category
                     JOIN {course_categories} cc2 ON cc.parent = cc2.id
-                    JOIN {course_categories}  cc3 ON cc3.id = cc2.parent
-                    JOIN {course_categories}  cc4 ON cc4.id = cc3.parent
+                    LEFT JOIN {course_categories}  cc3 ON cc3.id = cc2.parent
+                    LEFT JOIN {course_categories}  cc4 ON cc4.id = cc3.parent
                     -- Users subscribers LIBRARY
                     LEFT JOIN
                         (SELECT distinct ucn.user_id, shortname from {collection} c

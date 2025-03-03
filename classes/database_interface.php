@@ -397,28 +397,27 @@ class database_interface extends \local_mentor_core\database_interface {
 
         // Sort order.
         if ($data->order) {
-            $request .= " ORDER BY ";
             switch ($data->order['column']) {
                 case 0:
-                    $request .= "cc4.name " . $data->order['dir'];
+                    $request .= " ORDER BY cc4.name " . $data->order['dir'];
                     break;
                 case 1:
-                    $request .= "t.fullname " . $data->order['dir'];
+                    $request .= " ORDER BY t.fullname " . $data->order['dir'];
                     break;
                 case 2:
-                    $request .= "co.fullname " . $data->order['dir'];
+                    $request .= " ORDER BY co.fullname " . $data->order['dir'];
                     break;
                 case 3:
-                    $request .= "co.shortname " . $data->order['dir'];
+                    $request .= " ORDER BY co.shortname " . $data->order['dir'];
                     break;
                 case 4:
-                    $request .= "sessionnumber " . $data->order['dir'];
+                    $request .= " ORDER BY sessionnumber " . $data->order['dir'];
                     break;
                 case 5:
-                    $request .= "s.sessionstartdate " . $data->order['dir'];
+                    $request .= " ORDER BY s.sessionstartdate " . $data->order['dir'];
                     break;
                 case 6:
-                    $request .= "2 " . $data->order['dir'];
+                    $request .= " ORDER BY 2 " . $data->order['dir'];
                     break;
                 default:
                     break;

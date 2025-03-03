@@ -479,7 +479,7 @@ class mentor_specialization {
                 'maxparticipants' => $sessionrecord->maxparticipants,
             ];
         }
-       
+
         if ($data->order) {
             switch ($data->order['column']) {
                 case 6:

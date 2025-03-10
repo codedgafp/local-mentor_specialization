@@ -1030,18 +1030,13 @@ class mentor_specialization {
         }     
 
         $entities = $this->get_trainings_entities($trainingsrecord);
-       
-        foreach ($trainingsrecord as &$training) {
 
+        foreach ($trainingsrecord as &$training) {
             $trainingDetails = self::get_training($training->id);
             $trainingentity = $entities[$training->id];
             // The user has access if it is a master entity or if he manages formations on this entity or its sub-entity.
             if ($trainingentity->is_main_entity() || $trainingentity->is_trainings_manager($USER)) {
-
-                    $training->id = $training->id;
                     $training->name = $trainingDetails->name;
-                    $training->idsirh = $training->name;
-                    $training->status = $training->status;
                     $training->entityid =  $trainingentity->id;
                     $training->subentityname =  !$trainingentity->is_main_entity() ? $trainingentity->get_name() : '';
                     $training->collectionstr =  $trainingDetails->collectionstr;
@@ -1050,7 +1045,7 @@ class mentor_specialization {
                     $training->shortname = $trainingDetails->courseshortname;
                     $training->sessions = $trainingDetails->get_session_number();
                     $training->urlsessions = $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .'&trainingid=' . $training->id ;
-               
+
                 $training = (array)$training;               
             }
         }

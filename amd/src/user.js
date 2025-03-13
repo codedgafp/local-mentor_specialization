@@ -15,6 +15,7 @@ define([
     'local_mentor_core/datatables-select',
     'local_mentor_core/datatables-checkboxes',
     'local_mentor_core/buttons.html5',
+    'local_mentor_specialization/common',
 ], function ($, format_edadmin, local_user, mentor, cookie, select2) {
 
     /**
@@ -94,6 +95,8 @@ define([
             },
             order: [],
             dom: 'Blfrtip',
+            language: { search: ""},
+            search: {return: true},
             buttons: [
                 {
                     extend: 'csvHtml5',
@@ -204,7 +207,8 @@ define([
                         return '';
                     }
                 }
-            ]
+            ], 
+            initComplete: () => { addSearchButton("user-admin-table_filter") }
         });
     };
 

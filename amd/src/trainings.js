@@ -15,6 +15,7 @@ define([
     'local_mentor_core/datatables-buttons',
     'local_mentor_core/jszip',
     'local_mentor_core/buttons.html5',
+    'local_mentor_specialization/common',
 ], function ($, format_edadmin, local_trainings, select2, cookie, url, templates) {
 
     /**
@@ -144,6 +145,8 @@ define([
             oSearch: {
                 "sSearch": that.filter.search
             },
+            language: { search: ""},
+            search: {return: true},
             rowCallback: function (row, data) {
                 that.actionsRenderPromise(data.actions, data.id, data.name, data.shortname)
                     .then(function (menuData) {
@@ -236,7 +239,8 @@ define([
                         return '';
                     }
                 }
-            ]
+            ], 
+            initComplete: () => { addSearchButton("trainings-table_filter") }
         });
 
         M.table.on('search.dt', function () {

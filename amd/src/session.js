@@ -14,7 +14,8 @@ define([
     'local_mentor_core/datatables',
     'local_mentor_core/datatables-buttons',
     'local_mentor_core/jszip',
-    'local_mentor_core/buttons.html5'
+    'local_mentor_core/buttons.html5',
+    'local_mentor_specialization/common',
 ], function ($, format_edadmin, local_session, select2, cookie, url, templates) {
 
     /**
@@ -214,6 +215,8 @@ define([
             pageLength: 50,
             dom: 'Blfrtip',
             order: [],
+            language: { search: ""},
+            search: {return: true},
             oSearch: {
                 "sSearch": (this.params.filtertrainingname) ? '"' + this.params.filtertrainingname + '"' : that.filter.search
             },
@@ -351,9 +354,9 @@ define([
                         return '';
                     }
                 }
-            ]
+            ],
+            initComplete: () => { addSearchButton("session-table_filter") }
         });
-
         M.table.on('search.dt', function () {
             that.setSearchCookieFilter();
         });

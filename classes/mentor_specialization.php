@@ -438,8 +438,8 @@ class mentor_specialization {
         $opentostatus = \local_mentor_core\session_api::get_all_open_to_status();
         
         $entities = $this->get_sessions_entities($listsessionsrecord);
-
-        foreach ($listsessionsrecord as $key => &$sessionrecord) {
+        $listsession = [];
+        foreach ($listsessionsrecord as  $sessionrecord) {
             $session = \local_mentor_core\session_api::get_session($sessionrecord->id, false);
             $session->set_numberparticipants($sessionrecord->numberparticipants);
             $entity = $entities[$sessionrecord->id];
@@ -448,42 +448,70 @@ class mentor_specialization {
             if (! has_capability('local/session:manage',  $sessioncontext, $USER->id)) {
                 continue;
             }
+            if (!isset($trainings[$session->trainingid])) {
+                try {
+                    $trainings[$session->trainingid] = $session->get_training();
+                } catch (dml_missing_record_exception $e) {
+                    // When the course does not exist in the database.
+                    continue;
+                }
+            }
 
-            $sessionrecord->link = $session->get_url()->out();
-            $sessionrecord->actions = $session->get_actions();
-            $sessionrecord->status =  get_string($sessionrecord->statusshortname, 'local_mentor_core');
-            $sessionrecord->opento =  $opentostatus[$sessionrecord->opento];
-            $sessionrecord->subentityname =  !$entity->is_main_entity() ? $entity->get_name() : '';
-            $sessionrecord->collectionstr =  !is_null($sessionrecord->collectionstr) ? str_replace(';', "<br/>",$sessionrecord->collectionstr) : null;
-            $sessionrecord->entityid =  $entity->id;
-            $sessionrecord->nbparticipant =  $sessionrecord->numberparticipants;
-            $sessionrecord = (array)$sessionrecord;
+            $entity = $session->get_entity();
+
+            $listsession[] = [
+                'id' => $sessionrecord->id,
+                'link' => $session->get_url()->out(),
+                'shortname' => $sessionrecord->shortname,
+                'status' => get_string($sessionrecord->statusshortname, 'local_mentor_core'),
+                'statusshortname' => $sessionrecord->statusshortname,
+                'timecreated' => $sessionrecord->timecreated,
+                'nbparticipant' => $sessionrecord->numberparticipants,
+                'opento' => $opentostatus[$sessionrecord->opento],
+                'trainingfullname' => $trainings[$session->trainingid]->name,
+                'subentityname' => !$entity->is_main_entity() ? $entity->get_name() : '',
+                'sessionname' => $session->get_course()->fullname,
+                'actions' => $session->get_actions(),
+                'sessionnumber' => $sessionrecord->sessionnumber,
+                'collection' => $session->collection,
+                'collectionstr' =>!is_null($sessionrecord->collectionstr) ? str_replace(';', "<br/>",$sessionrecord->collectionstr) : null,
+                'entityid' => $entity->id,
+                'maxparticipants' => $sessionrecord->maxparticipants,
+            ];
         }
        
         if ($data->order) {
             switch ($data->order['column']) {
-                case 7:
-                    // Order by shared.
-                    usort(array_values($listsessionsrecord), function($a, $b) use ($data) {
-                        if ($data->order['dir'] === 'asc') {
-                            // True first.
-                            return (($a['shared'] === $b['shared']) ? 0 : $a['shared']) ? -1 : 1;
+                case 6:
+                    // Order by nbparticipant.
+                    usort($listsession, function($a, $b) use ($data) {                        
+                        if ($a['nbparticipant'] == $b['nbparticipant']) {
+                            return 0;
                         }
 
-                        // False first.
-                        return (($a['shared'] === $b['shared']) ? 0 : $a['shared']) ? 1 : -1;
+                        $result = ($a['nbparticipant'] < $b['nbparticipant']) ? -1 : 1;
+
+                        return ($data->order['dir'] === 'asc') ? $result : -$result;
+                    });
+                    break;
+                case 7:
+                    // Order by shared.
+                    usort($listsession, function($a, $b) use ($data) {
+                        if ($a['shared'] == $b['shared']) {
+                            return 0;
+                        }
+
+                        $result = ($a['shared'] < $b['shared']) ? -1 : 1;
+
+                        return ($data->order['dir'] === 'asc') ? $result : -$result;
                     });
                     break;
                 case 8 :
                     // Order by status.
-                    usort(array_values($listsessionsrecord), function($a, $b) use ($data) {
-                        if ($data->order['dir'] === 'asc') {
-                            // Acs.
-                            return strnatcmp($a['status'], $b['status']);
-                        }
+                    usort($listsession, function($a, $b) use ($data) {
+                        $result = strnatcmp($a['status'], $b['status']);
 
-                        // Desc.
-                        return strnatcmp($b['status'], $a['status']);
+                        return ($data->order['dir'] === 'asc') ? $result : -$result;
                     });
                     break;
                 default:
@@ -491,7 +519,7 @@ class mentor_specialization {
             }
         }
 
-        return array_values($listsessionsrecord);
+        return array_values($listsession);
     }
 
  /**
@@ -1030,27 +1058,35 @@ class mentor_specialization {
         }     
 
         $entities = $this->get_trainings_entities($trainingsrecord);
+        // Format trainings as array.
+        $trainingsarray = [];
+        foreach ($trainingsrecord as $training) {
 
-        foreach ($trainingsrecord as &$training) {
             $trainingDetails = self::get_training($training->id);
             $trainingentity = $entities[$training->id];
             // The user has access if it is a master entity or if he manages formations on this entity or its sub-entity.
             if ($trainingentity->is_main_entity() || $trainingentity->is_trainings_manager($USER)) {
-                    $training->name = $trainingDetails->name;
-                    $training->entityid =  $trainingentity->id;
-                    $training->subentityname =  !$trainingentity->is_main_entity() ? $trainingentity->get_name() : '';
-                    $training->collectionstr =  $trainingDetails->collectionstr;
-                    $training->url = $trainingDetails->get_url()->out();
-                    $training->actions = $trainingDetails->get_actions($USER, $actiondata) ;
-                    $training->shortname = $trainingDetails->courseshortname;
-                    $training->sessions = $trainingDetails->get_session_number();
-                    $training->urlsessions = $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .'&trainingid=' . $training->id ;
-
-                $training = (array)$training;               
+                $trainingsarray[] = [
+                    'id' => $training->id,
+                    'name' => $trainingDetails->name,
+                    'idsirh' => $training->idsirh,
+                    'status' => $training->status,
+                    'entityid' => $trainingentity->id,
+                    'subentityname' => !$trainingentity->is_main_entity() ?
+                        $trainingentity->get_name() : '',
+                    'collectionstr' => $trainingDetails->collectionstr,
+                    'url' => $trainingDetails->get_url()->out(),
+                    'actions' => $trainingDetails->get_actions($USER, $actiondata),
+                    'shortname' => $trainingDetails->courseshortname,
+                    'sessions' => $trainingDetails->get_session_number(),
+                    'urlsessions' => $trainingentity->get_main_entity()->get_edadmin_courses('session')['link'] .
+                                     '&trainingid=' . $training->id,
+                ];
+   
             }
         }
 
-        return array_values($trainingsrecord);
+        return array_values($trainingsarray);
     }
 
     /**

@@ -64,6 +64,10 @@ $observers = [
                 'eventname' => '\core\event\user_updated',
                 'callback' => 'local_mentor_specialization_observer::manager_change_user_entities_notification',
         ],
+        [
+                'eventname' => '\core\event\user_updated',
+                'callback' => 'local_mentor_core_observer::sync_user_main_entity'
+        ],
 
         [
                 'eventname' => '\core\event\role_assigned',

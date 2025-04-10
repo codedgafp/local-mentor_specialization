@@ -341,7 +341,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     co3.id AS course3id,
                     s.status AS statusshortname,
                     s.sessionstartdate AS timecreated,
-                    CONCAT('#', s.sessionnumber) AS sessionnumber,
+                    s.sessionnumber,
                     cc4.name,
                     s.trainingid,
                     s.opento,

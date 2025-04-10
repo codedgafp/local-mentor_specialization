@@ -472,7 +472,7 @@ class mentor_specialization {
                 'subentityname' => !$entity->is_main_entity() ? $entity->get_name() : '',
                 'sessionname' => $session->get_course()->fullname,
                 'actions' => $session->get_actions(),
-                'sessionnumber' => $sessionrecord->sessionnumber,
+                'sessionnumber' => '#' . $sessionrecord->sessionnumber,
                 'collection' => $session->collection,
                 'collectionstr' =>!is_null($sessionrecord->collectionstr) ? str_replace(';', "<br/>",$sessionrecord->collectionstr) : null,
                 'entityid' => $entity->id,

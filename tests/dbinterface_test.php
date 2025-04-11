@@ -3367,17 +3367,11 @@ numerique|Numérique et système d\'information et de communication|rgba(106, 10
 
         $dbinterface = \local_mentor_specialization\database_interface::get_instance();
 
-        $entitydata = $this->get_entities_data();
-
-        // Create entity.
-        try {
-            $entityid = \local_mentor_core\entity_api::create_entity($entitydata);
-            $entity = \local_mentor_core\entity_api::get_entity($entityid);
-        } catch (\Exception $e) {
-            // Failed if the name of this entity is already in use.
-            self::fail($e->getMessage());
-        }
-
+        //From sprint60, 
+        //the main entity of the user on create/update, will be affected automatically basing on his email domain 
+        //So the user will have automatically main entity "Bibliothèque de formations";  
+        $entity = \local_mentor_core\entity_api::get_entity_by_name('Bibliothèque de formations');
+        $entityid = $entity->id;  
         self::getDataGenerator()->create_user(
             ['profile_field_mainentity' => $entity->name]
         );

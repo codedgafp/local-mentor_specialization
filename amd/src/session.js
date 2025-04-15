@@ -18,6 +18,8 @@ define([
     'local_mentor_specialization/common',
 ], function ($, format_edadmin, local_session, select2, cookie, url, templates) {
 
+    let processing = false;
+
     /**
      * Create and init table and element's table
      *
@@ -159,7 +161,7 @@ define([
                             var csvData = BOM + csv;
 
                             //define the file type to text/csv
-                            csvFile = new Blob([csvData], {type: 'text/csv'});
+                            csvFile = new Blob([csvData], { type: 'text/csv' });
                             downloadLink = document.createElement("a");
                             downloadLink.download = 'export_offre_formation_' + that.params.mainentityshortname + '_' + dateformat + '.csv';
                             downloadLink.href = window.URL.createObjectURL(csvFile);
@@ -221,28 +223,35 @@ define([
                 "sSearch": (this.params.filtertrainingname) ? '"' + this.params.filtertrainingname + '"' : that.filter.search
             },
             fnDrawCallback: function () {
-                $.ajax({
-                    url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
-                    data: {
-                        entityid: entityid,
-                        action: 'has_sub_entities',
-                        controller: 'entity',
-                        format: 'json'
-                    },
-                }).done(function (response) {
-                    response = JSON.parse(response);
-                    if (response.message) {
-                        // If has sus-entity
-                        $('.subentity-data').css({'display': 'table-cell'});
-                        $('.header-subentity').css({'display': 'table-cell'});
-                        $('#sub-entity-filter').css({'display': 'flex'});
-                    } else {
-                        // If has not sus-entity
-                        $('.subentity-data').css({'display': 'none'});
-                        $('.header-subentity').css({'display': 'none'});
-                        $('#sub-entity-filter').css({'display': 'none'});
-                    }
-                });
+                if (processing === false) {
+
+                    processing = true;
+
+                    $.ajax({
+                        url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
+                        data: {
+                            entityid: entityid,
+                            action: 'has_sub_entities',
+                            controller: 'entity',
+                            format: 'json'
+                        },
+                    }).done(function (response) {
+                        response = JSON.parse(response);
+                        if (response.message) {
+                            // If has sus-entity
+                            $('.subentity-data').css({ 'display': 'table-cell' });
+                            $('.header-subentity').css({ 'display': 'table-cell' });
+                            $('#sub-entity-filter').css({ 'display': 'flex' });
+                        } else {
+                            // If has not sus-entity
+                            $('.subentity-data').css({ 'display': 'none' });
+                            $('.header-subentity').css({ 'display': 'none' });
+                            $('#sub-entity-filter').css({ 'display': 'none' });
+                        }
+
+                        processing = false;
+                    });
+                }
             },
             buttons: tableButtons,
             serverSide: true,//For use Ajax
@@ -318,7 +327,6 @@ define([
                             var color = '#1E1E1E';
 
                             if (data.maxparticipants != null && data.maxparticipants != '' && data.maxparticipants != 0) {
-
                                 var percent = data.nbparticipant / data.maxparticipants * 100;
 
                                 if (percent >= 100) {
@@ -360,7 +368,22 @@ define([
         M.table.on('search.dt', function () {
             that.setSearchCookieFilter();
         });
-    };
+
+        M.table.on('processing.dt', function(e, settings, processing) {
+            if (processing) {
+                $(M.table.table().container()).addClass('processing');
+            } else {
+                $(M.table.table().container()).removeClass('processing');
+            }
+        });
+
+        $(document).on('click', '#session-table thead th', function(e) {
+            if ($(M.table.table().container()).hasClass('processing')) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        });
+    }
 
     /**
      * Init filter's table data
@@ -512,14 +535,14 @@ define([
             $.each(data.actions, function (index, element) {
                 var item = {};
                 switch (index) {
-                    case 'sessionSheet' :
+                    case 'sessionSheet':
                         item = {
                             'id': index + data.id,
                             'href': element.url,
                             'text': '<img src="' + M.util.image_url(index.toLowerCase(), 'local_session') + '"> ' + element.tooltip
                         };
                         break;
-                    case 'moveSession' :
+                    case 'moveSession':
                         item = {
                             'id': index + data.id,
                             'class': 'cursor-image-session-admin-session',
@@ -527,7 +550,7 @@ define([
                             'text': '<img src="' + M.util.image_url(index.toLowerCase(), 'local_session') + '"> ' + element.tooltip
                         };
                         break;
-                    case 'deleteSession' :
+                    case 'deleteSession':
                         item = {
                             'id': index + data.id,
                             'class': 'cursor-image-session-admin-session',
@@ -535,7 +558,7 @@ define([
                             'text': '<img src="' + M.util.image_url(index.toLowerCase(), 'local_session') + '"> ' + element.tooltip
                         };
                         break;
-                    case 'manageUser' :
+                    case 'manageUser':
                         item = {
                             'id': index + data.id,
                             'href': element.url,
@@ -543,21 +566,21 @@ define([
                             'target': '_blank'
                         };
                         break;
-                    case 'importUsers' :
+                    case 'importUsers':
                         item = {
                             'id': index + data.id,
                             'href': element.url,
                             'text': '<img src="' + M.util.image_url('importusers', 'local_session') + '"> ' + element.tooltip
                         };
                         break;
-                    case 'importSIRH' :
+                    case 'importSIRH':
                         item = {
                             'id': index + data.id,
                             'href': element.url,
                             'text': '<img src="' + M.util.image_url('handshake', 'local_session') + '"> ' + element.tooltip
                         };
                         break;
-                    case 'cancelSession' :
+                    case 'cancelSession':
                         // Escape the shortname string.
                         data.shortname = escape(data.shortname);
                         item = {
@@ -567,7 +590,7 @@ define([
                             'text': '<img src="' + M.util.image_url(index.toLowerCase(), 'local_session') + '"> ' + element.tooltip
                         };
                         break;
-                    default :
+                    default:
                         item = {
                             'id': index + data.id,
                             'href': element,

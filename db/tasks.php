@@ -109,5 +109,14 @@ $tasks = [
         'month' => '*',
         'disabled' => 1,
     ],
-    
+    [
+        'classname' => 'local_mentor_specialization\task\update_user_mainentity',
+        'blocking' => 0,
+        'minute' => '*',
+        'hour' => '2',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+        'disabled' => 1,
+    ]
 ];

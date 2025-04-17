@@ -370,3 +370,5 @@ Pour rappel, toutes vos attestations de participation déjà obtenues dans des s
 L\'équipe Mentor
 
 <img src="{$a->wwwroot}/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
+
+$string['update_user_mainentity'] = 'Mise à jour des utilisateurs, pour les domaines dont il y a eu une mise à jour';

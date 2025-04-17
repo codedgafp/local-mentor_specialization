@@ -336,6 +336,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     s.maxparticipants,
                     co.fullname AS trainingfullname,
                     co.shortname,
+                    co.fullname as sessionname,
                     co.id AS courseid,
                     co3.id AS course3id,
                     s.status AS statusshortname,

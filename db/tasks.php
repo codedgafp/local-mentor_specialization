@@ -118,5 +118,15 @@ $tasks = [
         'dayofweek' => '*',
         'month' => '*',
         'disabled' => 1,
-    ]
+    ],
+    [
+        'classname' => 'local_mentor_specialization\task\identify_external_users_and_without_mainentity',
+        'blocking' => 0,
+        'minute' => '*',
+        'hour' => '3',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+        'disabled' => 1,
+    ],
 ];

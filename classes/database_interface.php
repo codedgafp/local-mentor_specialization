@@ -2069,4 +2069,21 @@ class database_interface extends \local_mentor_core\database_interface {
         ]);
     }
 
+    /**
+     * Get all the external users
+     * 
+     * @return array
+     */
+    public function get_all_external_users(): array
+    {
+        $sql = "SELECT u.id, u.email
+                FROM {user} u
+                INNER JOIN {role_assignments} ra ON ra.userid = u.id
+                INNER JOIN {role} r ON r.id = ra.roleid AND r.shortname = :roleshortname
+                ";
+
+        $params['roleshortname'] = 'utilisateurexterne';
+
+        return $this->db->get_records_sql($sql, $params);
+    }
 }

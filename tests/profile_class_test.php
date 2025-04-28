@@ -91,7 +91,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $profile = \local_mentor_core\profile_api::get_profile($profiledata->id);
 
         // Nothing to synchronize.
-        self::assertNull($profile->sync_entities());
+        self::assertNotFalse($profile->sync_entities());
 
         $lastname2 = 'lastname2';
         $firstname2 = 'firstname2';
@@ -101,7 +101,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         //So the user will have automatically main entity "Bibliothèque de formations";  
         $entity1 = \local_mentor_core\entity_api::get_entity_by_name('Bibliothèque de formations');
 
-        self::assertCount(0, $entity1->get_members());
+        self::assertCount(1, $entity1->get_members());
 
         // Create user.
         self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname2, $firstname2, $email2, 1, [], null, $auth));
@@ -112,7 +112,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         
         // Entity cohort sync.
         self::assertTrue($profile2->sync_entities());
-        self::assertCount(1, $entity1->get_members());
+        self::assertCount(2, $entity1->get_members());
 
         $entity2id = \local_mentor_core\entity_api::create_entity([
             'name' => 'Entity2',

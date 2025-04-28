@@ -94,15 +94,6 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         $userid = local_mentor_core\profile_api::create_user($user);
         set_user_preference('auth_forcepasswordchange', 0, $user);
 
-        $field = $DB->get_record('user_info_field', ['shortname' => 'mainentity']);
-
-        $userdata = new stdClass();
-        $userdata->fieldid = $field->id;
-        $userdata->data = 'New Entity 1';
-        $userdata->userid = $userid;
-
-        $DB->insert_record('user_info_data', $userdata);
-
         return $userid;
     }
 
@@ -197,7 +188,6 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
 
         // Init test data.
         $data = $this->init_session_data(true);
-
         try {
             // Get entity object for default category.
             $entityid = \local_mentor_core\entity_api::create_entity([
@@ -205,13 +195,11 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
                 'shortname' => 'New Entity 1',
                 'regions' => [5], // Corse.
                 'userid' => 2, // Set the admin user as manager of the entity.
-            ]);
-
+            ]); 
             $entity = \local_mentor_core\entity_api::get_entity($entityid);
-        } catch (\Exception $e) {
-            self::fail($e->getMessage());
-        }
-
+            } catch (\Exception $e) {
+                self::fail($e->getMessage());
+            }      
         // Init data with entity data.
         $data = $this->init_training_entity($data, $entity);
 
@@ -223,6 +211,65 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         }
 
         return $training;
+    }
+
+     /**
+     * Init training creation
+     *
+     * @return training
+     * @throws moodle_exception
+     */
+    public function init_training_creation_ondefault_entity() {
+        global $DB;
+
+        // Init test data.
+        $data = $this->init_session_data(true);
+
+            $defaultcategory = \local_mentor_specialization\mentor_entity::get_default_entity();
+            $entityid = $defaultcategory->id;
+            $entity = \local_mentor_core\entity_api::get_entity($entityid);
+    
+        // Init data with entity data.
+        $data = $this->init_training_entity($data, $entity);
+
+        // Test standard training creation.
+        try {
+            $training = \local_mentor_core\training_api::create_training($data);
+           
+        } catch (\Exception $e) {
+            self::fail($e->getMessage());
+        }
+
+        return $training;
+    }
+
+    
+    /**
+     * Init session creation
+     *
+     * @return int
+     * @throws moodle_exception
+     */
+    public function init_session_creation_ondefault_entity() {
+        // Create training.
+        $training = $this->init_training_creation_ondefault_entity();
+
+        $sessionname = 'TESTUNITCREATESESSION';
+
+        // Test standard session creation.
+        try {
+            $session = \local_mentor_core\session_api::create_session($training->id, $sessionname, true);
+           
+        } catch (\Exception $e) {
+            self::fail($e->getMessage());
+        }
+
+        // Open to current entity.
+        $data = new stdClass();
+        $data->opento = 'current_entity';
+        $session->update($data);
+
+        return $session->id;
     }
 
     /**
@@ -985,7 +1032,9 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
      * @covers  \local_mentor_specialization\mentor_session::get_course
      */
     public function test_get_user_sessions() {
+        self::resetAllData();
         $this->resetAfterTest(true);
+
         $this->init_config();
         $this->reset_singletons();
 
@@ -1005,6 +1054,7 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
 
         // Updating the status session to have return sessions.
         $session->status = \local_mentor_core\session::STATUS_IN_PROGRESS;
+        $session->opento = \local_mentor_core\session::OPEN_TO_ALL;
         \local_mentor_core\session_api::update_session($session);
 
         // Create self enrolment instance.
@@ -1023,8 +1073,8 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         self::assertCount(1, \local_mentor_core\session_api::get_user_sessions($userid));
         // User is not trainer.
         self::assertFalse($session->is_trainer($userid));
-
         self::resetAllData();
+        
     }
 
     /**
@@ -1043,6 +1093,7 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
      * @covers  \local_mentor_specialization\mentor_session::user_is_enrolled
      */
     public function test_get_sessions_user_trainer() {
+        self::resetAllData();
         $this->resetAfterTest(true);
         $this->init_config();
         $this->reset_singletons();
@@ -1064,6 +1115,7 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
 
         // Updating the status session to have return sessions.
         $session->status = \local_mentor_core\session::STATUS_IN_PROGRESS;
+        $session->opento = \local_mentor_core\session::OPEN_TO_ALL;
         \local_mentor_core\session_api::update_session($session);
 
         // Create self enrolment instance.

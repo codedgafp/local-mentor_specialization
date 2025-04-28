@@ -707,13 +707,13 @@ class local_mentor_specialization_entity_testcase extends advanced_testcase {
 
         $newuser = self::getDataGenerator()->create_user();
 
-        // The user must not be a member of any entity.
+        // The user is a member of the default entity => auto-attach of main entity
         $userentities = \local_mentor_core\entity_api::get_user_entities($newuser->id);
-        self::assertEquals(0, count($userentities));
+        self::assertEquals(1, count($userentities));
 
-        $entitiesdata = $this->get_entities_data();
+        $entitiesdata = $this->get_entities_data(); // 2 entities
 
-        // Create all entities.
+        // Create all entities: 2 more entities
         foreach ($entitiesdata as $entitydata) {
             // Test standard Entity creation.
             try {
@@ -730,7 +730,7 @@ class local_mentor_specialization_entity_testcase extends advanced_testcase {
 
         // Check if the user is a member of each entity.
         $userentities = \local_mentor_core\entity_api::get_user_entities($newuser->id);
-        self::assertEquals(count($entitiesdata), count($userentities));
+        self::assertEquals(count($entitiesdata)+1, count($userentities));
 
         self::resetAllData();
     }

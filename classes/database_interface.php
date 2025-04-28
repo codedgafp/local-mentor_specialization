@@ -1910,8 +1910,8 @@ class database_interface extends \local_mentor_core\database_interface {
                             -- subscriber
                             OR
                             (
-                            usercollection.shortname = ANY (string_to_array(t.collection, ','))
-                            AND usercollection.user_id = u.id
+                            users_collection.shortname = ANY (string_to_array(t.collection, ','))
+                            AND users_collection.user_id = u.id
                             )
                         )
 

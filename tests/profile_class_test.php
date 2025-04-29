@@ -80,6 +80,11 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
 
         $db = \local_mentor_core\database_interface::get_instance();
 
+        //From sprint60, 
+        //the main entity of the user on create/update, will be affected automatically basing on his email domain 
+        //So the user will have automatically main entity "Bibliothèque de formations";  
+        $entity1 = \local_mentor_core\entity_api::get_entity_by_name('Bibliothèque de formations');
+
         $lastname = 'lastname';
         $firstname = 'firstname';
         $email = 'user@gouv.fr';
@@ -88,6 +93,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         testhelper::create_default_entity($this);
         // Create user.
         self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, null, [], null, $auth));
+        self::assertCount(1, $entity1->get_members());
 
         // Get user.
         $profiledata = $db->get_user_by_email($email);
@@ -99,12 +105,6 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $lastname2 = 'lastname2';
         $firstname2 = 'firstname2';
         $email2 = 'user2@gouv.fr';
-        //From sprint60, 
-        //the main entity of the user on create/update, will be affected automatically basing on his email domain 
-        //So the user will have automatically main entity "Bibliothèque de formations";  
-        $entity1 = \local_mentor_core\entity_api::get_entity_by_name('Bibliothèque de formations');
-
-        self::assertCount(1, $entity1->get_members());
 
         // Create user.
         self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname2, $firstname2, $email2, $entity1->id, [], null, $auth));

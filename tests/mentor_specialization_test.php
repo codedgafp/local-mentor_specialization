@@ -837,14 +837,18 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $this->init_config();
         $this->reset_singletons();
 
+        global $USER;
+
         self::setAdminUser();
 
         $sessionid = $this->init_session_creation();
-        $session = \local_mentor_core\session_api::get_session($sessionid);
+        $session = session_api::get_session($sessionid);
+
+        $entity = $session->get_entity();
 
         $params = [];
         $data = new stdClass();
-        $data->entityid = $session->get_entity()->id;
+        $data->entityid = $entity->id;
         $data->search = [];
         $data->search['value'] = '';
         $data->order = 0;
@@ -852,21 +856,22 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $data->length = 50;
         $params['data'] = $data;
 
+        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity->get_context());
+
         // One session when user is admin.
         $specialization = new \local_mentor_specialization\mentor_specialization();
         $countsession = $specialization->get_specialization('count_session_record', null, $params);
         self::assertEquals(1, $countsession);
 
         // One session when user is manager.
-        $user = self::getDataGenerator()->create_user();
-        $session->get_entity()->assign_manager($user->id);
-        self::setUser($user);
+        \local_mentor_core\profile_api::role_unassign('admindedie', $USER->id, $entity->get_context()->id);
+
+        \local_mentor_core\profile_api::role_assign('referentlocal', $USER->id, $entity->get_context());
         $countsession = $specialization->get_specialization('count_session_record', null, $params);
         self::assertEquals(1, $countsession);
 
         // Zero session when user is not manager.
-        $user2 = self::getDataGenerator()->create_user();
-        self::setUser($user2);
+        \local_mentor_core\profile_api::role_unassign('referentlocal', $USER->id, $entity->get_context()->id);
         $countsession = $specialization->get_specialization('count_session_record', null, $params);
         self::assertEquals(0, $countsession);
 

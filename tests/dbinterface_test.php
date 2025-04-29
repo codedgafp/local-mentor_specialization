@@ -806,7 +806,7 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
      * @covers \local_mentor_specialization\database_interface::get_sessions_by_entity_id
      */
     public function test_get_sessions_by_entity_id_ok() {
-        global $DB;
+        global $DB, $USER;
 
         $this->resetAfterTest(true);
         $this->init_config();
@@ -820,13 +820,15 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         self::setAdminUser();
 
         // Create trainings.
-        $trainingdata1 = $this->init_session_data(true);
         $entityid1 = \local_mentor_core\entity_api::create_entity([
             'name' => 'New Entity 1', 'shortname' => 'New Entity 1',
         ]);
         $entity1 = \local_mentor_core\entity_api::get_entity($entityid1);
+        
+        $trainingdata1 = $this->init_session_data(true);
         $trainingdata1 = $this->init_training_entity($trainingdata1, $entity1);
         $training1 = \local_mentor_core\training_api::create_training($trainingdata1);
+
         $trainingdata2 = $this->init_session_data(true);
         $trainingdata2->name = 'fullname2';
         $trainingdata2->shortname = 'shortname2';
@@ -837,6 +839,7 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         $entity2 = \local_mentor_core\entity_api::get_entity($entityid2);
         $trainingdata2 = $this->init_training_entity($trainingdata2, $entity2);
         $training2 = \local_mentor_core\training_api::create_training($trainingdata2);
+
         $trainingdata3 = $this->init_session_data(true);
         $trainingdata3->name = 'fullname3';
         $trainingdata3->shortname = 'shortname3';
@@ -865,6 +868,8 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         $data->start = 0;
         $data->length = 10;
 
+        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity1->get_context());
+
         // Get sessions in main entity with sub-entity.
         $sessionsbyentity = $dbinterface->get_sessions_by_entity_id($data);
         self::assertCount(2, $sessionsbyentity);
@@ -876,6 +881,8 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         self::assertEquals($session3->shortname, $sessionsbyentity[$session3->id]->shortname);
 
         $data->entityid = $entity2->id;
+
+        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity2->get_context());
 
         // Get sessions in main entity with sub-entity.
         $sessionsbyentity = $dbinterface->get_sessions_by_entity_id($data);
@@ -895,7 +902,7 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
      * @covers \local_mentor_specialization\mentor_session::update
      */
     public function test_get_sessions_by_entity_id_with_filter_ok() {
-        global $DB;
+        global $DB, $USER;
 
         $this->resetAfterTest(true);
         $this->init_config();
@@ -975,6 +982,8 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         $data->order = false;
         $data->start = 0;
         $data->length = 10;
+
+        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity1->get_context());
 
         // Get sessions in main entity without filter.
         $sessionsbyentity = $dbinterface->get_sessions_by_entity_id($data);
@@ -1108,7 +1117,7 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
      * @covers \local_mentor_specialization\database_interface::generate_sessions_by_entity_id_search
      */
     public function test_get_sessions_by_entity_id_with_search_ok() {
-        global $DB;
+        global $DB, $USER;
 
         $this->resetAfterTest(true);
         $this->init_config();
@@ -1189,6 +1198,8 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         $data->start = 0;
         $data->length = 10;
 
+        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity1->get_context());
+
         // Get sessions in main entity without search.
         $sessionsbyentity = $dbinterface->get_sessions_by_entity_id($data);
         self::assertCount(3, $sessionsbyentity);
@@ -1266,7 +1277,7 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
      * @covers \local_mentor_specialization\database_interface::get_sessions_by_entity_id
      */
     public function test_get_sessions_by_entity_id_with_order_ok() {
-        global $DB;
+        global $DB, $USER;
 
         $this->resetAfterTest(true);
         $this->init_config();
@@ -1348,6 +1359,8 @@ transformation|Transformation de l\'action publique|rgba(255, 141, 126, 0.4)",
         $data->order = false;
         $data->start = 0;
         $data->length = 10;
+
+        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity1->get_context());
 
         // Get sessions in main entity without order.
         $sessionsbyentity = $dbinterface->get_sessions_by_entity_id($data);

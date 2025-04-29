@@ -330,6 +330,7 @@ class database_interface extends \local_mentor_core\database_interface {
      * @throws \dml_exception
      */
     public function get_sessions_by_entity_id($data) {
+        global $USER;
 
         // Get the session data + the number of participants of the session.
         $request = "SELECT DISTINCT s.id,
@@ -357,21 +358,33 @@ class database_interface extends \local_mentor_core\database_interface {
                 ) cl ON cl.shortname = ANY (string_to_array(t.collection, ','))
                 INNER JOIN {course} co ON co.shortname = s.courseshortname
                 INNER JOIN {course} co2 ON co2.shortname = t.courseshortname
-                INNER JOIN {course_categories} cc ON cc.id = co.category
-                INNER JOIN {context} con ON con.instanceid = co.id
                 INNER JOIN {course} co3 ON co3.shortname = s.courseshortname
+                INNER JOIN {context} con ON con.instanceid = co.id
+                INNER JOIN {context} con2 ON con2.instanceid = co3.id
+                INNER JOIN {course_categories} cc ON cc.id = co.category
                 LEFT JOIN {course_categories} cc3 ON cc3.id = co3.category
                 LEFT JOIN {course_categories} cc4 ON cc4.id = cc3.parent
                 LEFT JOIN {course_categories} cc5 ON cc5.id = cc4.parent
-                INNER JOIN {context} con2 ON con2.instanceid = co3.id
+                /* Prise en compte du rôle du l'utilisateur connecté, pour ne prendre en compte
+                que les sessions pour lesquels il a un droit de gestion*/
+                INNER JOIN {context} conrole ON (con.path LIKE '%' || '/' || conrole.id || '/%' OR con2.path LIKE '%' || '/' || conrole.id || '/%')
+                INNER JOIN {role_assignments} ra ON ra.contextid = conrole.id
+                INNER JOIN {role_capabilities} rc ON rc.roleid = ra.roleid
+                INNER JOIN {capabilities} cap ON cap.name = rc.capability
                 WHERE (cc.parent = :entityid OR cc5.parent = :entityid2)
-                AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)";
+                AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)
+                AND ra.userid = :userid
+                AND rc.permission = 1
+                AND cap.name = :capabilityname
+                ";
 
         $params = [
             'entityid' => $data->entityid,
             'entityid2' => $data->entityid,
             'contextlevel' => CONTEXT_COURSE,
             'contextlevel2' => CONTEXT_COURSE,
+            'userid' => $USER->id,
+            'capabilityname' => 'local/session:manage'
         ];
 
         // Filters.

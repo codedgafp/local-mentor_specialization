@@ -349,7 +349,14 @@ class database_interface extends \local_mentor_core\database_interface {
                     t.courseshortname,
                     cc4.name AS entityparendname,
                     STRING_AGG(DISTINCT  cl.fullname, ';') AS collectionstr,  -- Utilisation de STRING_AGG pour concaténer les valeurs de collectionstr
-                    cc.id AS entityId
+                    cc.id AS entityId,
+                    (
+                        SELECT count(DISTINCT(ra.userid))
+                        FROM {role_assignments} ra
+                        INNER JOIN {role} r ON ra.roleid = r.id
+                        WHERE (ra.contextid = con.id OR ra.contextid = con2.id)
+                        AND (r.shortname = :participant OR r.shortname = :participantnonediteur)
+                    ) AS numberparticipants
                 FROM {session} s
                 INNER JOIN {training} t ON s.trainingid = t.id
                 LEFT JOIN (
@@ -379,6 +386,8 @@ class database_interface extends \local_mentor_core\database_interface {
                 ";
 
         $params = [
+            'participant' => 'participant',
+            'participantnonediteur' => 'participantnonediteur',
             'entityid' => $data->entityid,
             'entityid2' => $data->entityid,
             'contextlevel' => CONTEXT_COURSE,
@@ -429,7 +438,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     $request .= " ORDER BY s.sessionstartdate " . $data->order['dir'];
                     break;
                 case 6:
-                    $request .= " ORDER BY 2 " . $data->order['dir'];
+                    $request .= " ORDER BY numberparticipants " . $data->order['dir'];
                     break;
                 default:
                     break;
@@ -442,47 +451,6 @@ class database_interface extends \local_mentor_core\database_interface {
             $data->start,
             $data->length
         );
-
-        // numberparticipant
-        foreach ($sessiondata as $id => $data) {
-            $contextsql = $this->db->get_records(
-                "context",
-                ["instanceid" => $data->courseid],
-                '',
-                'id'
-            );
-            $contextids = array_keys($contextsql);
-
-            $context2sql = $this->db->get_records(
-                "context",
-                ["instanceid" => $data->course3id],
-                '',
-                'id'
-            );
-            $context2ids = array_keys($context2sql);
-
-            $countrasusers = "SELECT count(DISTINCT(ra.userid))
-                            FROM {role_assignments} ra
-                            INNER JOIN {role} r ON ra.roleid = r.id
-                            WHERE (
-                                ra.contextid IN (" . implode(',', $contextids) . ")
-                                OR ra.contextid IN (" . implode(',', $context2ids) . ")
-                            )
-                            AND (r.shortname = :participant OR r.shortname = :participantnonediteur)
-                            ";
-
-            $crausersparams = [
-                'participant' => 'participant',
-                'participantnonediteur' => 'participantnonediteur',
-            ];
-
-            $crausersrequest = $this->db->get_record_sql(
-                $countrasusers,
-                $crausersparams
-            );
-
-            $sessiondata[$id] = (object) array_merge( (array)$sessiondata[$id], ["numberparticipants" => $crausersrequest->count] );
-        }
 
         return $sessiondata;
     }

@@ -482,18 +482,6 @@ class mentor_specialization {
 
         if ($data->order) {
             switch ($data->order['column']) {
-                case 6:
-                    // Order by nbparticipant.
-                    usort($listsession, function($a, $b) use ($data) {                        
-                        if ($a['nbparticipant'] == $b['nbparticipant']) {
-                            return 0;
-                        }
-
-                        $result = ($a['nbparticipant'] < $b['nbparticipant']) ? -1 : 1;
-
-                        return ($data->order['dir'] === 'asc') ? $result : -$result;
-                    });
-                    break;
                 case 7:
                     // Order by shared.
                     usort($listsession, function($a, $b) use ($data) {

@@ -7,6 +7,8 @@ use core\task\manager;
 use local_categories_domains\repository\categories_domains_repository;
 use local_categories_domains\utils\categories_domains_service;
 
+require_once($CFG->dirroot . '/local/categories_domains/classes/utils/categories_domains_service.php');
+
 class update_user_mainentity extends scheduled_task {
     public function __construct(
         protected categories_domains_repository $categoriesdomainsrepository = new categories_domains_repository(),

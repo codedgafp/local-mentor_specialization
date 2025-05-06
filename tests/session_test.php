@@ -78,8 +78,6 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
      * @throws moodle_exception
      */
     public function init_create_user() {
-        global $DB;
-
         // Create user.
         $user = new stdClass();
         $user->lastname = 'lastname';
@@ -986,14 +984,13 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
         $this->init_config();
         $this->reset_singletons();
-
-        $userid = $this->init_create_user();
-
         self::setAdminUser();
-
+        
         // Create session.
         $sessionid = $this->init_session_creation();
 
+        $userid = $this->init_create_user();
+        
         // Get session.
         try {
             $session = \local_mentor_core\session_api::get_session($sessionid);
@@ -1036,15 +1033,13 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
 
         $this->init_config();
-        $this->reset_singletons();
-
-        $userid = $this->init_create_user();
-
+        $this->reset_singletons();        
         self::setAdminUser();
-
+        
         // Create session.
         $sessionid = $this->init_session_creation();
-
+        
+        $userid = $this->init_create_user();
         // Get session.
         try {
             $session = \local_mentor_core\session_api::get_session($sessionid);
@@ -1099,13 +1094,12 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         $this->reset_singletons();
 
         // Create simple user.
-        $userid = $this->init_create_user();
-
         self::setAdminUser();
 
         // Create session.
         $sessionid = $this->init_session_creation();
-
+        
+        $userid = $this->init_create_user();
         // Get session.
         try {
             $session = \local_mentor_core\session_api::get_session($sessionid);
@@ -1298,14 +1292,13 @@ class local_mentor_specialization_session_testcase extends advanced_testcase {
         $this->init_config();
         $this->reset_singletons();
 
-        // Create simple user.
-        $userid = $this->init_create_user();
-
+        // Create simple user.    
         self::setAdminUser();
-
+        
         // Create session.
         $sessionid = $this->init_session_creation();
-
+        
+        $userid = $this->init_create_user();
         // Get session.
         try {
             $session = \local_mentor_core\session_api::get_session($sessionid);

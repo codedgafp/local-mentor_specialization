@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use local_mentor_specialization\helper\testhelper;
+
 class local_mentor_specialization_observer_testcase extends advanced_testcase {
     /**
      * Init $CFG
@@ -560,6 +562,7 @@ class local_mentor_specialization_observer_testcase extends advanced_testcase {
         $this->init_config();
         $this->reset_singletons();
 
+        testhelper::create_default_entity($this);
         // Create user.
         $user = self::getDataGenerator()->create_user();
 
@@ -588,7 +591,7 @@ class local_mentor_specialization_observer_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
         $this->init_config();
         $this->reset_singletons();
-
+        testhelper::create_default_entity($this);
         // Create user.
         $user = self::getDataGenerator()->create_user();
 
@@ -875,6 +878,7 @@ class local_mentor_specialization_observer_testcase extends advanced_testcase {
         $this->reset_singletons();
 
         self::setAdminUser();
+        testhelper::create_default_entity($this);
 
         // Create user.
         $user = self::getDataGenerator()->create_user();
@@ -931,6 +935,7 @@ class local_mentor_specialization_observer_testcase extends advanced_testcase {
         $this->reset_singletons();
 
         self::setAdminUser();
+        testhelper::create_default_entity($this);
 
         // Get participant, formateur, tuteur roles.
         $dbi = \local_mentor_specialization\database_interface::get_instance();
@@ -1046,6 +1051,8 @@ class local_mentor_specialization_observer_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
         $this->init_config();
         $this->reset_singletons();
+
+        testhelper::create_default_entity($this);
 
         self::setAdminUser();
 

@@ -32,6 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+use local_mentor_specialization\helper\testhelper;
+
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/local/mentor_core/lib.php');
 
@@ -298,7 +300,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $this->resetAfterTest();
         $this->init_config();
         $this->reset_singletons();
-
+            
         $delimitername = 'comma';
 
         /** @var mentor_training $training */
@@ -590,6 +592,8 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $this->resetAfterTest();
         $this->init_config();
         $this->reset_singletons();
+
+        testhelper::create_default_entity($this);
 
         $user = new stdClass();
         $user->lastname = 'lastname';

@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_mentor_specialization\helper\testhelper;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -83,6 +85,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $email = 'user@gouv.fr';
         $auth = 'manual';
 
+        testhelper::create_default_entity($this);
         // Create user.
         self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, null, [], null, $auth));
 

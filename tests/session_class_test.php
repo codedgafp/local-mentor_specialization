@@ -994,6 +994,9 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
      * @covers  \local_mentor_specialization\mentor_session::is_participant
      */
     public function test_is_participant() {
+        global $CFG;
+        require_once($CFG->dirroot . '/enrol/self/externallib.php');
+        
         $this->resetAfterTest(true);
         $this->init_config();
         $this->init_database();

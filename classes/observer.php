@@ -293,7 +293,7 @@ class local_mentor_specialization_observer {
         $newdatauser = $otherdata->new;
 
         // Get old main user entitiy.
-        if (!$entity = \local_mentor_core\entity_api::get_entity_by_name($olddatauser->profile_field_mainentity)) {
+        if (empty($olddatauser->profile_field_mainentity) || !$entity = \local_mentor_core\entity_api::get_entity_by_name($olddatauser->profile_field_mainentity)) {
             return false;
         }
 

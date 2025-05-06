@@ -494,14 +494,6 @@ class mentor_specialization {
                         return ($data->order['dir'] === 'asc') ? $result : -$result;
                     });
                     break;
-                case 8 :
-                    // Order by status.
-                    usort($listsession, function($a, $b) use ($data) {
-                        $result = strnatcmp($a['status'], $b['status']);
-
-                        return ($data->order['dir'] === 'asc') ? $result : -$result;
-                    });
-                    break;
                 default:
                     break;
             }

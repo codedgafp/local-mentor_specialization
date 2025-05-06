@@ -348,6 +348,7 @@ define([
                 },
                 {
                     className: 'session-status-data',
+                    sortable: false,
                     data: function (data, type, row, meta) {
                         return '<span class="session-status" data-status="' + data.statusshortname + '">' + data.status + '</span>';
                     }

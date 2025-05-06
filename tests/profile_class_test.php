@@ -107,7 +107,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         self::assertCount(1, $entity1->get_members());
 
         // Create user.
-        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname2, $firstname2, $email2, 1, [], null, $auth));
+        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname2, $firstname2, $email2, $entity1->id, [], null, $auth));
 
         // Get user.
         $profiledata2 = $db->get_user_by_email($email2);

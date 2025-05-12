@@ -31,26 +31,23 @@ class testhelper
      *
      * @param $test current class test
      * @param string $entityname
-     * @return void
+     * @return int entity id
      */
-    public static function create_default_entity($test, string $entityname = 'DefaultEntity'): void
+    public static function create_default_entity($test, string $entityname = 'DefaultEntity'): int
     {
         global $USER, $DB;
 
-        $isdefaultexists = $DB->record_exists_sql("SELECT * FROM {category_options} 
-        WHERE name = :name AND " . $DB->sql_compare_text('value') . " = :value", [
-            'name' => 'isdefaultentity',
-            'value' => '1'
-        ]);
-        if ($isdefaultexists) return;
+        $defaultEntity = $DB->get_record_sql("SELECT * FROM {category_options} WHERE name = 'isdefaultentity' AND value = '1'");
+        if ($defaultEntity) return $defaultEntity->id;
 
         $userid = !empty($USER->id) ? $USER->id : null;
 
         if (!$userid || !is_siteadmin($userid)) $test::setAdminUser();
 
         // Create_entity insert default entity if none exists.
-        \local_mentor_core\entity_api::create_entity(['name' => $entityname, 'shortname' => $entityname]);
-
+        $entityid = \local_mentor_core\entity_api::create_entity(['name' => $entityname, 'shortname' => $entityname]);
         if ($userid != null && !is_siteadmin($userid)) $test::setUser($userid);
+
+        return (int)($entityid);
     }
 }

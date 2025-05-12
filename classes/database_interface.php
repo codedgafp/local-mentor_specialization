@@ -329,8 +329,16 @@ class database_interface extends \local_mentor_core\database_interface {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_sessions_by_entity_id($data) {
-        global $USER;
+    public function get_sessions_by_entity_id($data)
+    {
+        $params = [
+            'participant' => 'participant',
+            'participantnonediteur' => 'participantnonediteur',
+            'entityid' => $data->entityid,
+            'entityid2' => $data->entityid,
+            'contextlevel' => CONTEXT_COURSE,
+            'contextlevel2' => CONTEXT_COURSE,
+        ];
 
         // Get the session data + the number of participants of the session.
         $request = "SELECT DISTINCT s.id,
@@ -371,30 +379,16 @@ class database_interface extends \local_mentor_core\database_interface {
                 INNER JOIN {course_categories} cc ON cc.id = co.category
                 LEFT JOIN {course_categories} cc3 ON cc3.id = co3.category
                 LEFT JOIN {course_categories} cc4 ON cc4.id = cc3.parent
-                LEFT JOIN {course_categories} cc5 ON cc5.id = cc4.parent
-                /* Prise en compte du rôle du l'utilisateur connecté, pour ne prendre en compte
-                que les sessions pour lesquels il a un droit de gestion*/
-                INNER JOIN {context} conrole ON (con.path LIKE '%' || '/' || conrole.id || '/%' OR con2.path LIKE '%' || '/' || conrole.id || '/%')
-                INNER JOIN {role_assignments} ra ON ra.contextid = conrole.id
-                INNER JOIN {role_capabilities} rc ON rc.roleid = ra.roleid
-                INNER JOIN {capabilities} cap ON cap.name = rc.capability
-                WHERE (cc.parent = :entityid OR cc5.parent = :entityid2)
-                AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)
-                AND ra.userid = :userid
-                AND rc.permission = 1
-                AND cap.name = :capabilityname
+                LEFT JOIN {course_categories} cc5 ON cc5.id = cc4.parent";
+
+        $where = "
+                    WHERE (cc.parent = :entityid OR cc5.parent = :entityid2)
+                    AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)
                 ";
 
-        $params = [
-            'participant' => 'participant',
-            'participantnonediteur' => 'participantnonediteur',
-            'entityid' => $data->entityid,
-            'entityid2' => $data->entityid,
-            'contextlevel' => CONTEXT_COURSE,
-            'contextlevel2' => CONTEXT_COURSE,
-            'userid' => $USER->id,
-            'capabilityname' => 'local/session:manage'
-        ];
+        $this->add_sessions_request_capabilities_filter($request, $where, $params);
+
+        $request .= $where;
 
         // Filters.
         $request .= $this->generate_sessions_by_entity_id_filter($data, $params);
@@ -454,6 +448,33 @@ class database_interface extends \local_mentor_core\database_interface {
 
         return $sessiondata;
     }
+
+
+    private function add_sessions_request_capabilities_filter(string &$joins, string &$where, array &$params): void
+    {
+        global $USER;
+
+        if (is_siteadmin($USER)) return;
+
+        /* Prise en compte du rôle de l'utilisateur connecté, pour ne prendre en compte
+                que les sessions pour lesquels il a un droit de gestion*/
+        $joins .= "
+                    INNER JOIN {context} conrole ON (con.path LIKE '%' || '/' || conrole.id || '/%' OR con2.path LIKE '%' || '/' || conrole.id || '/%')
+                    INNER JOIN {role_assignments} ra ON ra.contextid = conrole.id
+                    INNER JOIN {role_capabilities} rc ON rc.roleid = ra.roleid
+                    INNER JOIN {capabilities} cap ON cap.name = rc.capability";
+
+        $where .= "
+                    AND ra.userid = :userid
+                    AND rc.permission = 1
+                    AND cap.name = :capabilityname";
+
+        $params += [
+            'userid' => $USER->id,
+            'capabilityname' => 'local/session:manage'
+        ];
+    }
+
     /**
      * Count session by entity id
      *

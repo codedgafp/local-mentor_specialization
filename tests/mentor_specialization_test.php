@@ -825,6 +825,67 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         self::resetAllData();
     }
 
+    private function call_add_sessions_request_capabilities_filter(&$joins, &$where, &$params) {
+        $dbi = \local_mentor_specialization\database_interface::get_instance();
+        $ref = new \ReflectionClass($dbi);
+        $method = $ref->getMethod('add_sessions_request_capabilities_filter');
+        $method->setAccessible(true);
+        $method->invokeArgs($dbi, [ &$joins, &$where, &$params ]);
+    }
+
+    /**
+     * Test add_sessions_request_capabilities_filter function for a non admin user
+     *
+     * @covers \local_mentor_specialization\database_interface::add_sessions_request_capabilities_filter()
+     */
+    public function test_add_sessions_request_capabilities_filter_non_admin() {
+        global $USER;
+        $this->resetAfterTest(true);
+        $this->init_config();
+        $this->reset_singletons();
+        testhelper::create_default_entity($this);
+
+        $user = $this->getDataGenerator()->create_user();
+        $USER = $user;
+
+        $this->setUser($USER);
+
+        $joins = '';
+        $where = '';
+        $params = [];
+
+        $this->call_add_sessions_request_capabilities_filter($joins, $where, $params);
+
+        $this->assertStringContainsString('INNER JOIN {context}', $joins);
+        $this->assertStringContainsString('AND ra.userid = :userid', $where);
+        $this->assertArrayHasKey('userid', $params);
+        $this->assertEquals($USER->id, $params['userid']);
+        $this->assertEquals('local/session:manage', $params['capabilityname']);
+    }
+
+    /**
+     * Test add_sessions_request_capabilities_filter function for an admin user
+     *
+     * @covers \local_mentor_specialization\database_interface::add_sessions_request_capabilities_filter()
+     */
+    public function test_add_sessions_request_capabilities_filter_admin() {
+        global $USER;
+        $this->resetAfterTest(true);
+        $this->init_config();
+        $this->reset_singletons();
+
+        $this->setAdminUser();
+        $USER = \core_user::get_user_by_username('admin');
+
+        $joins = '';
+        $where = '';
+        $params = [];
+
+        $this->assertEmpty($joins);
+        $this->assertEmpty($where);
+        $this->assertEmpty($params);
+    }
+
     /**
      * Test count_session_record function
      *
@@ -837,13 +898,13 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $this->init_config();
         $this->reset_singletons();
 
-        global $USER;
 
         self::setAdminUser();
 
-        $sessionid = $this->init_session_creation();
+        $entityid = testhelper::create_default_entity($this);
+        $sessionid = $this->init_session_creation('TESTUNITCREATESESSION', null, $entityid);
         $session = session_api::get_session($sessionid);
-
+        
         $entity = $session->get_entity();
 
         $params = [];
@@ -856,22 +917,31 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $data->length = 50;
         $params['data'] = $data;
 
-        \local_mentor_core\profile_api::role_assign('admindedie', $USER->id, $entity->get_context());
+        $specialization = new \local_mentor_specialization\mentor_specialization();
+
+        // site admin can count session, regardless of capacities
+        $countsession = $specialization->get_specialization('count_session_record', null, $params);
+        self::assertEquals(1, $countsession);
+
+        $user = $this->getDataGenerator()->create_user();
+
+        \local_mentor_core\profile_api::role_assign('admindedie', $user->id, $entity->get_context());
+
+        self::setUser($user);
 
         // One session when user is admin.
-        $specialization = new \local_mentor_specialization\mentor_specialization();
         $countsession = $specialization->get_specialization('count_session_record', null, $params);
         self::assertEquals(1, $countsession);
 
         // One session when user is manager.
-        \local_mentor_core\profile_api::role_unassign('admindedie', $USER->id, $entity->get_context()->id);
+        \local_mentor_core\profile_api::role_unassign('admindedie', $user->id, $entity->get_context()->id);
 
-        \local_mentor_core\profile_api::role_assign('referentlocal', $USER->id, $entity->get_context());
+        \local_mentor_core\profile_api::role_assign('referentlocal', $user->id, $entity->get_context());
         $countsession = $specialization->get_specialization('count_session_record', null, $params);
         self::assertEquals(1, $countsession);
 
         // Zero session when user is not manager.
-        \local_mentor_core\profile_api::role_unassign('referentlocal', $USER->id, $entity->get_context()->id);
+        \local_mentor_core\profile_api::role_unassign('referentlocal', $user->id, $entity->get_context()->id);
         $countsession = $specialization->get_specialization('count_session_record', null, $params);
         self::assertEquals(0, $countsession);
 

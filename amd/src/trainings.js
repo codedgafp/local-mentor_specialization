@@ -18,6 +18,8 @@ define([
     'local_mentor_specialization/common',
 ], function ($, format_edadmin, local_trainings, select2, cookie, url, templates) {
 
+    let processing = false;
+
     /**
      * Create and init table and element's table
      *
@@ -109,28 +111,34 @@ define([
                 },
             },
             fnDrawCallback: function () {
-                $.ajax({
-                    url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
-                    data: {
-                        entityid: entityid,
-                        action: 'has_sub_entities',
-                        controller: 'entity',
-                        format: 'json'
-                    },
-                }).done(function (response) {
-                    response = JSON.parse(response);
-                    if (response.message) {
-                        // If has sus-entity
-                        $('.subentity-data').css({'display': 'table-cell'});
-                        $('.header-sub-entity').css({'display': 'table-cell'});
-                        $('#sub-entity-filter').css({'display': 'flex'});
-                    } else {
-                        // If has not sus-entity
-                        $('.subentity-data').css({'display': 'none'});
-                        $('.header-sub-entity').css({'display': 'none'});
-                        $('#sub-entity-filter').css({'display': 'none'});
-                    }
-                });
+                if (processing === false) {
+                    processing = true;
+
+                    $.ajax({
+                        url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
+                        data: {
+                            entityid: entityid,
+                            action: 'has_sub_entities',
+                            controller: 'entity',
+                            format: 'json'
+                        },
+                    }).done(function (response) {
+                        response = JSON.parse(response);
+                        if (response.message) {
+                            // If has sus-entity
+                            $('.subentity-data').css({'display': 'table-cell'});
+                            $('.header-sub-entity').css({'display': 'table-cell'});
+                            $('#sub-entity-filter').css({'display': 'flex'});
+                        } else {
+                            // If has not sus-entity
+                            $('.subentity-data').css({'display': 'none'});
+                            $('.header-sub-entity').css({'display': 'none'});
+                            $('#sub-entity-filter').css({'display': 'none'});
+                        }
+
+                        processing = false;
+                    });
+                }
             },
             oLanguage: {
                 sUrl: M.cfg.wwwroot + '/local/mentor_core/datatables/lang/' + M.util.get_string('langfile', 'local_trainings') + ".json"
@@ -246,6 +254,22 @@ define([
         M.table.on('search.dt', function () {
             that.setSearchCookieFilter();
         });
+
+        M.table.on('processing.dt', function(e, settings, processing) {
+            if (processing) {
+                $(M.table.table().container()).addClass('processing');
+            } else {
+                $(M.table.table().container()).removeClass('processing');
+            }
+        });
+
+        $(document).on('click', '#trainings-table thead th', function(e) {
+            if ($(M.table.table().container()).hasClass('processing')) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        });
+
     };
 
     /**

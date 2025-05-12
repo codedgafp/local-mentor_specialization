@@ -371,5 +371,5 @@ L\'équipe Mentor
 
 <img src="{$a->wwwroot}/theme/mentor/pix/logo.png" alt="Logo de Mentor" style="width:200px; height:56px;">';
 
-$string['update_user_mainentity'] = 'Mise à jour des utilisateurs, pour les domaines dont il y a eu une mise à jour';
-$string['identify_external_users_and_without_mainentity'] = 'Mise à jour des utilisateurs externe';
+$string['update_user_mainentity'] = 'Mettre à jour du rattachement principal des utilisateurs';
+$string['identify_external_users_and_without_mainentity'] = 'Identifier les utilisateurs externes et les utilisateurs sans rattachement';

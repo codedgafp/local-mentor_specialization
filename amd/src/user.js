@@ -247,37 +247,6 @@ define([
             id: 0 
         };
 
-        // Get all main entity data select.
-        $.map($('#user-admin-form-add-entity').find('option'), function (opt) {
-            if ($(opt).hasClass('js-main-dedicated-space')) {
-                mainSpaceSelected.state = true;
-                mainSpaceSelected.id = opt.value;
-                $(opt).prop('selected', true);
-            }
-        });
-
-        if (!mainSpaceSelected.state) {
-            $('#user-admin-form-add-entity option.js-default-space').prop('selected', true);
-        }
-
-        $("#user-admin-form-set-isexternal").on('change', function() {
-            if (this.checked) {
-                $('#user-admin-form-add-entity').prop('disabled', true);
-
-                $.map($('#user-admin-form-add-entity').find('option'), function (opt) {
-                    $(opt).prop('selected', false);
-                });
-
-                mainSpaceSelected.state 
-                    ? $(`#user-admin-form-add-entity option[value="${mainSpaceSelected.id}"`).prop('selected', true)
-                    : $('#user-admin-form-add-entity option.js-default-space').prop('selected', true)
-
-                return true;
-            }
-
-            $('#user-admin-form-add-entity').prop('disabled', false);
-        });
-
         mentor.dialog('#user-admin-add', {
             width: 600,
             title: M.util.get_string('adduser', 'local_user'),

@@ -27,7 +27,6 @@ namespace local_mentor_specialization;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/local/mentor_core/classes/model/entity.php');
 require_once($CFG->dirroot . '/local/mentor_specialization/classes/database_interface.php');
 
 class mentor_entity extends \local_mentor_core\entity {

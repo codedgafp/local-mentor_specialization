@@ -374,17 +374,14 @@ class database_interface extends \local_mentor_core\database_interface {
                 INNER JOIN {course} co ON co.shortname = s.courseshortname
                 INNER JOIN {course} co2 ON co2.shortname = t.courseshortname
                 INNER JOIN {course} co3 ON co3.shortname = s.courseshortname
-                INNER JOIN {context} con ON con.instanceid = co.id
-                INNER JOIN {context} con2 ON con2.instanceid = co3.id
+                INNER JOIN {context} con ON con.instanceid = co.id AND con.contextlevel = :contextlevel
+                INNER JOIN {context} con2 ON con2.instanceid = co3.id AND con2.contextlevel = :contextlevel2
                 INNER JOIN {course_categories} cc ON cc.id = co.category
                 LEFT JOIN {course_categories} cc3 ON cc3.id = co3.category
                 LEFT JOIN {course_categories} cc4 ON cc4.id = cc3.parent
                 LEFT JOIN {course_categories} cc5 ON cc5.id = cc4.parent";
 
-        $where = "
-                    WHERE (cc.parent = :entityid OR cc5.parent = :entityid2)
-                    AND (con.contextlevel = :contextlevel OR con2.contextlevel = :contextlevel2)
-                ";
+        $where = " WHERE (cc.parent = :entityid OR cc5.parent = :entityid2) ";
 
         $this->add_sessions_request_capabilities_filter($request, $where, $params);
 

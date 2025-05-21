@@ -168,11 +168,15 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
     //  * @covers \local_mentor_specialization\mentor_profile::sync_entities
     //  */
     // public function test_sync_entities_ok_secondary_entities() {
+    //    global $CFG;
+
     //     $this->resetAfterTest(true);
     //     $this->init_config();
     //     $this->reset_singletons();
 
     //     self::setAdminUser();
+
+    //    $CFG->allowemailaddresses = 'gouv.fr';
 
     //     // Setting user data.
     //     $lastname = 'lastname';

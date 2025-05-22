@@ -25,12 +25,21 @@ class identify_external_users_and_without_mainentity extends scheduled_task {
     {
         global $DB, $CFG;
 
+        //get domains that are no more whitelisted
+        $nonwhitelisted_domains = $this->categoriesdomainsrepository->get_domains_no_more_whitelisted();
+        $nonwhitelisted_domains = array_values(array_map(function($domain) {
+                    return $domain->domain_name;
+                }, $nonwhitelisted_domains));
+        // delete domains that are no more whitelisted
+        $this->categoriesdomainsrepository->delete_domains($nonwhitelisted_domains);
+        
         $whitelistconfig = $CFG->allowemailaddresses;
         $whitelistdomains = array_map('trim', explode(' ', $whitelistconfig));
-        
+        $domainsList = array_merge($whitelistdomains, $nonwhitelisted_domains);
+
         $whitelistedusers = [];
 
-        foreach ($whitelistdomains as $domain) {
+        foreach ($domainsList as $domain) {
             $domainname = new domain_name();
             $domainname->domain_name = $domain;
 
@@ -44,9 +53,7 @@ class identify_external_users_and_without_mainentity extends scheduled_task {
 
             $whitelistedusers = array_merge($whitelistedusers, $validusers);
         }
-
         $externalusers = $this->databaseinterface->get_all_external_users();
-
         $userstocheck = array_merge($whitelistedusers, $externalusers);
 
         $this->categoriesdomainsservice->link_categories_to_users($userstocheck);

@@ -5,7 +5,6 @@ defined('MOODLE_INTERNAL') || die();
 
 class collections_form_submitted extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'local_mentor_specialization';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }

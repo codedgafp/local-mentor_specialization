@@ -26,16 +26,15 @@ class identify_external_users_and_without_mainentity extends scheduled_task {
         global $DB, $CFG;
 
         //get domains that are no more whitelisted
-        $nonwhitelisted_domains = $this->categoriesdomainsrepository->get_domains_no_more_whitelisted();
-        $nonwhitelisted_domains = array_values(array_map(function($domain) {
-                    return $domain->domain_name;
-                }, $nonwhitelisted_domains));
+        $nonwhitelisteddomainsrequest = $this->categoriesdomainsrepository->get_domains_no_more_whitelisted();
+        $nonwhitelisteddomainsarray = array_values(array_map(fn($domain): string => $domain->domain_name, $nonwhitelisteddomainsrequest));
+
         // delete domains that are no more whitelisted
-        $this->categoriesdomainsrepository->delete_domains($nonwhitelisted_domains);
-        
+        $this->categoriesdomainsrepository->delete_domains($nonwhitelisteddomainsarray);
+
         $whitelistconfig = $CFG->allowemailaddresses;
         $whitelistdomains = array_map('trim', explode(' ', $whitelistconfig));
-        $domainsList = array_merge($whitelistdomains, $nonwhitelisted_domains);
+        $domainsList = array_merge($whitelistdomains, $nonwhitelisteddomainsarray);
 
         $whitelistedusers = [];
 
@@ -53,8 +52,18 @@ class identify_external_users_and_without_mainentity extends scheduled_task {
 
             $whitelistedusers = array_merge($whitelistedusers, $validusers);
         }
+
         $externalusers = $this->databaseinterface->get_all_external_users();
-        $userstocheck = array_merge($whitelistedusers, $externalusers);
+        $mergeuserstocheck = array_merge($whitelistedusers, $externalusers);
+
+        $checkedemail = [];
+        $userstocheck = [];
+        foreach ($mergeuserstocheck as $user) {
+            if (!in_array($user->email, $checkedemail)) {
+                $checkedemail[] = $user->email;
+                $userstocheck[] = $user;
+            }
+        }
 
         $this->categoriesdomainsservice->link_categories_to_users($userstocheck);
     }

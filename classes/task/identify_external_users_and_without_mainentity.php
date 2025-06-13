@@ -36,25 +36,24 @@ class identify_external_users_and_without_mainentity extends scheduled_task {
         $whitelistdomains = array_map('trim', explode(' ', $whitelistconfig));
         $domainsList = array_merge($whitelistdomains, $nonwhitelisteddomainsarray);
 
-        $whitelistedusers = [];
-
+        $usersdomainnotexist = [];
         foreach ($domainsList as $domain) {
             $domainname = new domain_name();
             $domainname->domain_name = $domain;
 
             $isdomainexist = $this->categoriesdomainsrepository->is_domain_exists($domainname);
 
-            if ($isdomainexist) {
-                continue;
+            if (!$isdomainexist) {
+                $usersdomainnomoreexist = $this->categoriesdomainsrepository->get_all_users_by_domain_name($domain, true);
+                $usersdomainnotexist = array_merge($usersdomainnotexist, $usersdomainnomoreexist);
             }
-
-            $validusers = $this->categoriesdomainsrepository->get_all_users_by_domain_name($domain, true);
-
-            $whitelistedusers = array_merge($whitelistedusers, $validusers);
         }
 
+        $usersnomainentity = $this->categoriesdomainsrepository->get_users_without_main_entity();
+        $mergeuserstocheck = array_merge($usersdomainnotexist, $usersnomainentity);
+
         $externalusers = $this->databaseinterface->get_all_external_users();
-        $mergeuserstocheck = array_merge($whitelistedusers, $externalusers);
+        $mergeuserstocheck = array_merge($mergeuserstocheck, $externalusers);
 
         $checkedemail = [];
         $userstocheck = [];

@@ -184,13 +184,12 @@ class session_form extends \moodleform {
 
         // Objectifs de la formation.
         $mform->addElement('editor', 'traininggoal', get_string('traininggoal', 'local_trainings'), ['rows' => 8, 'cols' => 60]);
-        $mform->disabledIf('traininggoal', '');
+        $mform->freeze('traininggoal');
         $mform->setType('traininggoal', PARAM_RAW);
 
         // Contenu de la formation.
-        $mform->addElement('editor', 'trainingcontent', get_string('trainingcontent', 'local_mentor_specialization'),
-            ['rows' => 8, 'cols' => 60]);
-        $mform->disabledIf('trainingcontent', '');
+        $mform->addElement('editor', 'trainingcontent', get_string('trainingcontent', 'local_mentor_specialization'));
+        $mform->freeze('trainingcontent');
         $mform->setType('trainingcontent', PARAM_RAW);
 
         // Durée estimée en présence.

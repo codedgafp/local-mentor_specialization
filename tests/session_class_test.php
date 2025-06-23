@@ -830,37 +830,37 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
 
         $sessiontemplatedata = $session->convert_for_template();
 
-        self::assertObjectHasAttribute('sessionpermanent', $sessiontemplatedata);
+        self::assertObjectHasProperty('sessionpermanent', $sessiontemplatedata);
         self::assertFalse($sessiontemplatedata->sessionpermanent);
 
-        self::assertObjectHasAttribute('organizingstructure', $sessiontemplatedata);
+        self::assertObjectHasProperty('organizingstructure', $sessiontemplatedata);
         self::assertEquals($session->organizingstructure, $sessiontemplatedata->organizingstructure);
 
-        self::assertObjectHasAttribute('contactproducerorganization', $sessiontemplatedata);
+        self::assertObjectHasProperty('contactproducerorganization', $sessiontemplatedata);
         self::assertEquals($session->contactproducerorganization, $sessiontemplatedata->contactproducerorganization);
 
-        self::assertObjectHasAttribute('publiccible', $sessiontemplatedata);
+        self::assertObjectHasProperty('publiccible', $sessiontemplatedata);
         self::assertEquals($session->publiccible, $sessiontemplatedata->publiccible);
 
-        self::assertObjectHasAttribute('accompaniment', $sessiontemplatedata);
+        self::assertObjectHasProperty('accompaniment', $sessiontemplatedata);
         self::assertEquals($session->accompaniment, $sessiontemplatedata->accompaniment);
 
-        self::assertObjectHasAttribute('location', $sessiontemplatedata);
+        self::assertObjectHasProperty('location', $sessiontemplatedata);
         self::assertEquals($session->location, $sessiontemplatedata->location);
 
-        self::assertObjectHasAttribute('onlinesessionestimatedtime', $sessiontemplatedata);
+        self::assertObjectHasProperty('onlinesessionestimatedtime', $sessiontemplatedata);
         self::assertEquals($session->onlinesessionestimatedtime, $sessiontemplatedata->onlinesessionestimatedtime);
 
-        self::assertObjectHasAttribute('trainingname', $sessiontemplatedata);
+        self::assertObjectHasProperty('trainingname', $sessiontemplatedata);
         self::assertEquals($session->trainingname, $sessiontemplatedata->trainingname);
 
-        self::assertObjectHasAttribute('onlinesession', $sessiontemplatedata);
+        self::assertObjectHasProperty('onlinesession', $sessiontemplatedata);
         self::assertFalse($sessiontemplatedata->onlinesession);
 
-        self::assertObjectHasAttribute('presencesession', $sessiontemplatedata);
+        self::assertObjectHasProperty('presencesession', $sessiontemplatedata);
         self::assertFalse($sessiontemplatedata->presencesession);
 
-        self::assertObjectHasAttribute('sessionmodalities', $sessiontemplatedata);
+        self::assertObjectHasProperty('sessionmodalities', $sessiontemplatedata);
         self::assertEquals('', $sessiontemplatedata->sessionmodalities);
 
         // With online and presence data.
@@ -886,10 +886,10 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
 
         $sessiontemplatedata = $session->convert_for_template(true);
 
-        self::assertObjectHasAttribute('onlinesession', $sessiontemplatedata);
+        self::assertObjectHasProperty('onlinesession', $sessiontemplatedata);
         self::assertEquals(local_mentor_core_minutes_to_hours($presencesessiontime), $sessiontemplatedata->presencesession);
 
-        self::assertObjectHasAttribute('presencesession', $sessiontemplatedata);
+        self::assertObjectHasProperty('presencesession', $sessiontemplatedata);
         self::assertEquals(local_mentor_core_minutes_to_hours($onlinesessiontime), $sessiontemplatedata->onlinesession);
 
         $this->resetAllData();
@@ -920,7 +920,7 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
 
         $sessiontemplatedata = $session->convert_for_template(true);
 
-        self::assertObjectHasAttribute('sessionmodalities', $sessiontemplatedata);
+        self::assertObjectHasProperty('sessionmodalities', $sessiontemplatedata);
         self::assertEquals(get_string($data->sessionmodalities, 'local_catalog'), $sessiontemplatedata->sessionmodalities);
 
         $this->resetAllData();
@@ -951,7 +951,7 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
 
         $sessiontemplatedata = $session->convert_for_template(true);
 
-        self::assertObjectHasAttribute('sessionmodalities', $sessiontemplatedata);
+        self::assertObjectHasProperty('sessionmodalities', $sessiontemplatedata);
         self::assertEquals(get_string($data->sessionmodalities, 'local_catalog'), $sessiontemplatedata->sessionmodalities);
 
         $this->resetAllData();
@@ -982,7 +982,7 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
 
         $sessiontemplatedata = $session->convert_for_template(true);
 
-        self::assertObjectHasAttribute('sessionmodalities', $sessiontemplatedata);
+        self::assertObjectHasProperty('sessionmodalities', $sessiontemplatedata);
         self::assertEquals(get_string($data->sessionmodalities, 'local_catalog'), $sessiontemplatedata->sessionmodalities);
 
         $this->resetAllData();

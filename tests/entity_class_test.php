@@ -259,7 +259,7 @@ class local_mentor_specialization_entity_class_testcase extends advanced_testcas
 
         $formdata = $entity->get_form_data();
 
-        self::assertObjectHasAttribute('regions', $formdata);
+        self::assertObjectHasProperty('regions', $formdata);
         self::assertEquals($formdata->regions, $entitydata['regions']);
 
         self::resetAllData();

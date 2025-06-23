@@ -1052,12 +1052,12 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $paramsrenderer = $specialization->get_specialization('get_params_renderer_catalog', $paramsrenderer);
 
         // Collection.
-        self::assertObjectHasAttribute('collections', $paramsrenderer);
+        self::assertObjectHasProperty('collections', $paramsrenderer);
         self::assertIsArray($paramsrenderer->collections);
         self::assertEquals($paramsrenderer->collections[0], 'Accompagnement des transitions professionnelles');
 
         // Entity.
-        self::assertObjectHasAttribute('entities', $paramsrenderer);
+        self::assertObjectHasProperty('entities', $paramsrenderer);
         self::assertIsArray($paramsrenderer->entities);
         self::assertCount(1, $paramsrenderer->entities);
         self::assertEquals($paramsrenderer->entities[0], [
@@ -1066,7 +1066,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         ]);
 
         // Training.
-        self::assertObjectHasAttribute('trainings', $paramsrenderer);
+        self::assertObjectHasProperty('trainings', $paramsrenderer);
         self::assertIsArray($paramsrenderer->trainings);
         self::assertCount(1, $paramsrenderer->trainings);
         self::assertIsObject($paramsrenderer->trainings[0]);
@@ -1074,12 +1074,12 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         self::assertEquals($paramsrenderer->trainings[0]->name, $session->get_training()->name);
 
         // Training count.
-        self::assertObjectHasAttribute('trainingscount', $paramsrenderer);
+        self::assertObjectHasProperty('trainingscount', $paramsrenderer);
         self::assertIsInt($paramsrenderer->trainingscount);
         self::assertEquals($paramsrenderer->trainingscount, 1);
 
         // Available trainings.
-        self::assertObjectHasAttribute('available_trainings', $paramsrenderer);
+        self::assertObjectHasProperty('available_trainings', $paramsrenderer);
         self::assertIsString($paramsrenderer->available_trainings);
         $collection = new stdClass();
         $collection->name = 'Accompagnement des transitions professionnelles';
@@ -1089,7 +1089,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         self::assertEquals($paramsrenderer->available_trainings, json_encode($trainings, JSON_HEX_TAG));
 
         // Training dictionnary.
-        self::assertObjectHasAttribute('trainings_dictionnary', $paramsrenderer);
+        self::assertObjectHasProperty('trainings_dictionnary', $paramsrenderer);
         self::assertIsString($paramsrenderer->trainings_dictionnary);
         self::assertEquals($paramsrenderer->trainings_dictionnary, json_encode(local_catalog_get_dictionnary($trainings)));
 
@@ -1134,12 +1134,12 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         $data = $specialization->get_specialization('get_session_enrolment_data', $data, $sessionid);
 
         // Training count.
-        self::assertObjectHasAttribute('selfenrolment', $data);
+        self::assertObjectHasProperty('selfenrolment', $data);
         self::assertIsInt($data->selfenrolment);
         self::assertEquals($data->selfenrolment, 0);
 
         // Training count.
-        self::assertObjectHasAttribute('message', $data);
+        self::assertObjectHasProperty('message', $data);
         self::assertNull($data->message);
         self::assertEquals($data->message, $session->termsregistrationdetail);
 
@@ -1170,12 +1170,12 @@ class local_mentor_specialization_testcase extends advanced_testcase {
 
         // Termsregistration is not 'inscriptionlibre'.
         // Training count.
-        self::assertObjectHasAttribute('selfenrolment', $data);
+        self::assertObjectHasProperty('selfenrolment', $data);
         self::assertIsInt($data->selfenrolment);
         self::assertEquals($data->selfenrolment, 1);
 
         // Training count.
-        self::assertObjectHasAttribute('hasselfregistrationkey', $data);
+        self::assertObjectHasProperty('hasselfregistrationkey', $data);
         self::assertFalse($data->hasselfregistrationkey);
         self::assertEquals($data->hasselfregistrationkey, $session->has_registration_key());
 

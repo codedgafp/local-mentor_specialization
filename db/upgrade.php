@@ -406,6 +406,9 @@ function xmldb_local_mentor_specialization_upgrade($oldversion)
             'user',
             'frontpage',
             'guest',
+            'visiteurbiblio',
+            'participantdemonstration',
+            'utilisateurexterne'
         ];
 
         local_mentor_specialization_set_role_order($roleorder);

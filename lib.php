@@ -1613,13 +1613,39 @@ function local_mentor_specialization_init_config() {
             'guest');
     }
 
-    $userlogin = $DB->get_record('role', ['shortname' => 'user']);
-
     if (!$utilisateurExterne = $DB->get_record('role', ['shortname' => 'utilisateurexterne'])) {
         mtrace('Create role: Utilisateur externe');
         $utilisateurExterne = local_mentor_duplicate_role('user', 'utilisateurexterne', 'Utilisateur externe','user');
-    } 
-    
+    }
+
+    if (!$noteditingreflocal = $DB->get_record('role', ['shortname' => 'reflocalnonediteur'])) {
+        mtrace('Create role: Référent local non éditeur');
+        $noteditingreflocal = local_mentor_duplicate_role('user', 'reflocalnonediteur', 'Référent local non éditeur',
+            'user');
+    }
+
+    $roleorder = [
+        'admindedie',
+        'respformation',
+        'referentlocal',
+        'reflocalnonediteur',
+        'concepteur',
+        'formateur',
+        'tuteur',
+        'participant',
+        'participantnonediteur',
+        'coursecreator',
+        'editingteacher',
+        'teacher',
+        'user',
+        'frontpage',
+        'guest',
+        'visiteurbiblio',
+        'participantdemonstration',
+        'utilisateurexterne'
+    ];
+    local_mentor_specialization_set_role_order($roleorder);
+
     /***** Disable plugins***/
     // Disable Online users block.
     mtrace('Disable plugin: block_online_users');
@@ -1835,6 +1861,7 @@ function local_mentor_specialization_init_config() {
         "block/myoverview:myaddinstance",
     ];
 
+    $userlogin = $DB->get_record('role', ['shortname' => 'user']);
     local_mentor_core_remove_capabilities($userlogin, $homepageeditblockcapabilities);
 
     // Copy lang files.
@@ -1930,13 +1957,6 @@ function local_mentor_specialization_init_config() {
 
     // Enable mentor logstore.
     local_mentor_core_set_moodle_config('enabled_stores', 'logstore_standard,logstore_mentor2', 'tool_log');
-
-    // Create reflocalnonediteur role.
-    if (!$noteditingreflocal = $DB->get_record('role', ['shortname' => 'reflocalnonediteur'])) {
-        mtrace('Create role: Référent local non éditeur');
-        $noteditingreflocal = local_mentor_duplicate_role('user', 'reflocalnonediteur', 'Référent local non éditeur',
-            'user');
-    }
 
     // Set context level.
     local_mentor_core_add_context_levels($noteditingreflocal->id, [CONTEXT_COURSECAT]);

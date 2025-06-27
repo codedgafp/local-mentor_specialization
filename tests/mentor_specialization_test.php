@@ -521,12 +521,14 @@ class local_mentor_specialization_testcase extends advanced_testcase {
                 'firstname' => 'firstname',
                 'email' => 'test@test.com',
                 'groupname' => 'testgroup',
+                'linenumber' => 2
             ],
             [
                 'lastname' => 'lastname2',
                 'firstname' => 'firstname2',
                 'email' => 'test2@test.com',
                 'groupname' => null,
+                'linenumber' => 3
             ],
         ];
 
@@ -554,6 +556,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
                 'email' => 'test@test.com',
                 'groupname' => 'testgroup',
                 'role' => 'formateur',
+                'linenumber' => 2
             ],
             [
                 'lastname' => 'lastname2',
@@ -561,6 +564,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
                 'email' => 'test2@test.com',
                 'groupname' => null,
                 'role' => 'formateur',
+                'linenumber' => 3
             ],
         ];
 

@@ -566,6 +566,8 @@ function confirm_subentity_delete(message) {
      */
     local_entities.adminFormEvent = function (canBeMainEntity) {
         $('#contactpage').toggle(canBeMainEntity);
+        $('#presentationpage').toggle(canBeMainEntity);
+        $('#hidepresentationpage').toggle(canBeMainEntity);
         // Init data.
         local_entities.canBeMainEntity = canBeMainEntity;
         local_entities.canBeMainEntityPopupTrigger = false;

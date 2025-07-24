@@ -577,9 +577,8 @@ class training_form extends \moodleform {
         }
 
         // Contact organisme producteur.
-        $mform->addElement('text', 'contactproducerorganization', get_string('contactproducerorganization', 'local_trainings') .
-                                                                  get_string('optional', 'local_mentor_specialization'),
-            ['size' => 40, 'class' => 'optional']);
+        $contactproducerorganizationname = get_string('contactproducerorganization', 'local_trainings') . get_string('optional', 'local_mentor_specialization')  . $warningicon;
+        $mform->addElement('text', 'contactproducerorganization', $contactproducerorganizationname, ['size' => 40, 'class' => 'optional']);
         $mform->setType('contactproducerorganization', PARAM_NOTAGS);
         $mform->addHelpButton('contactproducerorganization', 'contactproducerorganization', 'local_trainings');
         if (!has_capability('local/mentor_specialization:changecontactproducerorganization', $context)) {
@@ -724,6 +723,11 @@ class training_form extends \moodleform {
             // Check remoteestimatedtimehours.
             if ($data['remoteestimatedtimehours'] == '') {
                 $errors['remoteestimatedtime'] = get_string('errorelaborationcompleted', 'local_mentor_specialization');
+            }
+
+            // Check contactproducerorganization.
+            if ($data['contactproducerorganization'] == '') {
+                $errors['contactproducerorganization'] = get_string('errorelaborationcompleted', 'local_mentor_specialization');
             }
         }
 

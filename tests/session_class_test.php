@@ -1116,7 +1116,7 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
         $auth = 'manual';
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity2, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity2, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
 
         self::setUser($user->id);
@@ -1167,7 +1167,7 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
         $auth = 'manual';
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity2, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity2, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
 
         self::setUser($user->id);
@@ -1245,7 +1245,7 @@ class local_mentor_specialization_session_class_testcase extends advanced_testca
         $auth = 'manual';
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $session->get_entity(), [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $session->get_entity(), null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
 
         self::assertFalse($session->is_tutor($user));

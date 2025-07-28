@@ -413,7 +413,6 @@ class local_mentor_specialization_testcase extends advanced_testcase {
             [2, "Attention, le groupe dadada n'a pas été trouvé. Le groupe sera créé."],
             [6, "Attention, le groupe dididi n'a pas été trouvé. Le groupe sera créé."],
             [7, get_string('usercreatandenrol', 'local_mentor_core' , 'dididi@aaa.com')],
-            [8, get_string('email_already_used', 'local_mentor_core' , 'test@test.com')],
             [9, get_string('usercreatandenrol', 'local_mentor_core' , 'participant1@test.com')]];
 
         $hasfatalerrors = local_mentor_core_validate_users_csv($content, $delimitername, $course->id, $preview, $errors, $warnings);
@@ -426,7 +425,7 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         self::assertEquals($expectedpreview, $preview['list']);
         self::assertCount(2, $warnings);
         self::assertCount(2, $warnings['groupsnotfound']);
-        self::assertCount(5, $warnings['list']);
+        self::assertCount(4, $warnings['list']);
         self::assertEquals($expectederrors, $errors['list']);
         self::assertEquals($expectedwarnings, $warnings['list']);
 

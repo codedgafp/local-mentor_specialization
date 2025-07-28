@@ -92,7 +92,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
 
         testhelper::create_default_entity($this);
         // Create user.
-        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, null, [], null, $auth));
+        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, null, null, $auth));
         self::assertCount(1, $entity1->get_members());
 
         // Get user.
@@ -107,7 +107,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $email2 = 'user2@gouv.fr';
 
         // Create user.
-        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname2, $firstname2, $email2, $entity1->id, [], null, $auth));
+        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname2, $firstname2, $email2, $entity1->id, null, $auth));
 
         // Get user.
         $profiledata2 = $db->get_user_by_email($email2);
@@ -161,102 +161,120 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         self::resetAllData();
     }
 
-    // TODO: unist test to update in sprint62
-    // /**
-    //  * Test sync entities with secondary entities
-    //  *
-    //  * @covers \local_mentor_specialization\mentor_profile::sync_entities
-    //  */
-    // public function test_sync_entities_ok_secondary_entities() {
-    //    global $CFG;
 
-    //     $this->resetAfterTest(true);
-    //     $this->init_config();
-    //     $this->reset_singletons();
+    /**
+     * Test sync entities with secondary entities
+     *
+     * @covers \local_mentor_specialization\mentor_profile::sync_entities
+    */
+    public function test_sync_entities_ok_secondary_entities() {
+        global $CFG, $DB;
 
-    //     self::setAdminUser();
+        $this->resetAfterTest(true);
+        $this->init_config();
+        $this->reset_singletons();
 
-    //    $CFG->allowemailaddresses = 'gouv.fr';
+        self::setAdminUser();
 
-    //     // Setting user data.
-    //     $lastname = 'lastname';
-    //     $firstname = 'firstname';
-    //     $email = 'user@gouv.fr';
-    //     $auth = 'manual';
+        $CFG->allowemailaddresses = 'gouv.fr';
 
-    //     // Create main and secondary entities.
-    //     // Main.
-    //     $entityid = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
-    //     $entity = \local_mentor_core\entity_api::get_entity($entityid);
-    //     // Secondary.
-    //     $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
-    //     $entity2 = \local_mentor_core\entity_api::get_entity($entity2id);
-    //     $entity3id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity3', 'shortname' => 'Entity3']);
-    //     $entity3 = \local_mentor_core\entity_api::get_entity($entity3id);
+        //  Setting user data.
+        $lastname = 'lastname';
+        $firstname = 'firstname';
+        $email = 'user@gouv.fr';
+        $auth = 'manual';
 
-    //     // Check if entities does not have members.
-    //     self::assertCount(0, $entity->get_members());
-    //     self::assertCount(0, $entity2->get_members());
-    //     self::assertCount(0, $entity3->get_members());
-    //     //From sprint60, 
-    //     //the main entity of the user on create/update, will be affected automatically basing on his email domain 
-    //     //So the user will have automatically main entity "Bibliothèque de formations";  
-    //     $entity = \local_mentor_core\entity_api::get_entity_by_name('Bibliothèque de formations');
-    //     // Create user.
-    //     self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [$entity2],
-    //         null, $auth));
+        // Create entities.
+        // Main.
+        $entity1id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
+        $entity1 = \local_mentor_core\entity_api::get_entity($entity1id);
 
-    //     // Check if user has member to correctly entities.
-    //     self::assertCount(1, $entity->get_members());
-    //     self::assertCount(1, $entity2->get_members());
-    //     self::assertCount(0, $entity3->get_members());
+        $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
+        $entity2 = \local_mentor_core\entity_api::get_entity($entity2id);
 
-    //     self::resetAllData();
-    // }
 
-    // TODO: unist test to update in sprint62
-    // /**
-    //  * Test get secondary entities ok
-    //  *
-    //  * @covers \local_mentor_specialization\mentor_profile::get_secondary_entities
-    //  */
-    // public function test_get_secondary_entities_ok() {
-    //     $this->resetAfterTest(true);
-    //     $this->init_config();
-    //     $this->reset_singletons();
+        $domain1 = (object) [
+            'course_categories_id' => $entity2id,
+            'domain_name' => 'gouv.fr',
+            'created_at' => time(),
+            'disabled_at' => null
+        ];
 
-    //     self::setAdminUser();
+        $DB->insert_record('course_categories_domains', $domain1, false);
 
-    //     $db = \local_mentor_core\database_interface::get_instance();
+        // Check if entities does not have members.
+        self::assertCount(0, $entity1->get_members());
+        self::assertCount(0, $entity2->get_members());
+        //From sprint60, 
+        //the main entity of the user on create/update, will be affected automatically basing on his email domain 
 
-    //     // Setting user data.
-    //     $lastname = 'lastname';
-    //     $firstname = 'firstname';
-    //     $email = 'user@gouv.fr';
-    //     $auth = 'manual';
+        // Create user.
+        self::assertTrue(\local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity1,
+            null, $auth));
 
-    //     // Create main and secondary entities.
-    //     // Main.
-    //     $entityid = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
-    //     $entity = \local_mentor_core\entity_api::get_entity($entityid);
-    //     // Secondary.
-    //     $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
-    //     $entity2 = \local_mentor_core\entity_api::get_entity($entity2id);
+        // Check if user has member to correctly entities.
+        self::assertCount(1, $entity1->get_members());
+        self::assertCount(1, $entity2->get_members());
 
-    //     // Create user.
-    //     \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [$entity2], null, $auth);
-    //     $user = $db->get_user_by_email('user@gouv.fr');
-    //     $profile = \local_mentor_core\profile_api::get_profile($user->id);
+        self::resetAllData();
+    }
 
-    //     // Get secondary entities user.
-    //     $secondaryentities = $profile->get_secondary_entities();
+    /**
+     * Test get secondary entities ok
+     *
+      * @covers \local_mentor_specialization\mentor_profile::get_secondary_entities
+    */
+    public function test_get_secondary_entities_ok() {
+        global $CFG, $DB;
+        $this->resetAfterTest(true);
+        $this->init_config();
+        $this->reset_singletons();
 
-    //     // Check if correctly entity add to seconday entities user.
-    //     self::assertCount(1, $secondaryentities);
-    //     self::assertEquals($entity2id, current($secondaryentities)->id);
+        self::setAdminUser();
 
-    //     self::resetAllData();
-    // }
+        $db = \local_mentor_core\database_interface::get_instance();
+
+
+        $CFG->allowemailaddresses = 'gouv.fr';
+
+        //  Setting user data.
+        $lastname = 'lastname';
+        $firstname = 'firstname';
+        $email = 'user@gouv.fr';
+        $auth = 'manual';
+
+        // Main.
+        $entity1id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
+        $entity1 = \local_mentor_core\entity_api::get_entity($entity1id);
+
+        $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
+        $entity2 = \local_mentor_core\entity_api::get_entity($entity2id);
+
+
+
+        $domain1 = (object) [
+            'course_categories_id' => $entity2id,
+            'domain_name' => 'gouv.fr',
+            'created_at' => time(),
+            'disabled_at' => null
+        ];
+
+        $DB->insert_record('course_categories_domains', $domain1, false);
+
+        // Create user.
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity1, null, $auth);
+        $user = $db->get_user_by_email('user@gouv.fr');
+        $profile = \local_mentor_core\profile_api::get_profile($user->id);
+
+        // Get secondary entities user.
+        $secondaryentities = $profile->get_secondary_entities();
+
+        // Check if correctly entity add to seconday entities user.
+        self::assertCount(1, $secondaryentities);
+        self::assertEquals($entity1id, current($secondaryentities)->id);
+
+        self::resetAllData();
+    }
 
     /**
      * Test get secondary entities ok
@@ -284,10 +302,10 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entity = \local_mentor_core\entity_api::get_entity($entityid);
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
-
+     
         // Get secondary entities user.
         $secondaryentities = $profile->get_secondary_entities();
 
@@ -327,7 +345,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entity2 = \local_mentor_core\entity_api::get_entity($entity2id);
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = $entity2->name;
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
@@ -390,7 +408,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entity = \local_mentor_core\entity_api::get_entity($entityid);
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = '';
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
@@ -448,10 +466,8 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entityid = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
         $entity = \local_mentor_core\entity_api::get_entity($entityid);
 
-        $DB->delete_records('user_info_field', ['shortname' => 'secondaryentities']);
-
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = '';
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
@@ -472,12 +488,13 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
      * @covers \local_mentor_specialization\mentor_profile::has_secondary_entity
      */
     public function test_has_secondary_entity_ok_one_secondary_entity() {
+        global $CFG, $DB;
         $this->resetAfterTest(true);
         $this->init_config();
         $this->reset_singletons();
 
         self::setAdminUser();
-
+        $CFG->allowemailaddresses = "gouv.fr";
         $db = \local_mentor_core\database_interface::get_instance();
 
         // Setting user data.
@@ -492,64 +509,21 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
 
         // Create other entity.
         $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
+        $domain1 = (object) [
+            'course_categories_id' => $entity2id,
+            'domain_name' => 'gouv.fr',
+            'created_at' => time(),
+            'disabled_at' => null
+        ];
 
+        $DB->insert_record('course_categories_domains', $domain1, false);
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [$entity2id], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entityid, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = '';
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
 
-        self::assertTrue($profile->has_secondary_entity($entity2id));
-
-        self::resetAllData();
-    }
-
-    /**
-     * Test has secondary entity ok
-     * multiple secondary entities
-     *
-     * @covers \local_mentor_specialization\mentor_profile::has_secondary_entity
-     */
-    public function test_has_secondary_entity_ok_multiple_secondary_entities() {
-        $this->resetAfterTest(true);
-        $this->init_config();
-        $this->reset_singletons();
-
-        self::setAdminUser();
-
-        $db = \local_mentor_core\database_interface::get_instance();
-
-        // Setting user data.
-        $lastname = 'lastname';
-        $firstname = 'firstname';
-        $email = 'user@gouv.fr';
-        $auth = 'manual';
-
-        // Create main entity.
-        $entityid = \local_mentor_core\entity_api::create_entity(['name' => 'Entity', 'shortname' => 'Entity']);
-        $entity = \local_mentor_core\entity_api::get_entity($entityid);
-
-        // Create other entity.
-        $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
-
-        // Create other entity.
-        $entity3id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity3', 'shortname' => 'Entity3']);
-
-        // Create other entity.
-        $entity4id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity4', 'shortname' => 'Entity4']);
-
-        // Create user.
-        \local_mentor_core\profile_api::create_and_add_user(
-            $lastname, $firstname, $email, $entity, [$entity2id, $entity4id], null, $auth
-        );
-        $user = $db->get_user_by_email('user@gouv.fr');
-        $user->secondaryentities = '';
-        $profile = \local_mentor_core\profile_api::get_profile($user->id);
-
-        self::assertTrue($profile->has_secondary_entity($entity2id));
-        self::assertTrue($profile->has_secondary_entity($entity4id));
-
-        self::assertFalse($profile->has_secondary_entity($entity3id));
+        self::assertTrue($profile->has_secondary_entity($entityid));
 
         self::resetAllData();
     }
@@ -580,7 +554,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entity = \local_mentor_core\entity_api::get_entity($entityid);
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = '';
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
@@ -622,7 +596,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [$entity2id], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = '';
         $profile = \local_mentor_core\profile_api::get_profile($user->id);
@@ -666,7 +640,7 @@ class local_mentor_specialization_profile_class_testcase extends advanced_testca
         $entity2id = \local_mentor_core\entity_api::create_entity(['name' => 'Entity2', 'shortname' => 'Entity2']);
 
         // Create user.
-        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, [$entity2id], null, $auth);
+        \local_mentor_core\profile_api::create_and_add_user($lastname, $firstname, $email, $entity, null, $auth);
         $user = $db->get_user_by_email('user@gouv.fr');
         $user->secondaryentities = '';
         $profile = \local_mentor_core\profile_api::get_profile($user->id);

@@ -52,7 +52,6 @@ define([
                         action: 'create_entity',
                         format: 'json',
                         callback: function (response) {
-                    
                             response = JSON.parse(response);
 
                             if (response.success) {
@@ -228,7 +227,7 @@ define([
 
         event.preventDefault();
         var inputresponsible = 'entities';
-        
+
         // Modal params
         var buttons = [// Modal buttons
             {
@@ -236,7 +235,7 @@ define([
                 class: 'btn btn-primary',
                 click: function () {
                     var modalthis = $(this);
-                    
+
                     var serializeddata = $('#default-entity-form').serialize();
                     var ajaxcallparams = {
                         url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php?' + serializeddata,
@@ -253,7 +252,7 @@ define([
                             }
                         }
                     };
-                    
+
                     format_edadmin.ajax_call(ajaxcallparams);
                 }
             },
@@ -277,7 +276,7 @@ define([
             },
             open: function () {
                 $('#default-entity-form')[0].reset();
-    
+
                 $.ajax({
                     url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
                     dataType: 'json',
@@ -300,10 +299,9 @@ define([
                 });
             }
         });
-    
 
         $('#' + inputresponsible).select2({
-            dropdownParent: $(defaultentitytemplate), 
+            dropdownParent: $(defaultentitytemplate),
             ajax: {
                 url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
                 dataType: 'json',
@@ -316,7 +314,7 @@ define([
                     };
                 },
                 processResults: function (data) {
-                    defaultEntity = data.message.defaultentity; 
+                    defaultEntity = data.message.defaultentity;
                     var mainentities = $.map(data.message.mainentities, function (item) {
                         return {
                             text: item.shortname,
@@ -329,29 +327,27 @@ define([
                 }
             }
         }).data('select2').$container.addClass("custom-select");
-
     }
 
     local_entities.delete_subentity_modal = async function (event) {
         $.ajax({
             url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
             dataType: 'json',
-            type:'GET',
+            type: 'GET',
             data: {
-                    controller: 'entity',
-                    action: 'search_main_entities',
-                    format: 'json',
-                    searchtext: ''
-                }
-            ,
-            success: (mainEntitiesResponse) => {return create_delete_modal(mainEntitiesResponse, event)},
+                controller: 'entity',
+                action: 'search_main_entities',
+                format: 'json',
+                searchtext: ''
+            },
+            success: (mainEntitiesResponse) => { return create_delete_modal(mainEntitiesResponse, event) },
             error: (error) => (console.error('Error:', error))
-        });    
+        });
     }
 
-function create_delete_modal(mainEntitiesResponse, event){
+    function create_delete_modal(mainEntitiesResponse, event) {
         event.preventDefault();
-        
+
         var inputentity = 'delete-subentity-form-entity';
         var inputsubentity = 'delete-subentity-form-subentity';
         var deletesubentityform = 'delete-subentity-form';
@@ -360,66 +356,66 @@ function create_delete_modal(mainEntitiesResponse, event){
         var formtemplate = '#delete-subentity-form-template';
         var deleteentitybutton = 'deleteentitybutton';
         var deletesubentityformentitygroup = 'delete-subentity-form-entity-group';
-        
-        if(mainEntitiesResponse.message.length == 1){
+
+        if (mainEntitiesResponse.message.length == 1) {
             $('#' + inputentity).val(mainEntitiesResponse.message[0]?.id).trigger('change');
-            $('#'+deletesubentityformentitygroup).hide();
+            $('#' + deletesubentityformentitygroup).hide();
             verifyExistanceDeletableSubEntities(mainEntitiesResponse.message[0]?.id, inputsubentity, deleteentitybutton, formtemplate, warningclass, nonwarningclass);
-        }else if(mainEntitiesResponse.message.length < 1){
+        } else if (mainEntitiesResponse.message.length < 1) {
             return;
         }
-        
+
         var buttons = [
             {
-            text: M.util.get_string('delete', 'format_edadmin'),
-            class: 'btn-primary',
-            id: deleteentitybutton,
-            click: function () {
-                var modalthis = $(this);
-                var serializeddata = $('#'+deletesubentityform).serialize();
-                var ajaxcallparams = {
-                    url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php?' + serializeddata,
-                    controller: 'entity',
-                    action: 'delete_subentity',
-                    format: 'json',
-                    callback: function (response) {
-                        response = JSON.parse(response);
-                        modalthis.dialog("destroy");
-                        if (response.success) {
-                            confirm_subentity_delete(response.message);
-                            M.table.ajax.reload();
-                        } else {
-                            format_edadmin.error_modal(response.message);                                
+                text: M.util.get_string('delete', 'format_edadmin'),
+                class: 'btn-primary',
+                id: deleteentitybutton,
+                click: function () {
+                    var modalthis = $(this);
+                    var serializeddata = $('#' + deletesubentityform).serialize();
+                    var ajaxcallparams = {
+                        url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php?' + serializeddata,
+                        controller: 'entity',
+                        action: 'delete_subentity',
+                        format: 'json',
+                        callback: function (response) {
+                            response = JSON.parse(response);
+                            modalthis.dialog("destroy");
+                            if (response.success) {
+                                confirm_subentity_delete(response.message);
+                                M.table.ajax.reload();
+                            } else {
+                                format_edadmin.error_modal(response.message);
+                            }
                         }
-                    }
-                };
+                    };
 
-                // Add entities ids
-                ajaxcallparams.entityid = mainEntitiesResponse.message.length < 2 ? mainEntitiesResponse.message[0]?.id : $('#' + inputentity).select2('data')[0]?.id;
-                ajaxcallparams.subentity = $('#' + inputsubentity).select2('data')[0]?.id;
-                
-                // Validators
-                if(!ajaxcallparams.entityid || !ajaxcallparams.subentity ){
-                    $(formtemplate + ' .entities-form-warning')
-                                .removeClass(nonwarningclass)
-                                .html(M.util.get_string('requiredfields', 'local_mentor_core'));
-                    return;
+                    // Add entities ids
+                    ajaxcallparams.entityid = mainEntitiesResponse.message.length < 2 ? mainEntitiesResponse.message[0]?.id : $('#' + inputentity).select2('data')[0]?.id;
+                    ajaxcallparams.subentity = $('#' + inputsubentity).select2('data')[0]?.id;
+
+                    // Validators
+                    if (!ajaxcallparams.entityid || !ajaxcallparams.subentity) {
+                        $(formtemplate + ' .entities-form-warning')
+                            .removeClass(nonwarningclass)
+                            .html(M.util.get_string('requiredfields', 'local_mentor_core'));
+                        return;
+                    }
+
+                    // Ajax call for delete
+                    $('#' + deleteentitybutton).attr("disabled", "disabled");
+                    format_edadmin.ajax_call(ajaxcallparams);
+                    $(formtemplate + warningclass).addClass(nonwarningclass);
                 }
-                
-                // Ajax call for delete
-                $('#'+deleteentitybutton).attr("disabled", "disabled");
-                format_edadmin.ajax_call(ajaxcallparams);
-                $(formtemplate + warningclass).addClass(nonwarningclass);
+            },
+            {
+                text: M.util.get_string('cancel', 'format_edadmin'),
+                class: 'btn-secondary',
+                click: function () {
+                    $(formtemplate + warningclass).addClass(nonwarningclass);
+                    $(this).dialog("destroy");
+                }
             }
-        },
-        {
-            text: M.util.get_string('cancel', 'format_edadmin'),
-            class: 'btn-secondary',
-            click: function () {
-                $(formtemplate + warningclass).addClass(nonwarningclass);
-                $(this).dialog("destroy");
-            }
-        }
         ];
 
         mentor.dialog(formtemplate, {
@@ -432,7 +428,7 @@ function create_delete_modal(mainEntitiesResponse, event){
                 $(this).dialog("destroy");
             },
             open: function () {
-                $('#'+deletesubentityform)[0].reset();
+                $('#' + deletesubentityform)[0].reset();
                 $('#' + inputentity).val(null).trigger("change");
                 $('#' + inputsubentity).val(null).trigger("change");
             }
@@ -473,13 +469,13 @@ function create_delete_modal(mainEntitiesResponse, event){
                 dataType: 'json',
                 data: function (params) {
                     entityid = mainEntitiesResponse.message.length < 2 ? mainEntitiesResponse.message[0].id : $('#' + inputentity).select2('data')[0]?.id;
-                        return {
-                            controller: 'entity',
-                            action: 'get_deletable_subentities',
-                            format: 'json',
-                            searchtext: params.term,
-                            entityid: entityid
-                        };
+                    return {
+                        controller: 'entity',
+                        action: 'get_deletable_subentities',
+                        format: 'json',
+                        searchtext: params.term,
+                        entityid: entityid
+                    };
                 },
                 processResults: function (data) {
                     // Process the results from the AJAX response
@@ -505,59 +501,59 @@ function create_delete_modal(mainEntitiesResponse, event){
         // Check if there is at least one deletable subentity
         $('#' + inputentity).on('change', () => {
             $('#delete-subentity-form-subentity').val(null).trigger('change');
-            entityid = mainEntitiesResponse.message.length < 2 ? mainEntitiesResponse.message[0].id : $('#'+inputentity).val();
+            entityid = mainEntitiesResponse.message.length < 2 ? mainEntitiesResponse.message[0].id : $('#' + inputentity).val();
             return verifyExistanceDeletableSubEntities(entityid, inputsubentity, deleteentitybutton, formtemplate, warningclass, nonwarningclass);
         });
-}
+    }
 
-function verifyExistanceDeletableSubEntities(entityid,inputsubentity,deleteentitybutton, formtemplate, warningclass, nonwarningclass){
-    $.ajax({
-        url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
-        dataType: 'json',
-        type:'GET',
-        data: {
+    function verifyExistanceDeletableSubEntities(entityid, inputsubentity, deleteentitybutton, formtemplate, warningclass, nonwarningclass) {
+        $.ajax({
+            url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
+            dataType: 'json',
+            type: 'GET',
+            data: {
                 controller: 'entity',
                 action: 'get_deletable_subentities',
                 format: 'json',
                 searchtext: '',
-                entityid : entityid
-            }
-        ,
-        success: function(response) {
-            if(response.message.length == 1){
-                var singleOption = new Option(response.message[0].name, response.message[0].id, true, true);
-                $('#'+inputsubentity).append(singleOption).trigger('change');
-            }
-            if(response.message.length < 1){
-                $('#'+deleteentitybutton).attr("disabled", true);
-                    $(formtemplate + warningclass).removeClass(nonwarningclass)
-                    .html(M.util.get_string('nosubentitytodeletmessage', 'local_mentor_core'));
-            }else{
-                $('#'+deleteentitybutton).attr("disabled", false);
-                    $(formtemplate + warningclass).addClass(nonwarningclass);
-            }
-        },
-        error: function(error){
-            console.error('Error:', error); 
-        }
-    });
-}
-
-function confirm_subentity_delete(message) {
-    mentor.dialog(
-        '<p class="text-center">' +message+ '</p>',
-        {
-            width: 550,
-            title: M.util.get_string('confirmation', 'local_mentor_core'),
-            buttons: [{
-                text: M.util.get_string('close', 'local_mentor_core'),
-                class: "btn btn-primary",
-                click: function () {
-                    $(this).dialog("close");
+                entityid: entityid
+            },
+            success: function (response) {
+                if (response.message.length == 1) {
+                    var singleOption = new Option(response.message[0].name, response.message[0].id, true, true);
+                    $('#' + inputsubentity).append(singleOption).trigger('change');
                 }
-            }]
+                if (response.message.length < 1) {
+                    $('#' + deleteentitybutton).attr("disabled", true);
+                    $(formtemplate + warningclass).removeClass(nonwarningclass)
+                        .html(M.util.get_string('nosubentitytodeletmessage', 'local_mentor_core'));
+                } else {
+                    $('#' + deleteentitybutton).attr("disabled", false);
+                    $(formtemplate + warningclass).addClass(nonwarningclass);
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
         });
-}
+    }
+
+    function confirm_subentity_delete(message) {
+        mentor.dialog(
+            '<p class="text-center">' + message + '</p>',
+            {
+                width: 550,
+                title: M.util.get_string('confirmation', 'local_mentor_core'),
+                buttons: [{
+                    text: M.util.get_string('close', 'local_mentor_core'),
+                    class: "btn btn-primary",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            }
+        );
+    }
 
     /**
      * Entity admin form event.
@@ -574,58 +570,105 @@ function confirm_subentity_delete(message) {
 
         // Can be main entity data trigger change.
         $('#id_canbemainentity').on('change', function (e) {
-            if (!local_entities.canBeMainEntity && e.currentTarget.checked) {
-                local_entities.canBeMainEntityPopupTrigger = false;
-                
-            } else {
-                local_entities.canBeMainEntityPopupTrigger = true;
-            }
-        
+            local_entities.canBeMainEntityPopupTrigger = (local_entities.canBeMainEntity === true && e.currentTarget.checked === false);
         });
 
         // Form submit trigger.
         $('.course-content > form').on('submit', function (e) {
-            if (!local_entities.canBeMainEntityPopupTrigger || e.originalEvent.submitter.id !== 'id_submitbutton') return;
-              
+            if (local_entities.canBeMainEntityPopupTrigger === false || e.originalEvent.submitter.id !== 'id_submitbutton') return;
+
             e.preventDefault();
 
-            // Init modal information.
-            mentor.dialog(
-                '<div style="white-space: pre-wrap">' +
-                M.util.get_string('canbemainentity_popup_content', 'local_mentor_specialization') +
-                '</div>',
-                {
-                    width: 700,
-                    close: function () {
-                        $(this).dialog("destroy");
-                    },
-                    title: M.util.get_string('warning', 'local_mentor_core'),
-                    buttons: [
-                        {
-                            // Login page redirect.
-                            text: M.util.get_string('yes', 'moodle'),
-                            class: "btn btn-primary",
-                            click: function () {
-                                let formData = new FormData(e.target);
-                                formData.set('hidden', 1);
-                                for (var pair of formData.entries()) {
-                                    console.log(pair[0]+ ': ' + pair[1]);
-                                }
-                                e.target.submit();
-                            }
-                        },
-                        {
-                            // Cancel button
-                            text: M.util.get_string('cancel', 'moodle'),
-                            class: "btn btn-secondary",
-                            click: function () {
-                                // Just close the modal.
-                                $(this).dialog("destroy");
-                            }
-                        }]
-            });
+            mainentityoptionsubmitmodal(e.target);
         });
     };
+
+    function mainentityoptionsubmitmodal(form) {
+        let urlparams = new URLSearchParams(document.location.search);
+        let courseId = urlparams.get("id");
+
+        var ajaxcallparams = {
+            url: M.cfg.wwwroot + '/local/entities/ajax/ajax.php',
+            type: 'GET',
+            data: {
+                controller: 'entity',
+                action: 'check_entity_no_more_domain_link',
+                format: 'json',
+                courseid: courseId
+            },
+            success: function (response) {
+                response = JSON.parse(response);
+
+                response.success
+                    ? canbemainentityinitmodel(form)
+                    : cannotbesecondaryinitmodal();
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        $.ajax(ajaxcallparams);
+    }
+
+    function canbemainentityinitmodel(form) {
+        mentor.dialog(
+            '<div style="white-space: pre-wrap">' +
+            M.util.get_string('canbemainentity_popup_content', 'local_mentor_specialization') +
+            '</div>',
+            {
+                width: 700,
+                close: function () {
+                    $(this).dialog("destroy");
+                },
+                title: M.util.get_string('warning', 'local_mentor_core'),
+                buttons: [
+                    {
+                        // Submit form.
+                        text: M.util.get_string('yes', 'moodle'),
+                        class: "btn btn-primary",
+                        click: function () {
+                            let formData = new FormData(form);
+                            formData.set('hidden', 1);
+                            form.submit();
+                        }
+                    },
+                    {
+                        // Cancel form
+                        text: M.util.get_string('cancel', 'moodle'),
+                        class: "btn btn-secondary",
+                        click: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                ]
+            }
+        );
+    }
+
+    function cannotbesecondaryinitmodal() {
+        mentor.dialog(
+            '<div style="white-space: pre-wrap">' +
+            M.util.get_string('cannotbesecondaryentity_modal_content', 'local_entities') +
+            '</div>',
+            {
+                width: 700,
+                close: function () {
+                    $(this).dialog("destroy");
+                },
+                title: M.util.get_string('cannotbesecondaryentity_modal_title', 'local_entities'),
+                buttons: [
+                    {
+                        text: M.util.get_string('close', 'local_mentor_core'),
+                        class: "btn btn-secondary",
+                        click: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                ]
+            }
+        );
+    }
 
     return local_entities;
 });

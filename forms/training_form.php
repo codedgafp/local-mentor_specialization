@@ -577,7 +577,7 @@ class training_form extends \moodleform {
         }
 
         // Contact organisme producteur.
-        $contactproducerorganizationname = get_string('contactproducerorganization', 'local_trainings') . get_string('optional', 'local_mentor_specialization')  . $warningicon;
+        $contactproducerorganizationname = get_string('contactproducerorganization', 'local_trainings') . $warningicon;
         $mform->addElement('text', 'contactproducerorganization', $contactproducerorganizationname, ['size' => 40, 'class' => 'optional']);
         $mform->setType('contactproducerorganization', PARAM_NOTAGS);
         $mform->addHelpButton('contactproducerorganization', 'contactproducerorganization', 'local_trainings');

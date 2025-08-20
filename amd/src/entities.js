@@ -561,9 +561,17 @@ define([
      * @param {bool} canBeMainEntity
      */
     local_entities.adminFormEvent = function (canBeMainEntity) {
-        $('#contactpage').toggle(canBeMainEntity);
-        $('#presentationpage').toggle(canBeMainEntity);
-        $('#hidepresentationpage').toggle(canBeMainEntity);
+
+        if (!canBeMainEntity) {
+            $('#contactpage').remove();
+            $('#presentationpage').remove();
+            $('#hidepresentationpage').remove();
+        } else {
+            $('#contactpage').show();
+            $('#presentationpage').show();
+            $('#hidepresentationpage').show();
+        }
+
         // Init data.
         local_entities.canBeMainEntity = canBeMainEntity;
         local_entities.canBeMainEntityPopupTrigger = false;

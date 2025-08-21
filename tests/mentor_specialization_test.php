@@ -429,6 +429,19 @@ class local_mentor_specialization_testcase extends advanced_testcase {
         self::assertEquals($expectederrors, $errors['list']);
         self::assertEquals($expectedwarnings, $warnings['list']);
 
+        //Test case: preview message when import users from manage users : courseid = null 
+        $content = [
+            'lastname,firstname,email',
+            'user1,user1,user1@test.com'
+        ];
+        $warningslist = [];
+
+        $hasfatalerrors = local_mentor_core_validate_users_csv($content, $delimitername,null, $preview, $errors, $warningslist);
+        self::assertEquals([
+            [2, get_string('usercreate', 'local_mentor_core' , 'user1@test.com')]
+        ], $warningslist['list']);
+
+
         // Check with 2 users (User 1 with his username equals to User 2 email).
         $user2 = new stdClass();
         $user2->lastname = 'lastname';

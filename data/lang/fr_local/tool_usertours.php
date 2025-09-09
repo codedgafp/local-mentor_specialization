@@ -28,3 +28,6 @@ $string['endonesteptour'] = 'J\'ai compris';
 $string['endtour'] = 'J\'ai compris';
 $string['resettouronpage'] = 'Aide contextuelle';
 $string['skip_tour'] = 'Ne pas lire la suite des explications';
+$string['tour2_content_addblock'] = 'En activant le mode édition, vous pouvez ajouter des blocs à partir du tiroir de navigation. Cependant, réfléchissez à deux fois avant d\'ajouter des blocs sur vos pages. Les blocs ne sont pas affichés dans l\'app Moodle, et pour une meilleure expérience utilisateur de vos participants, il est beaucoup mieux de vous assurer que votre cours se passe bien sans aucun bloc.';
+$string['tour2_content_addingblocks'] = 'Vous pouvez ajouter des blocs à cette page au moyen de ce bouton. Cependant, réfléchissez à deux fois avant d\'ajouter des blocs sur vos pages. Les blocs ne sont pas affichés dans l\'app Moodle, et pour une meilleure expérience utilisateur de vos participants, il est beaucoup mieux de vous assurer que votre cours se passe bien sans aucun bloc.';
+$string['tour2_content_participants'] = 'Consultez la liste des participants ici. C\'est également ici que vous ajoutez ou retirez des participants.';

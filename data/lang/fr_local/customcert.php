@@ -39,3 +39,7 @@ $string['emailnonstudentbodyplaintext'] = '<p>Vous recevez ce message car vous �
 $string['emailnonstudentcertificatelinktext'] = 'Visualiser le rapport des attestations de cette session.';
 $string['emailnonstudentgreeting'] = 'Bonjour,';
 $string['emailnonstudentsubject'] = 'Une attestation de participation a été obtenue dans la formation Mentor « {$a->coursefullname} »';
+$string['coursetimereq_help'] = 'Saisir le temps minimum requis, en minutes, que le participant devra passer dans le cours avant de pouvoir obtenir le certificat.';
+$string['customcert:manageemailstudents'] = 'Gérer les paramètres des courriels aux participants';
+$string['emailstudents'] = 'Envoyer une copie du certificat par courriel aux participants';
+$string['emailstudents_help'] = 'Si ce réglage est activé, le participant recevra une copie du certificat lorsqu\'il sera disponible.';

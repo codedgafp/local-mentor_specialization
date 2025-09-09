@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['groupsdesc'] = 'Si ce paramètre est activé, les étudiants ne verront que les formateurs de leur propre groupe.';
+$string['groupsdesc'] = 'Si ce paramètre est activé, les participants ne verront que les formateurs de leur propre groupe.';
 $string['includecoursecat'] = 'Inclure les formateurs de la catégorie concernée.';
 $string['includecoursecatdesc']
         = 'Si ce paramètre est activé, les utilisateurs ayant le rôle de formateur dans la catégorie mère du cours seront affichés, ainsi que ceux qui sont affectés dans le cours lui-même.';

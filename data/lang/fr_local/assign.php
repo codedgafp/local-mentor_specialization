@@ -44,7 +44,7 @@ $string['allowsubmissionsshort'] = 'Autoriser l\'ajout et la modification de con
 $string['alwaysshowdescription_help']
         = 'Si ce réglage est désactivé, la description de la contribution ci-dessus ne sera visible qu\'à partir de la date d\'ouverture du formulaire de remise.';
 $string['assign:addinstance'] = 'Ajouter une contribution';
-$string['assign:editothersubmission'] = 'Modifier le travail de contribution d\'un autre étudiant';
+$string['assign:editothersubmission'] = 'Modifier le travail de contribution d\'un autre participant';
 $string['assign:exportownsubmission'] = 'Exporter ses propres contributions remises';
 $string['assign:grade'] = 'Évaluer une contribution';
 $string['assign:manageallocations'] = 'Gérer les évaluateurs attribués à des contributions remises';
@@ -63,7 +63,7 @@ $string['assignmentplugins'] = 'Plugins de contribution';
 $string['assignmentsperpage'] = 'Contributions par page';
 $string['attemptreopenmethod'] = 'Réouverture des contributions remises remises';
 $string['attemptreopenmethod_help']
-        = 'Détermine comment les contributions remises par les étudiants sont rouvertes. Les options disponibles sont : * Jamais - Le travail remis ne peut pas être rouvert. * Manuellement - Le travail remis peut être rouvert par un enseignant. * Automatiquement jusqu\'à réussite - Le travail de contribution remis est rouvert automatiquement jusqu\'à ce que l\'étudiant atteigne la note nécessaire pour réussir la contribution ; cette note est indiquée dans le carnet de notes.';
+        = 'Détermine comment les contributions remises par les participants sont rouvertes. Les options disponibles sont : * Jamais - Le travail remis ne peut pas être rouvert. * Manuellement - Le travail remis peut être rouvert par un enseignant. * Automatiquement jusqu\'à réussite - Le travail de contribution remis est rouvert automatiquement jusqu\'à ce que le participant atteigne la note nécessaire pour réussir la contribution ; cette note est indiquée dans le carnet de notes.';
 $string['backtoassignment'] = 'Retour à la contribution';
 $string['batchoperationconfirmaddattempt']
         = 'Autoriser une autre tentative pour les contributions remises sélectionnées';
@@ -83,7 +83,7 @@ $string['batchoperationlock'] = 'verrouiller les contributions remises';
 $string['batchoperationreverttodraft'] = 'remettre à l\'état de brouillon les contributions remises';
 $string['batchoperationunlock'] = 'déverrouiller les contributions remises';
 $string['blindmarking_help']
-        = 'L\'évaluation à l\'aveugle cache aux évaluateurs l\'identité des étudiants. Les réglages de l\'évaluation à l\'aveugle seront verrouillés dès qu\'une contribution aura été remise ou une note donnée pour cette contribution.';
+        = 'L\'évaluation à l\'aveugle cache aux évaluateurs l\'identité des participants. Les réglages de l\'évaluation à l\'aveugle seront verrouillés dès qu\'une contribution aura été remise ou une note donnée pour cette contribution.';
 $string['confirmsubmission']
         = 'Voulez-vous vraiment remettre votre contribution pour évaluation ? Vous ne pourrez plus effectuer de changement.';
 $string['conversionexception']
@@ -108,7 +108,7 @@ $string['deleteallsubmissions'] = 'Supprimer toutes les contributions remises';
 $string['downloadall'] = 'Télécharger toutes les contributions remises';
 $string['downloadasfolders'] = 'Télécharger les contributions remises dans des dossiers';
 $string['downloadasfolders_help']
-        = 'Les contributions remises peuvent être téléchargés dans des dossiers. Les fichiers de chaque étudiant sont placés dans un dossier séparé, avec les éventuels sous-dossiers, et ne sont pas renommés.';
+        = 'Les contributions remises peuvent être téléchargés dans des dossiers. Les fichiers de chaque participant sont placés dans un dossier séparé, avec les éventuels sous-dossiers, et ne sont pas renommés.';
 $string['downloadselectedsubmissions'] = 'Télécharger les contributions remises sélectionnées';
 $string['duedate_help']
         = 'Cette date est celle du délai de remise de la contribution. La remise des contributions sera permise après cette date, mais les contributions remises après cette date seront marqués en retard. Pour empêcher la remise de travaux après une certaine date, veuillez indiquer une date limite de remise.';
@@ -154,7 +154,7 @@ $string['fixrescalednullgrades']
         = 'Cette contribution comporte des notes erronées. Vous pouvez <a href="{$a->link}">corriger automatiquement ces notes</a>. Ceci pourrait avoir une influence sur les totaux du cours.';
 $string['gradeitem:submissions'] = 'Contributions remises';
 $string['gradeoutofhelp_help']
-        = 'Saisir ici la note pour le travail de contribution de l\'étudiant. On peut indiquer des décimales.';
+        = 'Saisir ici la note pour le travail de contribution du participant. On peut indiquer des décimales.';
 $string['gradersubmissionupdatedhtml']
         = '{$a->username} a modifié son travail remis pour la contribution « <em>{$a->assignment}</em> » le {$a->timeupdated}.<br /><br />Le travail de contribution remis est <a href="{$a->url}">disponible sur le site web</a>.';
 $string['gradersubmissionupdatedsmall']
@@ -164,16 +164,16 @@ $string['gradersubmissionupdatedtext']
 $string['gradingduedate_help']
         = 'Le délai pour l\'évaluation des contributions par l\'enseignant. Cette date est utilisée afin de prioriser les notifications de la page d’accueil des enseignants.';
 $string['hidegrader_help']
-        = 'Si ce réglage est activé, l\'identité de tout utilisateur qui évalue un travail remis dans une contribution ne sera pas affichée, afin que les étudiants ne voient pas qui a évalué leur travail. Remarque : ce réglage n\'a pas d\'effet sur le champ de commentaires sur la page d\'évaluation.';
+        = 'Si ce réglage est activé, l\'identité de tout utilisateur qui évalue un travail remis dans une contribution ne sera pas affichée, afin que les participants ne voient pas qui a évalué leur travail. Remarque : ce réglage n\'a pas d\'effet sur le champ de commentaires sur la page d\'évaluation.';
 $string['indicator:cognitivedepth'] = 'Contribution : aspect cognitif';
 $string['indicator:cognitivedepth_help']
-        = 'Cet indicateur se base sur le niveau cognitif atteint par l\'étudiant dans une activité contribution.';
+        = 'Cet indicateur se base sur le niveau cognitif atteint par le participant dans une activité contribution.';
 $string['indicator:cognitivedepthdef'] = 'Contribution : aspect cognitif';
 $string['indicator:cognitivedepthdef_help']
         = 'Le participant a atteint durant cet intervalle d\'analyse ce pourcentage d\'engagement cognitif offert par les activités « Contribution » (niveaux : pas de vue, vue, envoi, vue du feedback, commentaire du feedback, nouvel envoi après vue du feedback).';
 $string['indicator:socialbreadth'] = 'Contribution : aspect social';
 $string['indicator:socialbreadth_help']
-        = 'Cet indicateur se base sur l\'interaction sociale atteinte par l\'étudiant dans une activité contribution.';
+        = 'Cet indicateur se base sur l\'interaction sociale atteinte par le participant dans une activité contribution.';
 $string['indicator:socialbreadthdef'] = 'Contribution : aspect social';
 $string['indicator:socialbreadthdef_help']
         = 'Le participant a atteint durant cet intervalle d\'analyse ce pourcentage d\'engagement social offert par les activités « Contribution » (niveaux : pas de participation, participant seul, participant avec d\'autres).';
@@ -182,19 +182,19 @@ $string['introattachments_help']
 $string['lastmodifiedsubmission'] = 'Dernière modification (travail de contribution remis)';
 $string['latesubmissions'] = 'Contributions en retard';
 $string['locksubmissionforstudent']
-        = 'Empêcher la remise d\'autres contributions par l\'étudiant : (id={$a->id}, fullname={$a->fullname}).';
+        = 'Empêcher la remise d\'autres contributions par le participant : (id={$a->id}, fullname={$a->fullname}).';
 $string['locksubmissions'] = 'Verrouiller la remise des contributions';
 $string['manageassignfeedbackplugins'] = 'Gérer les plugins de feedback des contributions';
 $string['manageassignsubmissionplugins'] = 'Gérer les plugins de remise de travaux des contributions';
 $string['maxattempts_help']
-        = 'Le nombre maximal de tentatives de remise pouvant être effectuées par un étudiant. Une fois ce nombre atteint, le travail de contribution remis ne pourra plus être rouvert.';
+        = 'Le nombre maximal de tentatives de remise pouvant être effectuées par un participant. Une fois ce nombre atteint, le travail de contribution remis ne pourra plus être rouvert.';
 $string['maxperpage'] = 'Nombre de contributions par page';
 $string['maxperpage_help']
         = 'Le nombre maximum de contributions qu\'un évaluateur peut voir dans la page d\'évaluation des contributions. Ce réglage est utile pour éviter des lenteurs d\'affichage dans les cours où il y a de très nombreux participants.';
 $string['messageprovider:assign_notification'] = 'Notifications de contributions';
 $string['modulename'] = 'Contribution';
 $string['modulename_help']
-        = 'Le module d\'activité devoir permet à un enseignant de communiquer aux participants des tâches, de récolter des travaux et de leur fournir feedbacks et notes. Les étudiants peuvent remettre des travaux sous forme numérique (fichiers), par exemple des documents traitement de texte, feuilles de calcul, images, sons ou séquences vidéo. En complément ou en plus, le devoir peut demander aux étudiants de saisir directement un texte. Une contribution peut aussi être utilisée pour indiquer aux étudiants des tâches à effectuer dans le monde réel et ne nécessitant pas la remise de fichiers numériques. Les étudiants peuvent remettre un devoir individuellement ou comme membres d\'un groupe. Lors de l\'évaluation des contributions, les enseignants peuvent donner aux étudiants des feedbacks, leur envoyer des fichiers : travaux annotés, documents avec commentaires ou feedbacks audio. Les contributions peuvent être évaluées au moyen d\'une note numérique, d\'un barème spécifique ou d\'une méthode avancée comme une grille d\'évaluation. Les notes définitives sont enregistrées dans le carnet de notes.';
+        = 'Le module d\'activité devoir permet à un enseignant de communiquer aux participants des tâches, de récolter des travaux et de leur fournir feedbacks et notes. Les participants peuvent remettre des travaux sous forme numérique (fichiers), par exemple des documents traitement de texte, feuilles de calcul, images, sons ou séquences vidéo. En complément ou en plus, le devoir peut demander aux participants de saisir directement un texte. Une contribution peut aussi être utilisée pour indiquer aux participants des tâches à effectuer dans le monde réel et ne nécessitant pas la remise de fichiers numériques. Les participants peuvent remettre un devoir individuellement ou comme membres d\'un groupe. Lors de l\'évaluation des contributions, les enseignants peuvent donner aux participants des feedbacks, leur envoyer des fichiers : travaux annotés, documents avec commentaires ou feedbacks audio. Les contributions peuvent être évaluées au moyen d\'une note numérique, d\'un barème spécifique ou d\'une méthode avancée comme une grille d\'évaluation. Les notes définitives sont enregistrées dans le carnet de notes.';
 $string['modulenameplural'] = 'Contributions';
 $string['multipleteams_desc']
         = 'Cette contribution nécessite la remise des travaux en groupes. Vous faites partie de plusieurs groupes. Pour pouvoir remettre une contribution, vous devez ne faire partie que d\'un seul groupe. Veuillez contacter votre enseignant pour qu\'il change votre appartenance aux groupes.';
@@ -234,37 +234,37 @@ $string['privacy:metadata:assignperpage'] = 'Nombre de contributions affichées 
 $string['privacy:metadata:assignsubmissionpluginsummary'] = 'Données des remises de la contribution.';
 $string['privacy:metadata:grade']
         = 'La note numérique pour cette contributions remise. Peut être déterminée par un barème, mais est toujours convertie en nombre à virgule.';
-$string['privacy:studentpath'] = 'Contributions des étudiants';
+$string['privacy:studentpath'] = 'Contributions des participants';
 $string['privacy:submissionpath'] = 'Contribution remise';
 $string['quickgrading_help']
         = 'L\'évaluation rapide vous permet d\'attribuer des notes (et compétences) directement dans le tableau des contributions remises. L\'évaluation rapide n\'est pas compatible avec l\'évaluation avancée et n\'est pas recommandée si plusieurs utilisateurs effectuent l\'évaluation.';
 $string['removesubmission'] = 'Supprimer travail de contribution remis';
 $string['removesubmissionforstudent']
-        = 'Supprimer le travail de contribution remis par l \'étudiant : id={$a->id}, nom complet={$a->fullname}.';
+        = 'Supprimer le travail de contribution remis par le participant : id={$a->id}, nom complet={$a->fullname}.';
 $string['requireallteammemberssubmit_help']
         = 'Si ce réglage est activé, tous les membres du groupe doivent cliquer sur le bouton de remise de contribution pour que le travail du groupe soit considéré comme remis. Dans le cas contraire, le travail de contribution du groupe sera considéré comme remis dès que l\'un de ses membres clique sur le bouton de remise.';
 $string['requiresubmissionstatement']
-        = 'Demander aux étudiants d\'accepter la déclaration de remise pour toutes les contributions';
+        = 'Demander aux participants d\'accepter la déclaration de remise pour toutes les contributions';
 $string['requiresubmissionstatement_help']
-        = 'Lorsque ce réglage est activé, les étudiants doivent accepter une déclaration pour toutes les contributions de cette plateforme. Le texte de cette déclaration peut être modifié par l\'administrateur. Par défaut, sa teneur est : « Ce document est le fruit de mon propre travail de contribution, excepté les extraits dûment cités de travaux d\'autres personnes.»';
+        = 'Lorsque ce réglage est activé, les participants doivent accepter une déclaration pour toutes les contributions de cette plateforme. Le texte de cette déclaration peut être modifié par l\'administrateur. Par défaut, sa teneur est : « Ce document est le fruit de mon propre travail de contribution, excepté les extraits dûment cités de travaux d\'autres personnes.»';
 $string['revealidentitiesconfirm']
-        = 'Voulez-vous vraiment révéler les identités des étudiants pour cette contribution ? Cette opération ne peut pas être annulée. Une fois les identités révélées, les notes seront transmises au carnet de notes.';
+        = 'Voulez-vous vraiment révéler les identités des participants pour cette contribution ? Cette opération ne peut pas être annulée. Une fois les identités révélées, les notes seront transmises au carnet de notes.';
 $string['reverttodefaults'] = 'Revenir aux réglages par défaut de la contribution';
 $string['reverttodraft'] = 'Remettre les contributions remises en état de brouillon.';
 $string['reverttodraftforstudent']
-        = 'Remettre à l\'état de brouillon le travail de contribution de l\'étudiant : (id={$a->id}, fullname={$a->fullname}).';
+        = 'Remettre à l\'état de brouillon le travail de contribution du participant : (id={$a->id}, fullname={$a->fullname}).';
 $string['reverttodraftshort'] = 'Remettre le travail de contribution à l\'état de brouillon';
 $string['search:activity'] = 'Contribution – information sur l\'activité';
 $string['sendlatenotifications'] = 'Informer les évaluateurs des contributions en retard';
 $string['sendlatenotifications_help']
-        = 'Si ce réglage est activé, les évaluateurs (normalement les enseignants) recevront un message lorsque les étudiants remettent une contribution en retard. La façon dont le message est délivré est configurable.';
+        = 'Si ce réglage est activé, les évaluateurs (normalement les enseignants) recevront un message lorsque les participants remettent une contribution en retard. La façon dont le message est délivré est configurable.';
 $string['sendnotifications'] = 'Informer les évaluateurs des contributions remises';
 $string['sendnotifications_help']
-        = 'Si ce réglage est activé, les évaluateurs (en principe les enseignants) recevront un message chaque fois qu\'un étudiant remet un travail pour cette contribution, qu\'il soit en avance, à temps ou en retard. La méthode d\'envoi des messages est configurable.';
+        = 'Si ce réglage est activé, les évaluateurs (en principe les enseignants) recevront un message chaque fois qu\'un participant remet un travail pour cette contribution, qu\'il soit en avance, à temps ou en retard. La méthode d\'envoi des messages est configurable.';
 $string['sendstudentnotifications_help']
-        = 'Si ce réglage est activé, les étudiants reçoivent un message lors de la modification d\'une note ou d\'un feedback. Si un flux d\'évaluation est activé pour cette contribution, les notifications ne seront pas envoyés avant que la note ne soit « Publiée ».';
+        = 'Si ce réglage est activé, les participants reçoivent un message lors de la modification d\'une note ou d\'un feedback. Si un flux d\'évaluation est activé pour cette contribution, les notifications ne seront pas envoyés avant que la note ne soit « Publiée ».';
 $string['sendsubmissionreceipts_help']
-        = 'Ce réglage active les accusés de réception pour les étudiants. Les étudiants recevront alors une notification chaque fois qu\'ils remettent un travail pour une contribution.';
+        = 'Ce réglage active les accusés de réception pour les participants. Les participants recevront alors une notification chaque fois qu\'ils remettent un travail pour une contribution.';
 $string['settings'] = 'Réglages de la contribution';
 $string['submission'] = 'Contribution rendue';
 $string['submissioncopiedhtml']
@@ -274,13 +274,13 @@ $string['submissioncopiedsmall']
 $string['submissioncopiedtext']
         = 'Vous avez copié votre contribution remise précédent pour <em>{$a->assignment}</em>. Vous pouvez consulter l\'état de votre contributions remise&nbsp;: {$a->url}';
 $string['submissiondrafts']
-        = 'Exiger que les étudiants cliquent sur le bouton « Envoyer la contribution »';
+        = 'Exiger que les participants cliquent sur le bouton « Envoyer la contribution »';
 $string['submissiondrafts_help']
-        = 'Si ce réglage est activé, les étudiants devront explicitement cliquer sur un bouton de remise pour confirmer que leur contribution est terminée. Cela permet aux étudiants de conserver dans le système une version brouillon de leur travail avant de l\'envoyer. Si le réglage est activé après que des étudiants ont déjà remis leur contributions, ceux-ci seront considérés comme définitifs.';
-$string['submissioneditable'] = 'L\'étudiant peut modifier ce travail de contribution remis';
+        = 'Si ce réglage est activé, les participants devront explicitement cliquer sur un bouton de remise pour confirmer que leur contribution est terminée. Cela permet aux participants de conserver dans le système une version brouillon de leur travail avant de l\'envoyer. Si le réglage est activé après que des participants ont déjà remis leur contributions, ceux-ci seront considérés comme définitifs.';
+$string['submissioneditable'] = 'le participant peut modifier ce travail de contribution remis';
 $string['submissionnotcopiedinvalidstatus']
         = 'Le travail de contribution remis n\'a pas été copié, car il a été modifié depuis sa réouverture.';
-$string['submissionnoteditable'] = 'L\'étudiant ne peut pas modifier ce travail de contribution remis';
+$string['submissionnoteditable'] = 'le participant ne peut pas modifier ce travail de contribution remis';
 $string['submissionnotready'] = 'Ce travail de contribution n\'est pas prêt à être remis :';
 $string['submissionreceipthtml']
         = '<p>Vous avez remis un travail pour la contribution « <em>{$a->assignment}</em> »</p> <p>Vous pouvez consulter l\'état de votre <a href="{$a->url}">contribution</a>.</p>';
@@ -300,15 +300,15 @@ $string['submissionslocked']
 $string['submissionslockedshort'] = 'Contribution verrouillée';
 $string['submissionsnotgraded'] = 'Contributions non évaluées {$a}';
 $string['submissionstatement_help']
-        = 'Énoncé que chaque étudiant doit accepter avant de remettre son travail de contribution';
+        = 'Énoncé que chaque participant doit accepter avant de remettre son travail de contribution';
 $string['submissionstatementdefault']
         = 'Ce document est le fruit de mon propre travail de contribution, excepté les extraits dûment cités de travaux d\'autres personnes.';
 $string['submissionstatementteamsubmission_help']
-        = 'Énoncé que chaque étudiant doit accepter avant de remettre le travail de contribution de leur groupe';
+        = 'Énoncé que chaque participant doit accepter avant de remettre le travail de contribution de leur groupe';
 $string['submissionstatementteamsubmissionallsubmit']
         = 'Énoncé de remise lorsque tous les membres du groupe remettent une contribution';
 $string['submissionstatementteamsubmissionallsubmit_help']
-        = 'Énoncé que chaque étudiant doit accepter avant de remettre une contribution en tant que membre d\'un groupe.';
+        = 'Énoncé que chaque participant doit accepter avant de remettre une contribution en tant que membre d\'un groupe.';
 $string['submissionstatementteamsubmissionallsubmitdefault']
         = 'Ce document est le fruit de mon propre travail de contribution en tant que membre du groupe, excepté les extraits dûment cités de travaux d\'autres personnes.';
 $string['submissionstatementteamsubmissiondefault']
@@ -321,22 +321,22 @@ $string['submitassignment_help']
 $string['submitted'] = 'Contribution rendue';
 $string['submittedearly'] = 'Le travail de contribution a été remis en avance de {$a}';
 $string['submittedlate'] = 'Le travail de contribution a été remise en retard de {$a}';
-$string['teamsubmission'] = 'Les étudiants remettent leur contribution en groupe';
+$string['teamsubmission'] = 'Les participants remettent leur contribution en groupe';
 $string['teamsubmission_help']
-        = 'Si ce réglage est activé, les étudiants seront répartis en groupes, sur la base du jeu de groupes par défaut ou d\'un groupement choisi. Une contribution remise en groupe sera partagée par tous les membres du groupe et tous les membres du groupe verront les modifications de la contribution effectuées par les autres membres.';
+        = 'Si ce réglage est activé, les participants seront répartis en groupes, sur la base du jeu de groupes par défaut ou d\'un groupement choisi. Une contribution remise en groupe sera partagée par tous les membres du groupe et tous les membres du groupe verront les modifications de la contribution effectuées par les autres membres.';
 $string['teamsubmissiongroupingid_help']
-        = 'Les groupes de ce groupement seront utilisés pour former les groupes d\'étudiants de cette contribution. Si non renseigné, le jeu de groupes par défaut sera utilisé.';
+        = 'Les groupes de ce groupement seront utilisés pour former les groupes de participants de cette contribution. Si non renseigné, le jeu de groupes par défaut sera utilisé.';
 $string['textinstructions'] = 'Instructions pour la contribution';
 $string['ungroupedusers']
         = 'Le réglage « Requiert un groupe pour remettre une contribution » est activé et certains utilisateurs ne sont membres d\'aucun groupe ou membres de plusieurs groupes. Cette situation les empêchera de remettre une contribution.';
 $string['ungroupedusersoptional']
-        = 'Le réglage « Les étudiants remettent leur contribution en groupe » est activé et certains utilisateurs ne font partie d\'aucun groupe ou sont membres de plusieurs groupes. Veuillez prendre note que ces étudiants remettront leur contribution en tant que membre du « Groupe par défaut ».';
+        = 'Le réglage « Les participants remettent leur contribution en groupe » est activé et certains utilisateurs ne font partie d\'aucun groupe ou sont membres de plusieurs groupes. Veuillez prendre note que ces participants remettront leur contribution en tant que membre du « Groupe par défaut ».';
 $string['unlocksubmissionforstudent']
-        = 'Permettre la remise de contributions pour l\'étudiant : (id={$a->id}, fullname={$a->fullname}).';
+        = 'Permettre la remise de contributions pour le participant : (id={$a->id}, fullname={$a->fullname}).';
 $string['userassignmentdefaults'] = 'Réglages par défaut de la contribution pour l\'utilisateur';
 $string['useridlistnotcached']
         = 'Les modifications aux notes n\'ont pas été enregistrées : il n\'a pas été possible de déterminer à quel travail de contribution elles avaient été attribuées.';
-$string['usersnone'] = 'Aucun étudiant n\'a accès à cette contribution.';
+$string['usersnone'] = 'Aucun participant n\'a accès à cette contribution.';
 $string['usersubmissioncannotberemoved']
         = 'Le travail de contribution remis par {$a} ne peut pas être supprimé.';
 $string['userswhoneedtosubmit'] = 'Utilisateurs devant valider l\'envoi de la contribution : {$a}';
@@ -344,5 +344,35 @@ $string['viewgrading'] = 'Consulter toutes les contributions remises';
 $string['viewownsubmissionform'] = 'Afficher sa propre page de remise de contributions.';
 $string['viewownsubmissionstatus'] = 'Afficher sa propre page de l\'état des contributions remises.';
 $string['viewsubmission'] = 'Afficher le travail de contribution remis';
-$string['viewsubmissionforuser'] = 'Afficher le travail de contribution remis de l\'étudiant {$a}';
+$string['viewsubmissionforuser'] = 'Afficher le travail de contribution remis du participant {$a}';
 $string['viewsubmissiongradingtable'] = 'Afficher le tableau des notes de la contribution';
+$string['assign:revealidentities'] = 'Révéler l’identité des participants';
+$string['assign:viewblinddetails'] = 'Voir les identités des participants quand les remises anonymes sont activées';
+$string['blindmarkingenabledwarning'] = 'Les remises anonymes sont activées pour cette activité. Les notes ne seront pas ajoutées au carnet de notes jusqu\'à ce que les identités des participants soient révélées dans le menu d\'évaluation.';
+$string['confirmbatchgradingoperation'] = 'Voulez-vous vraiment {$a->operation} pour {$a->count} participants ?';
+$string['gradestudent'] = 'Évaluer le participant : (id={$a->id}, fullname={$a->fullname}).';
+$string['gradingstudent'] = 'Évaluation de participant';
+$string['grantextensionforusers'] = 'Octroyer une prolongation à {$a} participants';
+$string['hidegrader'] = 'Cacher l\'identité des évaluateurs pour les participants';
+$string['markingworkflowstate_help'] = 'La liste des statuts d\'évaluation à votre disposition peut comprendre (selon vos permissions) :
+
+* Non évalué - l\'évaluateur n\'a pas encore commencé l\'évaluation
+* En cours d\'évaluation - l\'évaluateur a commencé l\'évaluation, qui n\'est pas encore terminée
+* Évaluation terminée - l\'évaluateur a terminé l\'évaluation, mais peut encore la revoir pour des vérifications ou corrections
+* En relecture - l\'évaluation a été transmise à l\'enseignant responsable de sa vérification
+* Prêt pour publication - l\'enseignant chargé de la relecture est satisfait de l\'évaluation, mais n\'a pas encore décidé de la publier
+* Publiée - le participant peut consulter ses notes et feedbacks';
+$string['privacy:metadata:assignmessageexplanation'] = 'Les messages sont envoyés aux participants par le système de messagerie.';
+$string['relativedatessubmissiontimeleft'] = 'Calculé pour chaque participant';
+$string['removesubmissionconfirmforstudent'] = 'Voulez-vous vraiment supprimer les données remises par le participant {$a} ?';
+$string['reopenuntilpassincompatiblewithblindmarking'] = 'L\'option de réouverture « Automatiquement jusqu\'à réussite » n\'est pas compatible avec les remises anonymes, car les notes ne sont transmises au carnet de notes qu\'après que le nom du participant est révélé.';
+$string['revealidentities'] = 'Révéler les identités des participants';
+$string['sendstudentnotifications'] = 'Notifier les participants';
+$string['sendstudentnotificationsdefault'] = 'Réglages par défaut pour « Notifier les participants »';
+$string['sendstudentnotificationsdefault_help'] = 'Définit la valeur par défaut de la case à cocher « Notifier les participants » sur le formulaire d\'évaluation.';
+$string['sendsubmissionreceipts'] = 'Envoyer aux participants un accusé de réception';
+$string['studentnotificationworkflowstateerror'] = 'Le statut de l\'évaluation doit être « Publiée » pour en informer les participants.';
+$string['submissionlog'] = 'Participant : {$a->fullname}, statut : {$a->status}';
+$string['teamsubmissiongroupingid'] = 'Groupement pour les groupes de participants';
+$string['viewgradingformforstudent'] = 'Afficher la page d\'évaluation du participant : (id={$a->id}, fullname={$a->fullname}).';
+$string['viewrevealidentitiesconfirm'] = 'Afficher la page de confirmation pour révéler les identités des participants';

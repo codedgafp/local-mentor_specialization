@@ -42,4 +42,6 @@ $string['publishalways'] = 'Toujours afficher les résultats aux participants';
 $string['publishanonymous'] = 'Publier les résultats anonymement, sans afficher le nom des participants';
 $string['publishnames'] = 'Publier les résultats complets, avec le nom des participants et leur choix';
 $string['publishnot'] = 'Ne pas publier les résultats pour les participants';
+$string['showavailable_help'] = 'Afficher aux participants le nombre de places disponibles pour chaque option et le nombre de réponses déjà reçues.';
+
 $string['showpreview_help'] = 'Permettre aux participants de prévisualiser les options disponibles avant l\'ouverture de l\'enregistrement des choix du sondage.';

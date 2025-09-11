@@ -26,3 +26,4 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['coursetoomanysections'] = 'Attention aux éditeurs : ce cours a plus de tuiles que le maximum autorisé. Un maximum de {$a->max} sera montré aux participants (jusqu\'à « {$a->tilename} ») (les éditeurs peuvent en voir plus).';
+$string['showprogresssphototiles_desc'] = 'Si cette option est sélectionnée, la progression du participant (par exemple, Progression 2/5) sera affichée sur les tuiles photo';

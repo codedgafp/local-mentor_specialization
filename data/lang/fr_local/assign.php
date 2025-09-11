@@ -346,9 +346,12 @@ $string['viewownsubmissionstatus'] = 'Afficher sa propre page de l\'état des co
 $string['viewsubmission'] = 'Afficher le travail de contribution remis';
 $string['viewsubmissionforuser'] = 'Afficher le travail de contribution remis du participant {$a}';
 $string['viewsubmissiongradingtable'] = 'Afficher le tableau des notes de la contribution';
+$string['activityeditor_help'] = 'Les actions à effectuer par le participant pour ce devoir. Ceci n’est affiché que sur la page de remise, où le participant modifie et envoie son devoir.';
 $string['assign:revealidentities'] = 'Révéler l’identité des participants';
 $string['assign:viewblinddetails'] = 'Voir les identités des participants quand les remises anonymes sont activées';
+$string['attemptreopenmethod_untilpass_help'] = 'Après chaque tentative, la prochaine sera octroyée automatiquement jusqu’à ce que le participant atteignent la note minimale de réussite.';
 $string['blindmarkingenabledwarning'] = 'Les remises anonymes sont activées pour cette activité. Les notes ne seront pas ajoutées au carnet de notes jusqu\'à ce que les identités des participants soient révélées dans le menu d\'évaluation.';
+$string['blindmarkingnogradewarning'] = 'Les remises anonymes sont activées pour cette activité. Les notes ne seront pas ajoutées au carnet de notes jusqu’à ce que les identités des participants soient révélées dans le menu « Actions ».';
 $string['confirmbatchgradingoperation'] = 'Voulez-vous vraiment {$a->operation} pour {$a->count} participants ?';
 $string['gradestudent'] = 'Évaluer le participant : (id={$a->id}, fullname={$a->fullname}).';
 $string['gradingstudent'] = 'Évaluation de participant';
@@ -362,9 +365,11 @@ $string['markingworkflowstate_help'] = 'La liste des statuts d\'évaluation à v
 * En relecture - l\'évaluation a été transmise à l\'enseignant responsable de sa vérification
 * Prêt pour publication - l\'enseignant chargé de la relecture est satisfait de l\'évaluation, mais n\'a pas encore décidé de la publier
 * Publiée - le participant peut consulter ses notes et feedbacks';
+$string['notifystudents'] = 'Notifier les participants';
 $string['privacy:metadata:assignmessageexplanation'] = 'Les messages sont envoyés aux participants par le système de messagerie.';
 $string['relativedatessubmissiontimeleft'] = 'Calculé pour chaque participant';
 $string['removesubmissionconfirmforstudent'] = 'Voulez-vous vraiment supprimer les données remises par le participant {$a} ?';
+$string['removesubmissionconfirmforstudentwithtimelimit'] = 'Voulez-vous vraiment supprimer le travail remis de {$a} ? Veuillez noter que cette opération ne réinitialisera pas la limite de temps du participant. Vous pouvez lui donner plus de temps en ajoutant une dérogation de temps.';
 $string['reopenuntilpassincompatiblewithblindmarking'] = 'L\'option de réouverture « Automatiquement jusqu\'à réussite » n\'est pas compatible avec les remises anonymes, car les notes ne sont transmises au carnet de notes qu\'après que le nom du participant est révélé.';
 $string['revealidentities'] = 'Révéler les identités des participants';
 $string['sendstudentnotifications'] = 'Notifier les participants';

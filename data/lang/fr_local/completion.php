@@ -25,13 +25,19 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['allconditions'] = 'L’activité est achevée quand les participants font tout ce qui suit :';
 $string['bulkcompletiontracking_help'] = '<strong>Aucun :</strong> ne pas indiquer d\'achèvement d\'activité
 
 <strong>Manuel :</strong> les participants peuvent marquer manuellement l\'activité comme achevée
 
 <strong>Avec conditions :</strong> marquer l\'activité comme achevée lorsque des conditions sont remplies';
+$string['completedwarningtext'] = 'Cette activité est marquée comme terminée pour un ou plusieurs participants. En déverrouillant ce réglage pour effectuer une modification, puis enregistrant le formulaire, les données d’achèvement seront supprimées, puis recalculées lorsque c’est possible. L’achèvement manuel ne peut pas être recalculé, et les participants devront dans ce cas de nouveau marquer l’activité comme terminée.';
+$string['completion_manual'] = 'Les participants doivent marquer manuellement cette activité comme terminée';
+$string['completionexpected_help'] = 'Ce réglage permet de définir pour les participants un rappel qu’il est temps de travailler sur cette activité. Le rappel « {$a} nécessite une action » est alors indiqué dans le bloc Chronologie sur leur tableau de bord.';
+$string['completionpassgrade_help'] = 'Si ce réglage est activé, l’activité est considérée comme achevée lorsque le participant obtient une note minimale de réussite.';
 $string['completionusegrade_desc'] = 'Les participants doivent recevoir une note pour terminer cette activité';
 $string['completionusegrade_help'] = 'Quand cette option est activée, les participants doivent obtenir une note à l\'activité pour la terminer. Des icônes de réussite ou d\'échec peuvent être affichées, si une note minimale pour réussir a été spécifiée.';
 $string['completionview_desc'] = 'Les participants doivent afficher cette activité pour la terminer';
 $string['err_nousers'] = 'Aucun des participants de ce cours ou de ce groupe n\'a de rôle pour lequel le suivi de l\'achèvement des activités est activé. Les informations d\'achèvement ne sont affichées que pour les utilisateurs disposant de la capacité « Être affiché dans les rapports d\'achèvement ». Or cette capacité n\'est permise que pour le rôle de participant ; ce message est donc affiché s\'il n\'y a pas de participant.';
 $string['err_settingslocked'] = 'Un ou plusieurs participants ont déjà rempli un critère, c\'est pourquoi les réglages ont été verrouillés. Le déverrouillage des critères d\'achèvement supprimera les données existantes de l\'état d\'achèvement des utilisateurs et causera des confusions.';
+$string['studentsmust'] = 'Les participants doivent';

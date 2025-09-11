@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['downloadcoursecontent_help'] = 'Ce réglage détermine si les contenus de cours peuvent être téléchargés par les utilisateurs disposant de la capacité adéquate (par défaut ceux qui ont le rôle de participant ou d’enseignant).';
 $string['noaccesssincestartinfomessage'] = 'Bonjour {$a->userfirstname},
 <p>Certains participants du cours {$a->coursename} n\'ont jamais accédé au cours.</p>';
 $string['nocoursestudents'] = 'Aucun participant';

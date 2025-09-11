@@ -27,3 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['descriptionstudents'] = 'Description pour participants';
 $string['privacy:metadata:preference:showstudentdesc'] = 'S\'il faut afficher au participant la description des critères';
+$string['regrademessage1'] = 'Vous allez enregistrer des modifications d’un guide d’évaluation qui a déjà été utilisé pour donner des notes. Veuillez indiquer si les notes déjà données doivent être recalculées. Dans ce cas, ce guide ne sera visible pour les participants que lorsque leur note aura été recalculée.';
+$string['regrademessage5'] = 'Vous allez enregistrer d’importantes modifications d’un guide d’évaluation qui a déjà été utilisé pour donner des notes. Les notes ne seront pas modifiées dans le carnet de notes, mais le guide ne sera visible pour les participants que lorsque leur note aura été recalculée.';

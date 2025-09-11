@@ -25,4 +25,5 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['allowunenrol'] = 'Permettre aux données IMS de désinscrire les participants et enseignants';
 $string['processphotowarning'] = 'Attention ! Le traitement des images est susceptible de charger le serveur de façon significative. Nous vous recommandons de n\'activer pas cette option si un grand nombre de participants doit être traité.';

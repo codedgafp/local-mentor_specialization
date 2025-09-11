@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['generalfeedback_help'] = 'Le feedback général est révélé au participant après qu’il a répondu à la question. À la différence du feedback spécifique, qui dépend du type de la question et de la réponse donnée par le participant, le même feedback général est montré à tous les participants.
+
+Le feedback général peut être utilisé pour donner aux participants une réponse complètement développée, des indications sur les connaissances évaluées par la question ou leur fournir des liens à utiliser s’ils n’ont pas compris la question.';
 $string['penaltyfactor_help'] = 'Ce réglage détermine la fraction de la note obtenue qui sera retirée pour chaque mauvaise réponse donnée. Il n\'est applicable que pour les tests en mode adaptatif.
 
 Le facteur de pénalité doit être un nombre compris entre 0 et 1. Un facteur de pénalité de 1 signifie que le participant doit fournir la bonne réponse au premier essai, sous peine de n\'obtenir aucun point. Un facteur de pénalité de 0 indique que le participant peut réessayer autant qu\'il le veut et pourra obtenir tous les points.';

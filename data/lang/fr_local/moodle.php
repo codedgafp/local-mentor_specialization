@@ -119,6 +119,8 @@ $string['defaultcourseteacherdescription'] = 'Les enseignants peuvent tout faire
 $string['edulevel_help'] = '* Enseignement : actions effectuées par un enseignant, p. ex. modification d\'une ressource
 * Participation : actions effectuées par un participant, p. ex. écrire dans un forum
 * Autres : actions effectuées par un utilisateur avec un rôle différent d\'enseignant ou participant';
+$string['enddate_help'] = 'La date de fin ne restreint pas l’accès des participants au cours. Il détermine si le cours est affiché comme « Passé » dans Mes cours.';
+$string['enddatewithtaskenabled_help'] = 'La date à laquelle le cours est caché automatiquement pour les participants, qui ne peuvent alors plus y accéder.';
 $string['existingstudents'] = 'Participants inscrits';
 $string['hiddenfromstudents'] = 'Caché pour les participants';
 $string['hidefromstudents'] = 'Cacher pour les participants';
@@ -135,6 +137,7 @@ $string['indicator:readactions_help'] = 'Cet indicateur représente le nombre d\
 $string['indicator:userforumstracking_help'] = 'Cet indicateur montre si le participant a activé le suivi des messages des forums ou non.';
 $string['instudentview'] = 'en affichage « participant »';
 $string['mailstudents'] = 'Informer les participants';
+$string['maximumupload_help'] = 'La taille maximale des fichiers pouvant être déposés dans le cours par les participants. Il est en outre possible de diminuer cette taille pour chacune des activités.';
 $string['missingstudent'] = 'Vous devez choisir un participant';
 $string['modvisible_help'] = 'Si la disponibilité est réglée sur « Afficher sur la page du cours », l\'activité ou la ressource est disponible pour les participants (éventuellement sujette à des restrictions d\'accès définies par l\'enseignant).
 
@@ -151,11 +154,15 @@ $string['noneditingteacherdescription'] = 'Les enseignants non éditeurs peuvent
 $string['nopotentialstudents'] = 'Aucun participant potentiel';
 $string['nostudentsingroup'] = 'Il n\'y a pas encore de participant dans ce groupe';
 $string['nostudentsyet'] = 'Pas encore de participant inscrit à ce cours';
+$string['noteachingupcomingcourses'] = 'Des cours à venir n’ont ni enseignant, ni participant';
 $string['potentialstudents'] = 'Participants potentiels';
 $string['removestudent'] = 'Supprimer cet participant';
 $string['showgrades'] = 'Afficher le carnet de notes aux participants';
 $string['showgrades_help'] = 'Plusieurs activités d\'un cours peuvent être évaluées au moyen de notes. Ce réglage détermine si un participant peut voir une liste de toutes ses notes données dans ce cours, en cliquant sur le lien « Notes » dans le bloc ou le tiroir de navigation du cours.';
 $string['showreports_help'] = 'Les rapports d\'activité sont disponibles pour chaque participant qui affiche ses activités dans le cours. En plus d\'une liste de ses contributions, comme les messages d\'un forum ou les soumissions d\'un devoir, ces rapports incluent également des journaux d\'accès. Ce paramètre détermine si un participant peut consulter ses propres rapports d\'activité via sa page de profil.';
+$string['startdatewithtaskenabled_help'] = 'La date à laquelle le cours est rendu automatiquement visible pour les participants. Avant cette date, il ne pourront pas y accéder.
+
+Cette date détermine aussi la date de la première semaine pour un cours en format hebdomadaire, et c’est la date de début des journaux des activités de cours. Lors de la réinitialisation du cours et du changement de cette date, toutes les dates du cours seront décalées en relation avec la nouvelle date de début.';
 $string['statsstudentactivity'] = 'Activité des participants';
 $string['statsstudentreads'] = 'Consultations des participants';
 $string['statsstudentwrites'] = 'Messages des participants';

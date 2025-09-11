@@ -25,4 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['hidden_all'] = 'Totalement caché si les conditions ne sont pas remplies par le participant';
+$string['hidden_individual'] = 'Totalement caché si cette condition n’est pas remplie par le participant';
 $string['listheader_sign_before'] = 'le participant';
+$string['shown_all'] = 'Affiché si les conditions ne sont pas remplies par le participant';
+$string['shown_individual'] = 'Affiché si cette condition n’est pas remplie par le participant';

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'lti', language 'fr', version '3.9'.
+ * Strings for component 'courseformat', language 'fr', version '4.5'.
  *
- * @package     lti
+ * @package     courseformat
  * @category    string
  * @copyright   1999 Martin Dougiamas and contributors
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,8 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['courseexternaltoolsinfo'] = 'Les outils externes LTI sont des apps tierces que l’on peut ajouter à un cours, par exemple des contenus interactifs ou des évaluations. Les participants peuvent y accéder et les utiliser sans quitter le cours.';
-$string['display_description'] = 'Afficher la description de l’activité lorsque des participants accèdent à l’outil';
-$string['display_name'] = 'Afficher le nom de l’activité lorsque des participants accèdent à l’outil';
-$string['indicator:cognitivedepth_help'] = 'Cet indicateur est basé sur la profondeur cognitive atteinte par le participant dans une activité LTI.';
-$string['indicator:socialbreadth_help'] = 'Cet indicateur se base sur l\'interaction sociale atteinte par le participant dans une activité LTI.';
+$string['availability_hide_help'] = 'Non disponible pour les participants.';
+$string['availability_show_help'] = 'Disponible pour les participants (sujet à d’éventuelles restrictions d’accès).';
+$string['availability_stealth_help'] = 'Disponible pour les participants si un lien est fourni. Les activités apparaissent toujours dans le carnet de notes et les autres rapports.';
+$string['orphansectionwarning'] = 'Cette section et son contenu ne font pas partie de la structure du cours et ne sont pas visibles par les participants. Pour utiliser tout ou partie de ce contenu, déplacez-le vers une autre section.';

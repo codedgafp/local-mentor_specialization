@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'lti', language 'fr', version '3.9'.
+ * Strings for component 'gradingform_rubric', language 'fr', version '4.5'.
  *
- * @package     lti
+ * @package     gradingform_rubric
  * @category    string
  * @copyright   1999 Martin Dougiamas and contributors
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,8 +25,5 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['courseexternaltoolsinfo'] = 'Les outils externes LTI sont des apps tierces que l’on peut ajouter à un cours, par exemple des contenus interactifs ou des évaluations. Les participants peuvent y accéder et les utiliser sans quitter le cours.';
-$string['display_description'] = 'Afficher la description de l’activité lorsque des participants accèdent à l’outil';
-$string['display_name'] = 'Afficher le nom de l’activité lorsque des participants accèdent à l’outil';
-$string['indicator:cognitivedepth_help'] = 'Cet indicateur est basé sur la profondeur cognitive atteinte par le participant dans une activité LTI.';
-$string['indicator:socialbreadth_help'] = 'Cet indicateur se base sur l\'interaction sociale atteinte par le participant dans une activité LTI.';
+$string['regrademessage1'] = 'Vous êtes sur le point d’enregistrer des modifications à une grille d’évaluation déjà utilisée pour donner des notes. Veuillez indiquer si les notes existantes doivent être recalculées. Dans ce cas, la grille d’évaluation ne sera visible pour les participants que lorsque leur note aura été recalculée.';
+$string['regrademessage5'] = 'Vous êtes sur le point d’enregistrer des modifications importantes à une grille d’évaluation déjà utilisée pour une évaluation. La valeur dans le carnet de notes ne sera pas modifiée, mais la grille d’évaluation ne sera visible pour les participants que lorsque leur note aura été recalculée.';

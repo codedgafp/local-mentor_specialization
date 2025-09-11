@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'lti', language 'fr', version '3.9'.
+ * Strings for component 'enrol_fee', language 'fr', version '4.5'.
  *
- * @package     lti
+ * @package     enrol_fee
  * @category    string
  * @copyright   1999 Martin Dougiamas and contributors
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,8 +25,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['courseexternaltoolsinfo'] = 'Les outils externes LTI sont des apps tierces que l’on peut ajouter à un cours, par exemple des contenus interactifs ou des évaluations. Les participants peuvent y accéder et les utiliser sans quitter le cours.';
-$string['display_description'] = 'Afficher la description de l’activité lorsque des participants accèdent à l’outil';
-$string['display_name'] = 'Afficher le nom de l’activité lorsque des participants accèdent à l’outil';
-$string['indicator:cognitivedepth_help'] = 'Cet indicateur est basé sur la profondeur cognitive atteinte par le participant dans une activité LTI.';
-$string['indicator:socialbreadth_help'] = 'Cet indicateur se base sur l\'interaction sociale atteinte par le participant dans une activité LTI.';
+$string['pluginname_desc'] = 'La méthode d’inscription Inscription après paiement permet de gérer des cours nécessitant paiement. Si le montant d’un cours est zéro, il n’est pas demandé aux participants de payer pour s’inscrire. Un montant d’inscription par défaut peut être fixé ici comme réglage par défaut pour tout le site. Ce réglage peut être modifié dans chaque cours, et le montant défini dans le cours a priorité sur celui du site.';

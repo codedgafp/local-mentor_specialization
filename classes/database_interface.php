@@ -1733,7 +1733,8 @@ class database_interface extends \local_mentor_core\database_interface {
                 FROM
                     {course} c
                 JOIN
-                    {session} s ON c.shortname = s.courseshortname AND s.status IN (:statusopentocurrentme, :statusinprogress) AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval)
+                    {session} s ON c.shortname = s.courseshortname AND (s.status = :statusopentocurrentme OR s.status = :statusinprogress)
+ AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval)
                 JOIN
                     {course_categories} ccs_main_entity ON ccs_main_entity.id = c.category AND ccs_main_entity.name = 'Sessions' AND ccs_main_entity.visible = 1
                 JOIN

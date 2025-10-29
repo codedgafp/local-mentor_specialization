@@ -104,10 +104,14 @@ class custom_notifications_service
      * @return void
      */
     public function send_new_sessions_notifications_for_catalog(){
-        global $CFG;
+
         $supportuser = \core_user::get_support_user();
         $error_sending_emails = false;
-        $subscribers = $this->get_subscribers_of_catalog_by_training();
+
+        $users =  $this->get_subscribers_of_catalog_by_training("get_subscribers_of_catalog_by_training");
+        $admin_subscribers = $this->get_admins_subscribers_of_catalog_by_training("get_admins_subscribers_of_catalog_by_training");
+        $subscribers = $this->merge_list_subscribers($users, $admin_subscribers);
+
         foreach ($subscribers as $subscriber) {
             $emailobjectkey = 'email_catalog_updates_new_session_object';
             $nbtrainings  = count($subscriber->trainings);
@@ -133,20 +137,57 @@ class custom_notifications_service
     }
 
     /**
-     * Paging : Get training data for each user (subscriber) limited to MAX_RESULT_SUBSCRIPTIONS by result
+     * Merge admin subscribers into user subscribers
+     * 
+     * @param array $subscribers
+     * @param array $admin_subscribers
+     * @return array
+     */
+    private function merge_list_subscribers(array $subscribers, array $admin_subscribers) : array {
+        foreach ($admin_subscribers as $userid => $admin) {
+            if (isset($subscribers[$userid])) {
+                // Merge admin trainings with existing user trainings
+                foreach ($admin->trainings as $tid => $training) {
+                    if (!isset($subscribers[$userid]->trainings[$tid])) {
+                        $subscribers[$userid]->trainings[$tid] = $training;
+                    }
+                }
+            } else {
+                // Add admin as a new subscriber
+                $subscribers[$userid] = $admin;
+            }
+        }
+        return $subscribers;
+    }
+
+    private function get_admins_subscribers_of_catalog_by_training() {
+        return $this->get_catalog_subscribers_by_training('get_admins_to_notify_new_catalog_sessions');
+    }
+
+    private function get_subscribers_of_catalog_by_training() {
+        return $this->get_catalog_subscribers_by_training('get_subscribers_of_new_catalog_sessions');
+    }
+
+    /**
+     * Paging : Get training data for each user (subscriber/admidedie/RFC) limited to MAX_RESULT_SUBSCRIPTIONS by result
      *
+     * @param string $methodName
      * @return array
      * @throws coding_exception
      * @throws moodle_exception
      */
-    private function get_subscribers_of_catalog_by_training() {
+    private function get_catalog_subscribers_by_training(string $methodName): array {
         $dbi = database_interface::get_instance();
         $subscribers = [];
         $offset = 0;
         $hasMoreResults = true;
 
         while ($hasMoreResults) {
-            $results = $dbi->get_subscribers_of_new_catalog_sessions($this->MAX_RESULT_SUBSCRIPTIONS, $offset);
+            if (!method_exists($dbi, $methodName)) {
+                throw new \moodle_exception("Invalid DB method: {$methodName}");
+            }
+
+            $results = $dbi->$methodName($this->MAX_RESULT_SUBSCRIPTIONS, $offset);
             if (empty($results)) {
                 $hasMoreResults = false;
                 break;
@@ -172,7 +213,7 @@ class custom_notifications_service
                 
                 $subscribers[$result->userid] = $user;
             }
-            $offset += $this->MAX_RESULT_SUBSCRIPTIONS;
+            $offset += $this->MAX_RESULT_SUBSCRIPTIONS;           
         }
         return $subscribers;
     }

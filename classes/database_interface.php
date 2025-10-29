@@ -1711,6 +1711,78 @@ class database_interface extends \local_mentor_core\database_interface {
         global $DB;
         return $DB->get_records('collection', [], 'fullname ASC', '*', 0, 0);
     }
+    
+
+    /**
+     * Get admins/RLF to notify about new catalog sessions
+     *
+     * @return array
+     */
+    public function get_admins_to_notify_new_catalog_sessions($limit, $offset = 0): array
+    {
+        global $DB;
+
+        $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_catalog_updates');
+        $tasktimeinterval = make_task_time_interval($task);
+
+        $sql = "SELECT
+                DISTINCT on (u.id, t.id)
+                ROW_NUMBER() over (ORDER BY u.id ASC ) AS ligne,
+                u.id userid,
+                t.id trainingid,
+                c.fullname AS coursefullname,
+                u.*
+                FROM
+                    {course} c
+                JOIN
+                    {session} s ON c.shortname = s.courseshortname AND (s.status = :statusopenedregistration OR s.status = :statusinprogress)
+                AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval)
+                LEFT JOIN
+                    {session_sharing} ss ON ss.sessionid = s.id
+                JOIN
+                    {course_categories} ccs_main_entity ON ccs_main_entity.id = c.category AND ccs_main_entity.name = 'Sessions' AND ccs_main_entity.visible = 1
+                JOIN
+                    {course_categories} ccs_main_entity_name ON ccs_main_entity.parent = ccs_main_entity_name.id
+                LEFT JOIN
+                    {category_options} co ON co.categoryid = ccs_main_entity.parent AND co.name = 'regionid'
+                JOIN
+                    {training} t ON t.id = s.trainingid
+                JOIN
+                    {collection} cl ON cl.shortname = ANY (string_to_array(t.collection, ','))  
+                JOIN  
+                    {user} u ON u.id is not null
+                JOIN
+                    {role_assignments} ra ON ra.userid = u.id
+                JOIN
+                    {role} role ON role.id = ra.roleid AND   (role.shortname = :custnotifadmin OR role.shortname = :custnotifrfc)
+                JOIN
+                    {context} con ON con.id = ra.contextid AND con.contextlevel = 40               
+                ".$this->join_users_info_new_catalog_sessions()."
+                ".$this->where_query_new_catalog_sessions()."
+                GROUP BY u.id,t.id,  c.id
+                LIMIT :limit OFFSET :offset";
+
+        $params = [
+            "statusopenedregistration" => session::STATUS_OPENED_REGISTRATION,
+            "statusopentocurrentme" => session::OPEN_TO_CURRENT_MAIN_ENTITY,
+            "statusinprogress" => session::STATUS_IN_PROGRESS,
+            "statusopentoall" => session::OPEN_TO_ALL,
+            "statusopentocurrententity" => session::OPEN_TO_CURRENT_ENTITY,
+            "statusopentootherentity" => session::OPEN_TO_OTHER_ENTITY,
+            "tasktimeinterval" => $tasktimeinterval,
+            "custnotifadmin" => custom_notifications_service::$ADMIN,
+            "custnotifrfc" => custom_notifications_service::$RFC,
+            "limit" => $limit,
+            "offset" => $offset,
+        ];
+        $users = [];
+        try {
+            $users = $DB->get_records_sql($sql, $params);
+        } catch (\dml_exception $e) {
+            mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
+        } 
+        return $users;
+    }
 
     /**
      * fetch users (subscribers) with collection, region, and entities data
@@ -1729,92 +1801,49 @@ class database_interface extends \local_mentor_core\database_interface {
                 u.id userid,
                 t.id trainingid,
                 c.fullname AS coursefullname,
-                u.*
+				u.*       
                 FROM
                     {course} c
                 JOIN
-                    {session} s ON c.shortname = s.courseshortname AND (s.status = :statusopentocurrentme OR s.status = :statusinprogress)
- AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval)
+                    {session} s ON c.shortname = s.courseshortname AND (s.status = :statusopenedregistration OR s.status = :statusinprogress)
+                    AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval )
                 JOIN
                     {course_categories} ccs_main_entity ON ccs_main_entity.id = c.category AND ccs_main_entity.name = 'Sessions' AND ccs_main_entity.visible = 1
                 JOIN
                     {course_categories} ccs_main_entity_name ON ccs_main_entity.parent = ccs_main_entity_name.id
+                LEFT JOIN
+                    {category_options} co ON co.categoryid = ccs_main_entity.parent AND co.name = 'regionid'
                 JOIN
                     {training} t ON t.id = s.trainingid
                 LEFT JOIN
-                    {category_options} co ON co.categoryid = ccs_main_entity.parent AND co.name = 'regionid'
-                LEFT JOIN
                     {session_sharing} ss ON ss.sessionid = s.id
-                -- Users subscribers CATALOG
-                LEFT JOIN
-                    (SELECT DISTINCT ucn.user_id as user_id, shortname FROM {collection} c
-                        JOIN {user_collection_notification} ucn ON (c.id = ucn.collection_id AND ucn.type = :custnotifcatalogpagetype)
-                        JOIN {user} u ON u.id = ucn.user_id
-                    ) AS users_collection ON users_collection.shortname = ANY (string_to_array(t.collection, ','))
-                -- Users Admins & RFCs
-                LEFT JOIN
-                    (SELECT
-                        u.id as user_id FROM {user} u
-                    JOIN
-                        {role_assignments} ra ON ra.userid = u.id
-                    JOIN
-                        {role} role ON role.id = ra.roleid AND (role.shortname = :custnotifadmin OR role.shortname = :custnotifrfc)
-                    JOIN
-                        {context} con ON con.id = ra.contextid AND con.contextlevel = 40
-                    ) AS admins_rfcs on admins_rfcs.user_id IS NOT NULL
-                -- Users combined
                 JOIN
-                    {user} u ON (admins_rfcs.user_id = u.id OR users_collection.user_id = u.id)
-                -- Users info
-                LEFT JOIN
-                    (SELECT u.id as user_id, ccu_main_entity.parent AS user_mainentity_id, uid_second_entities.data AS user_secondaryentities_ids, r.id AS user_region FROM {user} u
-                        -- main entity
-                        LEFT JOIN
-                            {user_info_data} uid_mainentity ON uid_mainentity.userid = u.id 
-                        LEFT JOIN
-                            {user_info_field} uif_mainentity ON uid_mainentity.fieldid = uif_mainentity.id AND uif_mainentity.shortname = 'mainentity'
-                        LEFT JOIN
-                            {course_categories} ccu_main_entity ON ccu_main_entity.name = uid_mainentity.data
-                        -- secondary entities
-                        LEFT JOIN
-                            {user_info_data} uid_second_entities ON uid_second_entities.userid = u.id
-                        JOIN
-                            {user_info_field} uif_second_entities ON uif_second_entities.id = uid_second_entities.fieldid AND uif_second_entities.shortname = 'secondaryentities'
-                        LEFT JOIN
-                            {course_categories} ccu_second_entity ON ccu_second_entity.name = ANY (string_to_array(uid_second_entities.data, ','))
-                        -- region
-                        LEFT JOIN
-                            {user_info_data} uid_region ON uid_region.userid = u.id
-                        JOIN
-                            {user_info_field} uif_region ON uif_region.id = uid_region.fieldid AND uif_region.shortname = 'region'
-                        JOIN
-                            {regions} r ON r.name = uid_region.data
-                    ) AS user_info ON user_info.user_id = u.id
-                WHERE
-                    -- sessions rules
-                    s.opento = :statusopentoall
-                    OR (s.opento = :statusopentocurrentme2 AND user_info.user_mainentity_id = ccs_main_entity.parent)
-                    OR (s.opento = :statusopentocurrententity AND (user_info.user_mainentity_id = ccs_main_entity.parent OR ccs_main_entity_name.name = ANY (string_to_array(user_secondaryentities_ids, ',')) OR CAST(user_region AS VARCHAR) = ANY (string_to_array(co.value , ','))))
-                    OR (s.opento = :statusopentootherentity AND (user_info.user_mainentity_id = ccs_main_entity.parent OR user_info.user_mainentity_id = ss.coursecategoryid))
-                GROUP BY u.id, t.id, c.id
-                ";
+                    {collection} cl ON cl.shortname= ANY (string_to_array(t.collection, ','))  
+                JOIN
+                    {user_collection_notification} ucn ON   (cl.id = ucn.collection_id AND ucn.type = :custnotifcatalogpagetype)
+                JOIN
+                    {user} u ON u.id = ucn.user_id
+                ".$this->join_users_info_new_catalog_sessions()."
+                ".$this->where_query_new_catalog_sessions()."
+                GROUP BY u.id,t.id,  c.id
+                LIMIT :limit OFFSET :offset";
 
-        $params = [
-            "statusopentocurrentme" => session::OPEN_TO_CURRENT_MAIN_ENTITY,
-            "statusopentocurrentme2" => session::OPEN_TO_CURRENT_MAIN_ENTITY,
-            "statusinprogress" => session::STATUS_IN_PROGRESS,
-            "statusopentoall" => session::OPEN_TO_ALL,
-            "statusopentocurrententity" => session::OPEN_TO_CURRENT_ENTITY,
-            "statusopentootherentity" => session::OPEN_TO_OTHER_ENTITY,
-            "custnotifcatalogpagetype" => custom_notifications_service::$CATALOG_PAGE_TYPE,
-            "custnotifadmin" => custom_notifications_service::$ADMIN,
-            "custnotifrfc" => custom_notifications_service::$RFC,
-            "tasktimeinterval" => $tasktimeinterval,
-        ];
+                $params = [
+                    "statusopenedregistration" => session::STATUS_OPENED_REGISTRATION,
+                    "statusopentocurrentme" => session::OPEN_TO_CURRENT_MAIN_ENTITY,
+                    "statusinprogress" => session::STATUS_IN_PROGRESS,
+                    "statusopentoall" => session::OPEN_TO_ALL,
+                    "statusopentocurrententity" => session::OPEN_TO_CURRENT_ENTITY,
+                    "statusopentootherentity" => session::OPEN_TO_OTHER_ENTITY,
+                    "custnotifcatalogpagetype" => custom_notifications_service::$CATALOG_PAGE_TYPE,
+                    "tasktimeinterval" => $tasktimeinterval,
+                    "limit" => $limit,
+                    "offset" => $offset,
+                ];
         $users = [];
 
         try {
-            $users = $DB->get_records_sql($sql, $params, $offset, $limit);
+            $users = $DB->get_records_sql($sql,$params);
             
             if (!empty($users)) {
                 $users = $this->get_users_catalog_no_external($users);
@@ -1823,6 +1852,57 @@ class database_interface extends \local_mentor_core\database_interface {
             mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
         }
         return $users;
+    }
+
+
+    private function join_users_info_new_catalog_sessions(): string
+    {
+       return " 
+                LEFT JOIN
+                    {user_info_data} uid_mainentity ON uid_mainentity.userid = u.id 
+                JOIN
+                    {user_info_field} uif_mainentity ON uid_mainentity.fieldid = uif_mainentity.id AND uif_mainentity.shortname = 'mainentity'
+                JOIN
+                    {course_categories} ccu_main_entity ON ccu_main_entity.name = uid_mainentity.data
+                LEFT JOIN
+                    {user_info_data} uid_second_entities ON uid_second_entities.userid = u.id
+                JOIN
+                    {user_info_field} uif_second_entities ON uif_second_entities.id = uid_second_entities.fieldid AND uif_second_entities.shortname = 'secondaryentities'
+                LEFT JOIN
+                    {course_categories} ccu_second_entity ON ccu_second_entity.name = ANY (string_to_array(uid_second_entities.data, ','))
+                LEFT JOIN
+                    {user_info_data} uid_region ON uid_region.userid = u.id
+                JOIN
+                    {user_info_field} uif_region ON uif_region.id = uid_region.fieldid AND uif_region.shortname = 'region'
+                JOIN
+                    {regions} r ON r.name = uid_region.data "; 
+    }
+
+    private function where_query_new_catalog_sessions(): string
+    {
+        return " WHERE                  
+                    s.opento = :statusopentoall
+                    OR (s.opento = :statusopentocurrentme AND ccu_main_entity.id= ccs_main_entity.parent)
+                    OR (s.opento = :statusopentocurrententity AND (ccu_main_entity.id = ccs_main_entity.parent OR ccs_main_entity_name.name = ANY (string_to_array(uid_second_entities.data, ',')) OR CAST(r.id AS VARCHAR) = ANY (string_to_array(co.value , ','))))
+                    OR (s.opento = :statusopentootherentity AND (ccu_main_entity.id = ccs_main_entity.parent OR ccu_main_entity.id= ss.coursecategoryid))" ;
+    }
+
+    public function get_users_by_roles(array $roles, int $contextlevel): array
+    {
+        global $DB;
+
+        [$select, $params] = $DB->get_in_or_equal($roles, SQL_PARAMS_NAMED, 'role');
+        $sql = "SELECT u.*
+                FROM {user} u
+                JOIN
+                    {role_assignments} ra ON ra.userid = u.id
+                JOIN
+                    {role} role ON role.id = ra.roleid AND  role.shortname $select
+                JOIN
+                    {context} con ON con.id = ra.contextid AND con.contextlevel = :contextlevel";
+        $params['contextlevel'] = $contextlevel;
+
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**

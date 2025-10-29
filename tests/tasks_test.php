@@ -472,8 +472,52 @@ class local_mentor_specialization_tasks_testcase extends advanced_testcase {
          get_string('customnotificationsuccessemail', 'local_mentor_specialization', custom_notifications_service::$EMAIL_LIBRARY_NEW_COURSES),
          $output
          );
-         ob_end_clean();
-   
+         self::resetAllData();
+    }
+
+
+    /**
+     * Test send email of published courses in catalog
+     *
+     * @covers \local_mentor_specialization\task\email_catalog_updates::execute
+     */
+    public function test_email_catalog_updates_execute() {
+
+        $this->resetAfterTest(true);
+        $this->reset_singletons();
+        $this->init_config();
+
+        self::setAdminUser();
+
+        // Create session.
+        $sessionid = $this->init_session_creation();
+
+        try {
+            $session = \local_mentor_core\session_api::get_session($sessionid);
+        } catch (\Exception $e) {
+            self::fail($e->getMessage());
+        }
+
+         $task = new \local_mentor_specialization\task\email_catalog_updates();
+
+        // Start output buffering
+        ob_start();
+        // Missing session id.
+        try {
+            $res = $task->execute();
+        } catch (\Exception $e) {
+            // Session course has already been deleted.
+            self::assertInstanceOf('coding_exception', $e);
+        }
+        // Get the printed output
+        $output = ob_get_clean();
+        // Assert that the output contains the expected string
+        $this->assertStringContainsString(
+            'Success sending email Custom Notifications Type: EMAIL_CATALOG_NEW_SESSIONS',
+            $output
+        );
+        self::resetAllData();
+       
     }
 
 }

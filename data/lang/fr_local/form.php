@@ -24,4 +24,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['somefieldsrequired'] = 'Ce formulaire comprend des champs requis, marqués {$a}';
+$string['somefieldsrequired'] = '<p>Ce formulaire comprend des champs requis, marqués {$a}</p>';

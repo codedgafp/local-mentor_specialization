@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$string['completionsubmit'] = 'le participant doit soumettre ce questionnaire pour compléter l\'activité';
+$string['completionsubmit'] = 'Compléter le questionnaire';
 $string['minforcedresponses_help'] = 'Utilisez ces paramètres si vous voulez forcer les participants à cocher un minimum de **Min. cases à cocher** ou un maximum de **Max. cases à cocher**.
 Pour les forcer à cocher un nombre exact de cases, tapez la même valeur pour **Min.** et **Max**. Si vous voulez uniquement forcer un minimum ou un maximum de cases cochées, laissez l\'autre valeur à zéro. Ex. pour avoir un minimum de 2 cases cochées sur un total de 5, tapez **Min.** = 2 et laissez **Max.** à 0.
 Si vous avez saisi pour l\'un ou l\'autre de ces paramètres une valeur différente de 0, si le participant ne respecte pas le nombre mini ou maxi imposé, un message d\'erreur sera affiché.

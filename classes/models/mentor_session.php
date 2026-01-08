@@ -169,6 +169,32 @@ class mentor_session extends session {
     /** @var int */
     public $sessiontimecreated;
 
+    public $session;
+
+    /** @var int */
+    public $presenceestimatedtimehours;
+    
+    /** @var int */
+    public $presenceestimatedtimeminutes;
+    
+    /** @var int */
+    public $remoteestimatedtimehours;
+    
+    /** @var int */
+    public $remoteestimatedtimeminutes;
+    
+    /** @var int */
+    public $presencesessionestimatedtimehours;
+    
+    /** @var int */
+    public $presencesessionestimatedtimeminutes;
+    
+    /** @var int */
+    public $onlinesessionestimatedtimehours;
+    
+    /** @var int */
+    public $onlinesessionestimatedtimeminutes;
+
     /**
      * session constructor.
      *

@@ -157,6 +157,27 @@ class mentor_training extends \local_mentor_core\training {
     public $sessions = [];
 
     /**
+     *  @var int|null 
+     **/
+    public $presenceestimatedtimehours;
+    
+    /** 
+     * @var int|null 
+     **/
+    public $presenceestimatedtimeminutes;
+    
+    /** 
+     * @var int|null 
+     **/
+    public $remoteestimatedtimehours;
+
+    /** 
+     * @var int|null 
+     **/
+    public $remoteestimatedtimeminutes;
+
+
+    /**
      * training constructor.
      *
      * @param int $trainingid

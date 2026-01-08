@@ -33,6 +33,7 @@ require_once($CFG->dirroot . '/enrol/sirh/locallib.php');
  */
 class entity_form extends \moodleform {
 
+    protected $entity;
     /**
      * Define entity form fields
      *

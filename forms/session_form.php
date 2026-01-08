@@ -59,6 +59,7 @@ class session_form extends \moodleform {
     protected $allskills;
     protected $_entitylogo;
     protected $returnto;
+    protected $sharedentities;
 
     /**
      * training_form constructor.

@@ -1271,7 +1271,7 @@ function local_mentor_specialization_init_snippets()
     set_config('snippet_2', '<div class="mentor-image-text container-fluid">
     <div class="row">
         <div class="col-md-12 col-lg-6">
-           <img src="' . $CFG->wwwroot . '/theme/mentor/pix/mentor-image.png" />
+           <img src="/theme/mentor/pix/mentor-image.png" />
         </div>
         <div class="col-md-12 col-lg-6"><p>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -1434,7 +1434,7 @@ function local_mentor_specialization_init_snippets()
     <div class="card card-mentor" style="width: 24rem;">
         <i class="fa fa-plus add-card" aria-hidden="true"></i>
         <i class="fa fa-trash-o fa-2x remove-card" aria-hidden="true"></i>
-        <img class="card-img-top" src="' . $CFG->wwwroot . '/theme/mentor/pix/mentor-image.png" alt="" role="presentation">
+        <img class="card-img-top" src="theme/mentor/pix/mentor-image.png" alt="" role="presentation">
         <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s

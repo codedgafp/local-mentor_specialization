@@ -59,10 +59,4 @@ if ($hassiteconfig) {
         'userid' => $USER->id,
     ]);
     $event->trigger();
-
-
-    // Add link to ldap cleanup.
-    $ADMIN->add('server', new admin_externalpage('clear_ldap',
-            'Nettoyage du LDAP',
-            $CFG->wwwroot . '/local/mentor_specialization/pages/clear_ldap.php'));
 }

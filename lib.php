@@ -1434,7 +1434,7 @@ function local_mentor_specialization_init_snippets()
     <div class="card card-mentor" style="width: 24rem;">
         <i class="fa fa-plus add-card" aria-hidden="true"></i>
         <i class="fa fa-trash-o fa-2x remove-card" aria-hidden="true"></i>
-        <img class="card-img-top" src="theme/mentor/pix/mentor-image.png" alt="" role="presentation">
+        <img class="card-img-top" src="/theme/mentor/pix/mentor-image.png" alt="" role="presentation">
         <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s

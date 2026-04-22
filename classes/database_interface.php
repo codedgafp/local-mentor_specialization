@@ -81,12 +81,12 @@ class database_interface extends \local_mentor_core\database_interface {
     /**
      * Get the value of a category option
      *
-     * @param int $entityid
+     * @param int $categoryid
      * @param string $optionname
      * @return string|false
      * @throws \moodle_exception
      */
-    public function get_category_option_value($categoryid, $optionname) {
+    public function get_category_option_value(int $categoryid, string $optionname) {
         global $DB;
         $option = $DB->get_record_sql("SELECT * FROM {category_options} WHERE name = ? AND categoryid = ?", [$optionname, $categoryid]);
         if ($option) {
@@ -996,8 +996,8 @@ class database_interface extends \local_mentor_core\database_interface {
             $entity->is_main_entity() &&
             !has_capability('local/trainings:create', $entity->get_context())
         ) {
-            $where = ' AND ((t.status != \'' . \local_mentor_core\training::STATUS_DRAFT . '\'' .
-                     ' AND t.status != \'' . \local_mentor_core\training::STATUS_ARCHIVED . '\'' .
+            $where = ' AND ((t.status != \'' . training::STATUS_DRAFT . '\'' .
+                     ' AND t.status != \'' . training::STATUS_ARCHIVED . '\'' .
                      ' AND (cc3.parent = 0 OR cc4.parent = 0))' .
                      ' OR (cc3.parent <> 0 OR cc4.parent <> 0))';
         }
@@ -1723,7 +1723,7 @@ class database_interface extends \local_mentor_core\database_interface {
         global $DB;
 
         $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_catalog_updates');
-        $tasktimeinterval = make_task_time_interval($task);
+        $tasklastruntime = $task->get_last_run_time();
 
         $sql = "SELECT
                 DISTINCT on (u.id, t.id)
@@ -1736,7 +1736,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     {course} c
                 JOIN
                     {session} s ON c.shortname = s.courseshortname AND (s.status = :statusopenedregistration OR s.status = :statusinprogress)
-                AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval)
+                AND (s.timecreated IS NOT NULL AND s.timecreated > :tasklastruntime)
                 LEFT JOIN
                     {session_sharing} ss ON ss.sessionid = s.id
                 JOIN
@@ -1769,7 +1769,7 @@ class database_interface extends \local_mentor_core\database_interface {
             "statusopentoall" => session::OPEN_TO_ALL,
             "statusopentocurrententity" => session::OPEN_TO_CURRENT_ENTITY,
             "statusopentootherentity" => session::OPEN_TO_OTHER_ENTITY,
-            "tasktimeinterval" => $tasktimeinterval,
+            "tasklastruntime" => $tasklastruntime,
             "custnotifadmin" => custom_notifications_service::$ADMIN,
             "custnotifrfc" => custom_notifications_service::$RFC,
             "limit" => $limit,
@@ -1793,7 +1793,7 @@ class database_interface extends \local_mentor_core\database_interface {
         global $DB;
 
         $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_catalog_updates');
-        $tasktimeinterval = make_task_time_interval($task);
+        $tasklastruntime = $task->get_last_run_time();
 
         $sql = "SELECT
                 DISTINCT on (u.id, t.id)
@@ -1806,7 +1806,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     {course} c
                 JOIN
                     {session} s ON c.shortname = s.courseshortname AND (s.status = :statusopenedregistration OR s.status = :statusinprogress)
-                    AND (s.timecreated IS NOT NULL AND s.timecreated > :tasktimeinterval )
+                    AND (s.timecreated IS NOT NULL AND s.timecreated > :tasklastruntime )
                 JOIN
                     {course_categories} ccs_main_entity ON ccs_main_entity.id = c.category AND ccs_main_entity.name = 'Sessions' AND ccs_main_entity.visible = 1
                 JOIN
@@ -1836,7 +1836,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     "statusopentocurrententity" => session::OPEN_TO_CURRENT_ENTITY,
                     "statusopentootherentity" => session::OPEN_TO_OTHER_ENTITY,
                     "custnotifcatalogpagetype" => custom_notifications_service::$CATALOG_PAGE_TYPE,
-                    "tasktimeinterval" => $tasktimeinterval,
+                    "tasklastruntime" => $tasklastruntime,
                     "limit" => $limit,
                     "offset" => $offset,
                 ];
@@ -1844,7 +1844,7 @@ class database_interface extends \local_mentor_core\database_interface {
 
         try {
             $users = $DB->get_records_sql($sql,$params);
-            
+
             if (!empty($users)) {
                 $users = $this->get_users_catalog_no_external($users);
             }
@@ -1943,7 +1943,7 @@ class database_interface extends \local_mentor_core\database_interface {
         global $DB;
 
         $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_library_publish');
-        $tasktimeinterval = make_task_time_interval($task);
+        $tasklastruntime = $task->get_last_run_time();
 
         $sql = "SELECT 
                 ROW_NUMBER() over (ORDER BY u.id ASC) AS ligne,
@@ -1974,7 +1974,7 @@ class database_interface extends \local_mentor_core\database_interface {
                     JOIN {context} con ON con.id = ra.contextid
                     WHERE
                     t.status = '".training::STATUS_ELABORATION_COMPLETED."'
-                    AND l.timecreated > $tasktimeinterval
+                    AND l.timecreated > :tasklastruntime
                     AND (
                         (
                             con.contextlevel = 40
@@ -1996,9 +1996,11 @@ class database_interface extends \local_mentor_core\database_interface {
                         )
 
                     GROUP BY u.id, l.originaltrainingid, c.id, cc4.name,cc2.name,l.trainingid";
+        $params["tasklastruntime"] = $tasklastruntime;
+
         $users = [];
         try {
-            $users = $DB->get_records_sql($sql, []);
+            $users = $DB->get_records_sql($sql, $params);
         } catch (\dml_exception $e) {
             mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
         }
@@ -2013,7 +2015,7 @@ class database_interface extends \local_mentor_core\database_interface {
         global $DB;
 
         $task = \core\task\manager::get_scheduled_task('\local_mentor_specialization\task\email_library_updates');
-        $tasktimeinterval = make_task_time_interval($task);
+        $tasklastruntime = $task->get_last_run_time();
 
         $sql = "SELECT 
                 DISTINCT on (u.id, t.id)
@@ -2048,12 +2050,14 @@ class database_interface extends \local_mentor_core\database_interface {
                     WHERE
                     ctx.contextlevel = 40
                     AND (r.shortname IN ('".custom_notifications_service::$ADMIN."', '".custom_notifications_service::$RFC."') OR (r.shortname = '".custom_notifications_service::$LIBRARYVISITOR."' AND userscollection.shortname = ANY (string_to_array(t.collection, ',')) AND userscollection.user_id = u.id ))
-                    AND l.timemodified > $tasktimeinterval
+                    AND l.timemodified > :tasklastruntime
                     AND to_timestamp(l.timemodified) > to_timestamp(l.timecreated)
-                    ;";
+                    ";
+        $params["tasklastruntime"] = $tasklastruntime;
+
         $users = [];
         try {
-            $users = $DB->get_records_sql($sql);
+            $users = $DB->get_records_sql($sql, $params);
         } catch (\dml_exception $e) {
             mtrace('Error sql getting collections subscribers: ' . $e->getMessage());
         }

@@ -135,14 +135,13 @@ class local_mentor_specialization_observer {
 
     /**
      *
-     * Sync profile when role assigned
+     * Sync profile roleMentor when role assigned
      *
      * @param \core\event\role_assigned $event
      * @throws dml_exception
      * @throws moodle_exception
      */
     public static function sync_profile_role_assigned(\core\event\role_assigned $event) {
-        // LDAP profile sync.
         $userid = $event->relateduserid;
 
         $profile = \local_mentor_core\profile_api::get_profile($userid);
@@ -152,15 +151,13 @@ class local_mentor_specialization_observer {
 
     /**
      *
-     * Sync profile when role assigned
+     * Sync profile roleMentor when role unassigned
      *
      * @param \core\event\role_assigned $event
      * @throws dml_exception
      * @throws moodle_exception
      */
     public static function sync_profile_role_unassigned(\core\event\role_unassigned $event) {
-        // LDAP profile sync.
-
         $userid = $event->relateduserid;
 
         $profile = \local_mentor_core\profile_api::get_profile($userid);

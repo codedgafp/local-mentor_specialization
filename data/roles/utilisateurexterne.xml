@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <role>
-    <shortname>dpo</shortname>
-    <name>Délégué à la Protection des Données</name>
-    <description>Délégué à la Protection des Données</description>
+    <shortname>utilisateurexterne</shortname>
+    <name>Utilisateur externe</name>
+    <description />
     <archetype>user</archetype>
     <contextlevels>
         <level>system</level>
@@ -16,13 +16,10 @@
         <inherit>aiplacement/editor:generate_image</inherit>
         <inherit>aiplacement/editor:generate_text</inherit>
         <inherit>atto/h5p:addembed</inherit>
-        <inherit>atto/recordrtc:recordaudio</inherit>
-        <inherit>atto/recordrtc:recordvideo</inherit>
         <inherit>atto/snippet:visible</inherit>
         <inherit>auth/agentconnect:manageconnection</inherit>
         <inherit>auth/agentconnect:manageconnectionconnect</inherit>
         <inherit>auth/agentconnect:manageconnectiondisconnect</inherit>
-        <inherit>auth/oauth2:managelinkedlogins</inherit>
         <inherit>block/accessreview:addinstance</inherit>
         <inherit>block/accessreview:view</inherit>
         <inherit>block/activity_modules:addinstance</inherit>
@@ -89,8 +86,6 @@
         <inherit>block/private_files:addinstance</inherit>
         <inherit>block/private_files:myaddinstance</inherit>
         <inherit>block/recent_activity:addinstance</inherit>
-        <inherit>block/recent_activity:viewaddupdatemodule</inherit>
-        <inherit>block/recent_activity:viewdeletemodule</inherit>
         <inherit>block/recentlyaccessedcourses:myaddinstance</inherit>
         <inherit>block/recentlyaccesseditems:myaddinstance</inherit>
         <inherit>block/rss_client:addinstance</inherit>
@@ -114,6 +109,7 @@
         <inherit>block/timeline:myaddinstance</inherit>
         <inherit>booktool/exportimscp:export</inherit>
         <inherit>booktool/importhtml:import</inherit>
+        <inherit>booktool/print:print</inherit>
         <inherit>communication/matrix:moderator</inherit>
         <inherit>contenttype/h5p:access</inherit>
         <inherit>contenttype/h5p:upload</inherit>
@@ -175,7 +171,6 @@
         <inherit>gradereport/grader:view</inherit>
         <inherit>gradereport/history:view</inherit>
         <inherit>gradereport/outcomes:view</inherit>
-        <inherit>gradereport/overview:view</inherit>
         <inherit>gradereport/singleview:view</inherit>
         <inherit>gradereport/summary:view</inherit>
         <inherit>gradereport/user:view</inherit>
@@ -260,7 +255,6 @@
         <inherit>local/trainings:update</inherit>
         <inherit>local/trainings:view</inherit>
         <inherit>local/user:manageusers</inherit>
-        <inherit>message/airnotifier:managedevice</inherit>
         <inherit>mod/assign:addinstance</inherit>
         <inherit>mod/assign:editothersubmission</inherit>
         <inherit>mod/assign:exportownsubmission</inherit>
@@ -275,6 +269,7 @@
         <inherit>mod/assign:reviewgrades</inherit>
         <inherit>mod/assign:showhiddengrader</inherit>
         <inherit>mod/assign:submit</inherit>
+        <inherit>mod/assign:view</inherit>
         <inherit>mod/assign:viewblinddetails</inherit>
         <inherit>mod/assign:viewgrades</inherit>
         <inherit>mod/assign:viewownsubmissionsummary</inherit>
@@ -283,6 +278,7 @@
         <inherit>mod/bigbluebuttonbn:addinstancewithrecording</inherit>
         <inherit>mod/bigbluebuttonbn:deleterecordings</inherit>
         <inherit>mod/bigbluebuttonbn:importrecordings</inherit>
+        <inherit>mod/bigbluebuttonbn:join</inherit>
         <inherit>mod/bigbluebuttonbn:managerecordings</inherit>
         <inherit>mod/bigbluebuttonbn:protectrecordings</inherit>
         <inherit>mod/bigbluebuttonbn:publishrecordings</inherit>
@@ -293,6 +289,7 @@
         <inherit>mod/bigbluebuttonbn:viewallrecordingformats</inherit>
         <inherit>mod/book:addinstance</inherit>
         <inherit>mod/book:edit</inherit>
+        <inherit>mod/book:read</inherit>
         <inherit>mod/book:viewhiddenchapters</inherit>
         <inherit>mod/chat:addinstance</inherit>
         <inherit>mod/chat:chat</inherit>
@@ -337,9 +334,11 @@
         <inherit>mod/data:managetemplates</inherit>
         <inherit>mod/data:manageuserpresets</inherit>
         <inherit>mod/data:rate</inherit>
+        <inherit>mod/data:view</inherit>
         <inherit>mod/data:viewallratings</inherit>
         <inherit>mod/data:viewalluserpresets</inherit>
         <inherit>mod/data:viewanyrating</inherit>
+        <inherit>mod/data:viewentry</inherit>
         <inherit>mod/data:viewrating</inherit>
         <inherit>mod/data:writeentry</inherit>
         <inherit>mod/etherpadlite:addinstance</inherit>
@@ -352,6 +351,7 @@
         <inherit>mod/feedback:edititems</inherit>
         <inherit>mod/feedback:mapcourse</inherit>
         <inherit>mod/feedback:receivemail</inherit>
+        <inherit>mod/feedback:view</inherit>
         <inherit>mod/feedback:viewanalysepage</inherit>
         <inherit>mod/feedback:viewreports</inherit>
         <inherit>mod/folder:addinstance</inherit>
@@ -364,7 +364,6 @@
         <inherit>mod/forum:canoverridecutoff</inherit>
         <inherit>mod/forum:canoverridediscussionlock</inherit>
         <inherit>mod/forum:canposttomygroups</inherit>
-        <inherit>mod/forum:cantogglefavourite</inherit>
         <inherit>mod/forum:createattachment</inherit>
         <inherit>mod/forum:deleteanypost</inherit>
         <inherit>mod/forum:deleteownpost</inherit>
@@ -387,6 +386,7 @@
         <inherit>mod/forum:startdiscussion</inherit>
         <inherit>mod/forum:viewallratings</inherit>
         <inherit>mod/forum:viewanyrating</inherit>
+        <inherit>mod/forum:viewdiscussion</inherit>
         <inherit>mod/forum:viewhiddentimedposts</inherit>
         <inherit>mod/forum:viewqandawithoutposting</inherit>
         <inherit>mod/forum:viewrating</inherit>
@@ -402,6 +402,7 @@
         <inherit>mod/glossary:managecomments</inherit>
         <inherit>mod/glossary:manageentries</inherit>
         <inherit>mod/glossary:rate</inherit>
+        <inherit>mod/glossary:view</inherit>
         <inherit>mod/glossary:viewallratings</inherit>
         <inherit>mod/glossary:viewanyrating</inherit>
         <inherit>mod/glossary:viewrating</inherit>
@@ -459,6 +460,7 @@
         <inherit>mod/quiz:regrade</inherit>
         <inherit>mod/quiz:reopenattempts</inherit>
         <inherit>mod/quiz:reviewmyattempts</inherit>
+        <inherit>mod/quiz:view</inherit>
         <inherit>mod/quiz:viewoverrides</inherit>
         <inherit>mod/quiz:viewreports</inherit>
         <inherit>mod/resource:addinstance</inherit>
@@ -489,6 +491,7 @@
         <inherit>mod/wiki:managewiki</inherit>
         <inherit>mod/wiki:overridelock</inherit>
         <inherit>mod/wiki:viewcomment</inherit>
+        <inherit>mod/wiki:viewpage</inherit>
         <inherit>mod/workshop:addinstance</inherit>
         <inherit>mod/workshop:allocate</inherit>
         <inherit>mod/workshop:deletesubmissions</inherit>
@@ -501,6 +504,7 @@
         <inherit>mod/workshop:publishsubmissions</inherit>
         <inherit>mod/workshop:submit</inherit>
         <inherit>mod/workshop:switchphase</inherit>
+        <inherit>mod/workshop:view</inherit>
         <inherit>mod/workshop:viewallassessments</inherit>
         <inherit>mod/workshop:viewallsubmissions</inherit>
         <inherit>mod/workshop:viewauthornames</inherit>
@@ -508,7 +512,6 @@
         <inherit>mod/workshop:viewpublishedsubmissions</inherit>
         <inherit>mod/workshop:viewreviewernames</inherit>
         <inherit>moodle/analytics:listinsights</inherit>
-        <inherit>moodle/analytics:listowninsights</inherit>
         <inherit>moodle/analytics:managemodels</inherit>
         <inherit>moodle/backup:anonymise</inherit>
         <inherit>moodle/backup:backupactivity</inherit>
@@ -524,60 +527,44 @@
         <inherit>moodle/badges:configuremessages</inherit>
         <inherit>moodle/badges:createbadge</inherit>
         <inherit>moodle/badges:deletebadge</inherit>
-        <inherit>moodle/badges:earnbadge</inherit>
         <inherit>moodle/badges:manageglobalsettings</inherit>
-        <inherit>moodle/badges:manageownbadges</inherit>
         <inherit>moodle/badges:revokebadge</inherit>
         <inherit>moodle/badges:viewawarded</inherit>
-        <inherit>moodle/badges:viewbadges</inherit>
-        <inherit>moodle/badges:viewotherbadges</inherit>
         <inherit>moodle/block:edit</inherit>
-        <inherit>moodle/blog:create</inherit>
         <inherit>moodle/blog:manageentries</inherit>
-        <inherit>moodle/blog:manageexternal</inherit>
         <inherit>moodle/blog:viewdrafts</inherit>
         <inherit>moodle/calendar:manageentries</inherit>
         <inherit>moodle/calendar:managegroupentries</inherit>
-        <inherit>moodle/calendar:manageownentries</inherit>
         <inherit>moodle/category:manage</inherit>
-        <inherit>moodle/category:viewcourselist</inherit>
+        <inherit>moodle/category:viewhiddencategories</inherit>
         <inherit>moodle/cohort:assign</inherit>
         <inherit>moodle/cohort:configurecustomfields</inherit>
         <inherit>moodle/cohort:manage</inherit>
         <inherit>moodle/cohort:view</inherit>
         <inherit>moodle/comment:delete</inherit>
-        <inherit>moodle/comment:post</inherit>
         <inherit>moodle/competency:competencygrade</inherit>
         <inherit>moodle/competency:competencymanage</inherit>
-        <inherit>moodle/competency:competencyview</inherit>
         <inherit>moodle/competency:coursecompetencyconfigure</inherit>
         <inherit>moodle/competency:coursecompetencygradable</inherit>
         <inherit>moodle/competency:coursecompetencymanage</inherit>
-        <inherit>moodle/competency:coursecompetencyview</inherit>
         <inherit>moodle/competency:evidencedelete</inherit>
         <inherit>moodle/competency:plancomment</inherit>
-        <inherit>moodle/competency:plancommentown</inherit>
         <inherit>moodle/competency:planmanage</inherit>
         <inherit>moodle/competency:planmanagedraft</inherit>
         <inherit>moodle/competency:planmanageown</inherit>
         <inherit>moodle/competency:planmanageowndraft</inherit>
         <inherit>moodle/competency:planrequestreview</inherit>
-        <inherit>moodle/competency:planrequestreviewown</inherit>
         <inherit>moodle/competency:planreview</inherit>
         <inherit>moodle/competency:planview</inherit>
         <inherit>moodle/competency:planviewdraft</inherit>
-        <inherit>moodle/competency:planviewown</inherit>
         <inherit>moodle/competency:planviewowndraft</inherit>
         <inherit>moodle/competency:templatemanage</inherit>
         <inherit>moodle/competency:templateview</inherit>
         <inherit>moodle/competency:usercompetencycomment</inherit>
-        <inherit>moodle/competency:usercompetencycommentown</inherit>
         <inherit>moodle/competency:usercompetencyrequestreview</inherit>
-        <inherit>moodle/competency:usercompetencyrequestreviewown</inherit>
         <inherit>moodle/competency:usercompetencyreview</inherit>
         <inherit>moodle/competency:usercompetencyview</inherit>
         <inherit>moodle/competency:userevidencemanage</inherit>
-        <inherit>moodle/competency:userevidencemanageown</inherit>
         <inherit>moodle/competency:userevidenceview</inherit>
         <inherit>moodle/contentbank:access</inherit>
         <inherit>moodle/contentbank:changelockedcustomfields</inherit>
@@ -585,7 +572,6 @@
         <inherit>moodle/contentbank:copyanycontent</inherit>
         <inherit>moodle/contentbank:copycontent</inherit>
         <inherit>moodle/contentbank:deleteanycontent</inherit>
-        <inherit>moodle/contentbank:deleteowncontent</inherit>
         <inherit>moodle/contentbank:downloadcontent</inherit>
         <inherit>moodle/contentbank:manageanycontent</inherit>
         <inherit>moodle/contentbank:manageowncontent</inherit>
@@ -629,9 +615,11 @@
         <inherit>moodle/course:setcurrentsection</inherit>
         <inherit>moodle/course:setforcedlanguage</inherit>
         <inherit>moodle/course:tag</inherit>
-        <inherit>moodle/course:togglecompletion</inherit>
         <inherit>moodle/course:update</inherit>
         <inherit>moodle/course:useremail</inherit>
+        <inherit>moodle/course:view</inherit>
+        <inherit>moodle/course:viewhiddenactivities</inherit>
+        <inherit>moodle/course:viewhiddencourses</inherit>
         <inherit>moodle/course:viewhiddengroups</inherit>
         <inherit>moodle/course:viewhiddensections</inherit>
         <inherit>moodle/course:viewhiddenuserfields</inherit>
@@ -667,7 +655,6 @@
         <inherit>moodle/notes:view</inherit>
         <inherit>moodle/payment:manageaccounts</inherit>
         <inherit>moodle/payment:viewpayments</inherit>
-        <inherit>moodle/portfolio:export</inherit>
         <inherit>moodle/question:add</inherit>
         <inherit>moodle/question:commentall</inherit>
         <inherit>moodle/question:commentmine</inherit>
@@ -684,10 +671,6 @@
         <inherit>moodle/question:usemine</inherit>
         <inherit>moodle/question:viewall</inherit>
         <inherit>moodle/question:viewmine</inherit>
-        <inherit>moodle/rating:rate</inherit>
-        <inherit>moodle/rating:view</inherit>
-        <inherit>moodle/rating:viewall</inherit>
-        <inherit>moodle/rating:viewany</inherit>
         <inherit>moodle/reportbuilder:edit</inherit>
         <inherit>moodle/reportbuilder:editall</inherit>
         <inherit>moodle/reportbuilder:scheduleviewas</inherit>
@@ -711,8 +694,8 @@
         <inherit>moodle/site:accessallgroups</inherit>
         <inherit>moodle/site:approvecourse</inherit>
         <inherit>moodle/site:config</inherit>
+        <inherit>moodle/site:configview</inherit>
         <inherit>moodle/site:deleteanymessage</inherit>
-        <inherit>moodle/site:deleteownmessage</inherit>
         <inherit>moodle/site:doclinks</inherit>
         <inherit>moodle/site:forcelanguage</inherit>
         <inherit>moodle/site:maintenanceaccess</inherit>
@@ -722,7 +705,6 @@
         <inherit>moodle/site:messageanyuser</inherit>
         <inherit>moodle/site:mnetlogintoremote</inherit>
         <inherit>moodle/site:readallmessages</inherit>
-        <inherit>moodle/site:sendmessage</inherit>
         <inherit>moodle/site:trustcontent</inherit>
         <inherit>moodle/site:uploadusers</inherit>
         <inherit>moodle/site:viewanonymousevents</inherit>
@@ -732,7 +714,6 @@
         <inherit>moodle/site:viewuseridentity</inherit>
         <inherit>moodle/tag:edit</inherit>
         <inherit>moodle/tag:editblocks</inherit>
-        <inherit>moodle/tag:flag</inherit>
         <inherit>moodle/tag:manage</inherit>
         <inherit>moodle/user:create</inherit>
         <inherit>moodle/user:delete</inherit>
@@ -741,8 +722,6 @@
         <inherit>moodle/user:ignoreuserquota</inherit>
         <inherit>moodle/user:loginas</inherit>
         <inherit>moodle/user:manageblocks</inherit>
-        <inherit>moodle/user:manageownblocks</inherit>
-        <inherit>moodle/user:manageownfiles</inherit>
         <inherit>moodle/user:managesyspages</inherit>
         <inherit>moodle/user:readuserblogs</inherit>
         <inherit>moodle/user:readuserposts</inherit>
@@ -752,7 +731,6 @@
         <inherit>moodle/user:viewhiddendetails</inherit>
         <inherit>moodle/user:viewlastip</inherit>
         <inherit>moodle/user:viewuseractivitiesreport</inherit>
-        <inherit>moodle/webservice:createmobiletoken</inherit>
         <inherit>moodle/webservice:createtoken</inherit>
         <inherit>moodle/webservice:managealltokens</inherit>
         <inherit>qbank/customfields:changelockedcustomfields</inherit>
@@ -805,34 +783,13 @@
         <inherit>report/security:view</inherit>
         <inherit>report/stats:view</inherit>
         <inherit>report/status:view</inherit>
-        <inherit>report/usersessions:manageownsessions</inherit>
-        <inherit>repository/areafiles:view</inherit>
-        <inherit>repository/boxnet:view</inherit>
         <inherit>repository/contentbank:accesscoursecategorycontent</inherit>
         <inherit>repository/contentbank:accesscoursecontent</inherit>
-        <inherit>repository/contentbank:accessgeneralcontent</inherit>
         <inherit>repository/contentbank:view</inherit>
         <inherit>repository/coursefiles:view</inherit>
-        <inherit>repository/dropbox:view</inherit>
-        <inherit>repository/equella:view</inherit>
         <inherit>repository/filesystem:view</inherit>
-        <inherit>repository/flickr_public:view</inherit>
-        <inherit>repository/flickr:view</inherit>
-        <inherit>repository/googledocs:view</inherit>
         <inherit>repository/local:view</inherit>
-        <inherit>repository/merlot:view</inherit>
-        <inherit>repository/nextcloud:view</inherit>
-        <inherit>repository/onedrive:view</inherit>
-        <inherit>repository/picasa:view</inherit>
-        <inherit>repository/recent:view</inherit>
-        <inherit>repository/s3:view</inherit>
-        <inherit>repository/skydrive:view</inherit>
-        <inherit>repository/upload:view</inherit>
-        <inherit>repository/url:view</inherit>
-        <inherit>repository/user:view</inherit>
         <inherit>repository/webdav:view</inherit>
-        <inherit>repository/wikimedia:view</inherit>
-        <inherit>repository/youtube:view</inherit>
         <inherit>tiny/h5p:addembed</inherit>
         <inherit>tool/brickfield:viewcoursetools</inherit>
         <inherit>tool/brickfield:viewsystemtools</inherit>
@@ -840,7 +797,10 @@
         <inherit>tool/customlang:export</inherit>
         <inherit>tool/customlang:view</inherit>
         <inherit>tool/dataprivacy:downloadallrequests</inherit>
-        <inherit>tool/dataprivacy:downloadownrequest</inherit>
+        <inherit>tool/dataprivacy:makedatadeletionrequestsforchildren</inherit>
+        <inherit>tool/dataprivacy:makedatarequestsforchildren</inherit>
+        <inherit>tool/dataprivacy:managedataregistry</inherit>
+        <inherit>tool/dataprivacy:managedatarequests</inherit>
         <inherit>tool/dataprivacy:requestdelete</inherit>
         <inherit>tool/dataprivacy:requestdeleteforotheruser</inherit>
         <inherit>tool/lpmigrate:frameworksmigrate</inherit>
@@ -849,7 +809,6 @@
         <inherit>tool/monitor:managerules</inherit>
         <inherit>tool/monitor:managetool</inherit>
         <inherit>tool/monitor:subscribe</inherit>
-        <inherit>tool/policy:accept</inherit>
         <inherit>tool/policy:acceptbehalf</inherit>
         <inherit>tool/policy:managedocs</inherit>
         <inherit>tool/policy:viewacceptances</inherit>
@@ -859,62 +818,103 @@
         <inherit>tool/uploadcourse:use</inherit>
         <inherit>tool/uploaduser:uploaduserpictures</inherit>
         <inherit>tool/usertours:managetours</inherit>
-        <inherit>webservice/rest:use</inherit>
         <inherit>webservice/soap:use</inherit>
+        <allow>atto/recordrtc:recordaudio</allow>
+        <allow>atto/recordrtc:recordvideo</allow>
+        <allow>auth/oauth2:managelinkedlogins</allow>
         <allow>block/online_users:viewlist</allow>
-        <allow>booktool/print:print</allow>
+        <allow>block/recent_activity:viewaddupdatemodule</allow>
+        <allow>block/recent_activity:viewdeletemodule</allow>
         <allow>enrol/self:enrolself</allow>
-        <allow>local/catalog:offeraccess</allow>
-        <allow>local/mentor_core:modifyentity</allow>
-        <allow>mod/assign:view</allow>
-        <allow>mod/bigbluebuttonbn:join</allow>
-        <allow>mod/book:read</allow>
+        <allow>gradereport/overview:view</allow>
+        <allow>message/airnotifier:managedevice</allow>
         <allow>mod/chat:view</allow>
         <allow>mod/choice:view</allow>
-        <allow>mod/data:view</allow>
-        <allow>mod/data:viewentry</allow>
-        <allow>mod/feedback:view</allow>
         <allow>mod/folder:view</allow>
-        <allow>mod/forum:viewdiscussion</allow>
-        <allow>mod/glossary:view</allow>
+        <allow>mod/forum:cantogglefavourite</allow>
         <allow>mod/imscp:view</allow>
         <allow>mod/label:view</allow>
         <allow>mod/lesson:view</allow>
         <allow>mod/page:view</allow>
         <allow>mod/programcourse:view</allow>
-        <allow>mod/quiz:view</allow>
         <allow>mod/resource:view</allow>
         <allow>mod/url:view</allow>
-        <allow>mod/wiki:viewpage</allow>
-        <allow>mod/workshop:view</allow>
         <allow>moodle/ai:acceptpolicy</allow>
         <allow>moodle/ai:fetchanyuserpolicystatus</allow>
         <allow>moodle/ai:fetchpolicy</allow>
+        <allow>moodle/analytics:listowninsights</allow>
+        <allow>moodle/badges:earnbadge</allow>
+        <allow>moodle/badges:manageownbadges</allow>
+        <allow>moodle/badges:viewbadges</allow>
+        <allow>moodle/badges:viewotherbadges</allow>
         <allow>moodle/block:view</allow>
+        <allow>moodle/blog:create</allow>
+        <allow>moodle/blog:manageexternal</allow>
         <allow>moodle/blog:search</allow>
         <allow>moodle/blog:view</allow>
-        <allow>moodle/category:viewhiddencategories</allow>
+        <allow>moodle/calendar:manageownentries</allow>
+        <allow>moodle/category:viewcourselist</allow>
+        <allow>moodle/comment:post</allow>
         <allow>moodle/comment:view</allow>
-        <allow>moodle/course:view</allow>
-        <allow>moodle/course:viewhiddenactivities</allow>
-        <allow>moodle/course:viewhiddencourses</allow>
+        <allow>moodle/competency:competencyview</allow>
+        <allow>moodle/competency:coursecompetencyview</allow>
+        <allow>moodle/competency:plancommentown</allow>
+        <allow>moodle/competency:planrequestreviewown</allow>
+        <allow>moodle/competency:planviewown</allow>
+        <allow>moodle/competency:usercompetencycommentown</allow>
+        <allow>moodle/competency:usercompetencyrequestreviewown</allow>
+        <allow>moodle/competency:userevidencemanageown</allow>
+        <allow>moodle/contentbank:deleteowncontent</allow>
+        <allow>moodle/course:togglecompletion</allow>
+        <allow>moodle/portfolio:export</allow>
+        <allow>moodle/rating:rate</allow>
+        <allow>moodle/rating:view</allow>
+        <allow>moodle/rating:viewall</allow>
+        <allow>moodle/rating:viewany</allow>
         <allow>moodle/reportbuilder:view</allow>
         <allow>moodle/search:query</allow>
-        <allow>moodle/site:configview</allow>
+        <allow>moodle/site:deleteownmessage</allow>
         <allow>moodle/site:senderrormessage</allow>
+        <allow>moodle/site:sendmessage</allow>
+        <allow>moodle/tag:flag</allow>
+        <allow>moodle/user:changeownpassword</allow>
+        <allow>moodle/user:editownmessageprofile</allow>
+        <allow>moodle/user:editownprofile</allow>
+        <allow>moodle/user:manageownblocks</allow>
+        <allow>moodle/user:manageownfiles</allow>
         <allow>moodle/user:viewprofilepictures</allow>
+        <allow>moodle/webservice:createmobiletoken</allow>
+        <allow>report/usersessions:manageownsessions</allow>
+        <allow>repository/areafiles:view</allow>
+        <allow>repository/boxnet:view</allow>
+        <allow>repository/contentbank:accessgeneralcontent</allow>
+        <allow>repository/dropbox:view</allow>
+        <allow>repository/equella:view</allow>
+        <allow>repository/flickr_public:view</allow>
+        <allow>repository/flickr:view</allow>
+        <allow>repository/googledocs:view</allow>
+        <allow>repository/merlot:view</allow>
+        <allow>repository/nextcloud:view</allow>
+        <allow>repository/onedrive:view</allow>
+        <allow>repository/picasa:view</allow>
+        <allow>repository/recent:view</allow>
+        <allow>repository/s3:view</allow>
+        <allow>repository/skydrive:view</allow>
+        <allow>repository/upload:view</allow>
+        <allow>repository/url:view</allow>
+        <allow>repository/user:view</allow>
+        <allow>repository/wikimedia:view</allow>
+        <allow>repository/youtube:view</allow>
         <allow>tiny/premium:accesspremium</allow>
         <allow>tiny/recordrtc:recordaudio</allow>
         <allow>tiny/recordrtc:recordscreen</allow>
         <allow>tiny/recordrtc:recordvideo</allow>
-        <allow>tool/dataprivacy:makedatadeletionrequestsforchildren</allow>
-        <allow>tool/dataprivacy:makedatarequestsforchildren</allow>
-        <allow>tool/dataprivacy:managedataregistry</allow>
-        <allow>tool/dataprivacy:managedatarequests</allow>
+        <allow>tool/dataprivacy:downloadownrequest</allow>
         <allow>tool/mfa:mfaaccess</allow>
+        <allow>tool/policy:accept</allow>
+        <allow>webservice/rest:use</allow>
         <prevent>block/sharing_cart:manual_run_task</prevent>
-        <prohibit>moodle/user:changeownpassword</prohibit>
-        <prohibit>moodle/user:editownmessageprofile</prohibit>
-        <prohibit>moodle/user:editownprofile</prohibit>
+        <prohibit>local/catalog:offeraccess</prohibit>
+        <prohibit>local/mentor_core:modifyentity</prohibit>
     </permissions>
 </role>

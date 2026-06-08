@@ -135,6 +135,41 @@ class local_mentor_specialization_observer {
 
     /**
      *
+     * Sync profile when role assigned
+     *
+     * @param \core\event\role_assigned $event
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public static function sync_profile_role_assigned(\core\event\role_assigned $event) {
+        // LDAP profile sync.
+        $userid = $event->relateduserid;
+
+        $profile = \local_mentor_core\profile_api::get_profile($userid);
+
+        $profile->set_highestrole_into_profile();
+    }
+
+    /**
+     *
+     * Sync profile when role assigned
+     *
+     * @param \core\event\role_assigned $event
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public static function sync_profile_role_unassigned(\core\event\role_unassigned $event) {
+        // LDAP profile sync.
+
+        $userid = $event->relateduserid;
+
+        $profile = \local_mentor_core\profile_api::get_profile($userid);
+
+        $profile->set_highestrole_into_profile();
+    }
+
+    /**
+     *
      * Remove required user info data if is empty when user is created
      *
      * @param \core\event\user_created $event

@@ -36,6 +36,15 @@ $observers = [
                 'callback' => 'local_mentor_specialization_observer::unassign_reflocalnonediteur',
         ],
         [
+                'eventname' => '\core\event\role_assigned',
+                'callback' => 'local_mentor_specialization_observer::sync_profile_role_assigned',
+        ],
+
+        [
+                'eventname' => '\core\event\role_unassigned',
+                'callback' => 'local_mentor_specialization_observer::sync_profile_role_unassigned',
+        ],
+        [
                 'eventname' => '\core\event\user_created',
                 'callback' => 'local_mentor_specialization_observer::remove_required_user_info_data_if_empty',
         ],

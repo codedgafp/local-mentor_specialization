@@ -44,7 +44,7 @@ $observers = [
                 'eventname' => '\core\event\role_unassigned',
                 'callback' => 'local_mentor_specialization_observer::sync_profile_role_unassigned',
         ],
-                [
+        [
                 'eventname' => '\core\event\user_loggedin',
                 'callback' => 'local_mentor_specialization_observer::sync_profile_role_login',
                 'priority' => 9999,
@@ -78,7 +78,15 @@ $observers = [
                 'callback' => 'local_mentor_specialization_observer::enrol_session_send_mail',
         ],
         [
-                'eventname'   => 'local_mentor_specialization\event\collections_form_submitted',
-                'callback'    => 'local_mentor_specialization_observer::collections_form_submission_trigger'
-        ]
+                'eventname' => 'local_mentor_specialization\event\collections_form_submitted',
+                'callback' => 'local_mentor_specialization_observer::collections_form_submission_trigger'
+        ],
+        [
+                'eventname' => '\core\event\course_module_created',
+                'callback' => 'local_mentor_specialization_observer::course_module_changed',
+        ],
+        [
+                'eventname' => '\core\event\course_module_updated',
+                'callback' => 'local_mentor_specialization_observer::course_module_changed',
+        ],
 ];

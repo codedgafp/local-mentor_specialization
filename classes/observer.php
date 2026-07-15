@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use local_mentor_specialization\repository\local_mentor_specialization_completion_monitor_repository;
+use local_mentor_specialization\services\local_mentor_specialization_completion_monitor_service;
+
 require_once($CFG->dirroot . '/local/mentor_core/api/entity.php');
 
 class local_mentor_specialization_observer {
@@ -492,5 +495,26 @@ class local_mentor_specialization_observer {
 
     public static function collections_form_submission_trigger() {
         local_mentor_specialization_sync_table_collection();
+    }
+
+    public static function course_module_changed($event): void
+    {
+        $courseid = $event->courseid;
+
+        $contextcourse = context_course::instance($courseid);
+
+        $completionmonitorrepository = new local_mentor_specialization_completion_monitor_repository();
+        if ($completionmonitorrepository->block_instance_exists($contextcourse->id)) {
+            return;
+        }
+
+        $course = get_course($courseid);
+
+        $completionmonitorservice = new local_mentor_specialization_completion_monitor_service($course);
+        $hascompletion = $completionmonitorservice->activities_has_completion();
+
+        $hascompletion
+            ? $completionmonitorservice->add_block_to_course()
+            : $completionmonitorservice->remove_block_from_course();
     }
 }

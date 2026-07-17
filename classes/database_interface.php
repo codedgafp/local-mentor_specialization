@@ -2164,6 +2164,7 @@ class database_interface extends \local_mentor_core\database_interface {
                 FROM {user} u
                 INNER JOIN {role_assignments} ra ON ra.userid = u.id
                 INNER JOIN {role} r ON r.id = ra.roleid AND r.shortname = :roleshortname
+                AND u.deleted = 0
                 ";
 
         $params['roleshortname'] = 'utilisateurexterne';

@@ -1503,7 +1503,7 @@ function local_mentor_specialization_init_snippets()
 
     // Présentation de la formation.
     set_config('snippetname_18', 'Presentation de la formation', 'atto_snippet');
-    set_config('snippetkey_18', 'Ppresentation de la formation', 'atto_snippet');
+    set_config('snippetkey_18', 'presentation de la formation', 'atto_snippet');
     set_config('snippetinstructions_18', '', 'atto_snippet');
     set_config('defaults_18', '', 'atto_snippet');
     set_config('snippet_18', '<div class="mentor-card container-fluid presentation-formation">
@@ -3246,7 +3246,7 @@ function local_mentor_specialization_init_tiny_snippets()
 
     // Présentation de la formation.
     set_config('snippetname_14', 'Presentation de la formation', 'tiny_snippet');
-    set_config('snippetkey_14', 'Ppresentation de la formation', 'tiny_snippet');
+    set_config('snippetkey_14', 'presentation de la formation', 'tiny_snippet');
     set_config('snippetinstructions_14', '', 'tiny_snippet');
     set_config('defaults_14', '', 'tiny_snippet');
     $coursepresentationhtml = file_get_contents("{$templateurl}/coursepresentation.mustache");

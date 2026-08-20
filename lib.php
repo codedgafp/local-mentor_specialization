@@ -1449,9 +1449,8 @@ function local_mentor_specialization_init_snippets()
     set_config('snippetkey_15', 'bouton', 'atto_snippet');
     set_config('snippetinstructions_15', '', 'atto_snippet');
     set_config('defaults_15', 'Texte=,Url=', 'atto_snippet');
-    set_config('snippet_15', '<div class="btn btn-primary btn-mentor-snippet mt-3 mb-3 card-link" >
-     <a href="{{Url}}" role="button">{{Texte}}<br></a>
-</div>', 'atto_snippet');
+    set_config('snippet_15', '<p><a href="{{Url}}" role="button" ' .
+        'class="btn btn-primary btn-mentor-snippet mt-3 mb-3 card-link">{{Texte}}</a></p>', 'atto_snippet');
 
     // Class virtuelle.
     set_config('snippetname_16', 'Classe virtuelle', 'atto_snippet');

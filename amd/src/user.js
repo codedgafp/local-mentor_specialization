@@ -279,15 +279,17 @@ define([
                                         that.dialog("destroy");
                                     } else {
                                         var messageStatus = response.message;
-                                        var warningMessage = '';
+                                        var warningZone = $('.user-admin-form-warning').removeClass(warningMessageDisplayClass);
                                         if (messageStatus === -1) { // Email is used
-                                            warningMessage = M.util.get_string('erroremailused', 'local_mentor_core');
+                                            warningZone.html(M.util.get_string('erroremailused', 'local_mentor_core'));
                                         } else if (messageStatus === -2) { // Email is not allowed
-                                            warningMessage = M.util.get_string('invalidemail', 'local_mentor_core');
+                                            warningZone.html(M.util.get_string('invalidemail', 'local_mentor_core'));
+                                        } else if (typeof messageStatus === 'string' && messageStatus !== '') {
+                                            // Explicit message raised server side: inserted as text, never as HTML.
+                                            warningZone.text(messageStatus);
                                         } else { // Other problem
-                                            warningMessage = M.util.get_string('erroreother', 'local_mentor_core');
+                                            warningZone.html(M.util.get_string('erroreother', 'local_mentor_core'));
                                         }
-                                        $('.user-admin-form-warning').removeClass(warningMessageDisplayClass).html(warningMessage);
                                     }
                                 }
                             });

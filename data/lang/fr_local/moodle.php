@@ -45,8 +45,8 @@ Dans la plupart des logiciels de courriel, cette adresse devrait apparaître com
 de couleur bleue qu\'il vous suffit de cliquer. Si cela ne fonctionne pas, copiez ce lien et ' . '
 collez-le dans la barre d\'adresse de votre navigateur web.
 
-Si vous avez besoin d\'aide, veuillez consulter la page <a href="' . $CFG->wwwroot . '/local/staticpage/view.php?page=faq">FAQ</a> dans le bas de page.
-Note : Pour en savoir plus sur la gestion de vos données à caractère personnel et l\'exercice de vos droits, vous pouvez consulter la <a href="' . $CFG->wwwroot . '/local/staticpage/view.php?page=donneespersonnelles">politique de confidentialité</a>.
+Si vous avez besoin d\'aide, veuillez consulter la page <a href="' . $CFG->wwwroot . '/fr/aide">FAQ</a> dans le bas de page.
+Note : Pour en savoir plus sur la gestion de vos données à caractère personnel et l\'exercice de vos droits, vous pouvez consulter la <a href="' . $CFG->wwwroot . '/fr/donnees-personnelles">politique de confidentialité</a>.
 
 L\'équipe Mentor
 

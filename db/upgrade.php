@@ -331,7 +331,7 @@ function xmldb_local_mentor_specialization_upgrade($oldversion)
         );
         local_mentor_core_set_moodle_config(
             'about',
-            $CFG->wwwroot . '/local/staticpage/view.php?page=ensavoirplus',
+            $CFG->wwwroot . '/fr/en-savoir-plus',
             'theme_mentor'
         );
     }

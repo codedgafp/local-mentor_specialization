@@ -2720,7 +2720,6 @@ function local_mentor_specialization_extend_navigation(global_navigation $naviga
 
         }
     }
-
 }
 
 /**
@@ -2735,25 +2734,25 @@ function local_mentor_specialization_init_theme_mentor_settings() {
     }
 
     if (empty(get_config('theme_mentor', 'about'))) {
-        local_mentor_core_set_moodle_config('about', $CFG->wwwroot . '/local/staticpage/view.php?page=apropos', 'theme_mentor');
+        local_mentor_core_set_moodle_config('about', $CFG->wwwroot . '/fr/en-savoir-plus', 'theme_mentor');
     }
 
     if (empty(get_config('theme_mentor', 'legalnotice'))) {
-        local_mentor_core_set_moodle_config('legalnotice', $CFG->wwwroot . '/local/staticpage/view.php?page=mentionslegales',
+        local_mentor_core_set_moodle_config('legalnotice', $CFG->wwwroot . '/fr/mentions-legales',
             'theme_mentor');
     }
 
     if (empty(get_config('theme_mentor', 'nonloggedcontact'))) {
-        local_mentor_core_set_moodle_config('nonloggedcontact', $CFG->wwwroot . '/local/staticpage/view.php?page=contact',
+        local_mentor_core_set_moodle_config('nonloggedcontact', $CFG->wwwroot . '/fr/contact',
             'theme_mentor');
     }
 
     if (empty(get_config('theme_mentor', 'faq'))) {
-        local_mentor_core_set_moodle_config('faq', $CFG->wwwroot . '/local/staticpage/view.php?page=faq', 'theme_mentor');
+        local_mentor_core_set_moodle_config('faq', $CFG->wwwroot . '/fr/aide', 'theme_mentor');
     }
 
     if (empty(get_config('theme_mentor', 'sitemap'))) {
-        local_mentor_core_set_moodle_config('sitemap', $CFG->wwwroot . '/local/staticpage/view.php?page=plandusite',
+        local_mentor_core_set_moodle_config('sitemap', $CFG->wwwroot . '/fr/plan-du-site',
             'theme_mentor');
     }
 
@@ -2771,7 +2770,7 @@ function local_mentor_specialization_init_theme_mentor_settings() {
 
     if (empty(get_config('theme_mentor', 'personaldata'))) {
         local_mentor_core_set_moodle_config('personaldata',
-            $CFG->wwwroot . '/local/staticpage/view.php?page=donneespersonnelles',
+            $CFG->wwwroot . '/fr/donnees-personnelles',
             'theme_mentor');
     }
 }
